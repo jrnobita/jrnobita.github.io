@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Site</title>
+<style>
+  :root {
+    --ink: #1a1a1a;
+    --muted: #666;
+    --bg: #fdfdfb;
+    --rule: #e2e2dd;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: Georgia, "Times New Roman", serif;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 12vh 24px 10vh;
+  }
+  h1 {
+    font-size: clamp(2rem, 6vw, 3rem);
+    line-height: 1.1;
+    margin: 0 0 0.4em;
+    letter-spacing: -0.02em;
+  }
+  .lede {
+    font-size: 1.15rem;
+    color: var(--muted);
+    margin: 0 0 3rem;
+  }
+  h2 {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-family: system-ui, sans-serif;
+    color: var(--muted);
+    border-top: 1px solid var(--rule);
+    padding-top: 1.2rem;
+    margin-top: 3rem;
+  }
+  a { color: var(--ink); }
+  footer {
+    margin-top: 5rem;
+    padding-top: 1.2rem;
+    border-top: 1px solid var(--rule);
+    font-size: 0.85rem;
+    color: var(--muted);
+    font-family: system-ui, sans-serif;
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>My Site</h1>
+    <p class="lede">A placeholder line describing what this page is for.</p>
+
+    <h2>About</h2>
+    <p>Replace this paragraph with your own text. Everything on this page is
+    plain HTML, so you can edit it directly in the GitHub web editor at any time.</p>
+
+    <h2>Contact</h2>
+    <p><a href="mailto:you@example.com">you@example.com</a></p>
+
+    <footer>Last updated August 2026</footer>
+  </div>
+</body>
+</html>
