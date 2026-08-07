@@ -1,1 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>jrnobita</title>
+<meta name="description" content="jrnobita — small tools built for my own Mac, open sourced when they work.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#EAECEE; --panel:#FFFFFF; --ink:#0E1114; --ink-2:#39414A; --ink-3:#646D77;
+  --rule:#D2D6DA; --green:#27C93F; --amber:#FFBD2E; --red:#FF5F56; --slab:#1B1F24;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,monospace; --sans:"Archivo",system-ui,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1080px;margin:0 auto;padding:0 28px}
+code{font-family:var(--mono);font-size:.92em}
 
+/* menu bar */
+.menubar{position:sticky;top:0;z-index:50;background:var(--slab);color:#F0F2F4;
+  font-family:var(--mono);font-size:16.5px;display:flex;align-items:center;gap:20px;padding:11px 22px}
+.mb-dots{display:flex;gap:10px;flex:0 0 auto}
+.mb-dots i{width:12px;height:12px;border-radius:50%;display:block}
+.mb-spacer{flex:1 1 auto}
+.mb-chip{
+  position:absolute;left:50%;transform:translateX(-50%);
+  background:rgba(255,255,255,.12);padding:5px 15px;border-radius:7px;
+  color:var(--amber);font-weight:500;white-space:nowrap;display:none;font-size:16.5px;
+}
+.mb-chip.on{display:inline-block}
+.mb-icons{display:flex;align-items:center;gap:21px;flex:0 0 auto}
+.mb-icons svg{display:block;opacity:.94;width:21px;height:21px}
+.mb-clock{flex:0 0 auto;font-variant-numeric:tabular-nums;white-space:nowrap}
+@media (max-width:900px){
+  .menubar{font-size:15px;gap:14px;padding:11px 16px}
+  .mb-chip{font-size:15px;padding:5px 12px}
+  .mb-icons{gap:16px} .mb-icons svg{width:20px;height:20px}
+  .mb-dots i{width:11px;height:11px}
+}
+@media (max-width:620px){
+  .mb-icons .opt{display:none}
+  .mb-chip{font-size:13px;padding:4px 10px}
+  .menubar{font-size:13px}
+}
+
+/* type */
+.eyebrow{font-family:var(--mono);font-size:13px;font-weight:500;letter-spacing:.13em;text-transform:uppercase;color:var(--ink-2)}
+.rule{height:1px;background:var(--rule);border:0}
+.body-text{color:var(--ink-2);max-width:62ch}
+.body-text strong{color:var(--ink);font-weight:600}
+p+p{margin-top:15px}
+section{padding:70px 0}
+.sec-head{display:flex;gap:16px;align-items:baseline;margin-bottom:32px}
+.sec-head h2{font-size:clamp(26px,4vw,42px);font-weight:800;letter-spacing:-.025em;text-transform:uppercase;line-height:1}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:48px}
+
+/* identity */
+.ident{padding:38px 0 30px;display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap}
+.ident .who{font-size:22px;font-weight:600;letter-spacing:-.015em}
+.ident .who span{display:block;font-size:16px;font-weight:400;color:var(--ink-2);margin-top:6px;max-width:44ch}
+.ident nav{display:flex;gap:28px;font-family:var(--mono);font-size:15px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;flex-wrap:wrap}
+.ident nav a{color:var(--ink);text-decoration:none;border-bottom:1.5px solid transparent;padding-bottom:3px;cursor:pointer;transition:border-color .15s ease}
+.ident nav a:hover{border-color:var(--ink)}
+.ident nav a:focus-visible{outline:2px solid var(--green);outline-offset:3px}
+
+/* buttons */
+.cta-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:32px}
+.btn{font-family:var(--mono);font-size:14.5px;font-weight:500;letter-spacing:.05em;text-transform:uppercase;text-decoration:none;padding:15px 24px;border:1px solid var(--ink);color:var(--paper);background:var(--ink);transition:transform .15s ease;cursor:pointer;display:inline-block}
+.btn:hover{transform:translateY(-2px)}
+.btn.ghost{background:transparent;color:var(--ink)}
+.btn:focus-visible{outline:2px solid var(--green);outline-offset:3px}
+
+/* home */
+.home{padding:70px 0 40px}
+.home h1{font-size:clamp(40px,8vw,96px);font-weight:800;letter-spacing:-.035em;line-height:.95;text-transform:uppercase;max-width:14ch;margin:20px 0 26px}
+.home h1 em{font-style:normal;color:var(--ink-3)}
+.home p.lede{font-size:clamp(17px,2.1vw,21px);color:var(--ink-2);max-width:56ch}
+.projects{border-top:1px solid var(--rule)}
+.proj{display:grid;grid-template-columns:130px 1fr auto;gap:28px;align-items:center;padding:30px 0;border-bottom:1px solid var(--rule);text-decoration:none;color:inherit;transition:padding-left .18s ease;cursor:pointer}
+.proj:hover{padding-left:10px}
+.proj:focus-visible{outline:2px solid var(--green);outline-offset:3px}
+.proj .meta{font-family:var(--mono);font-size:12.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2)}
+.proj h3{font-size:23px;font-weight:600;letter-spacing:-.015em}
+.proj p{font-size:15.5px;color:var(--ink-2);margin-top:6px;max-width:52ch}
+.proj .go{font-family:var(--mono);font-size:18px;color:var(--ink-3)}
+.proj:hover .go{color:var(--ink)}
+.proj.soon{opacity:.5;pointer-events:none}
+
+/* homepage project mock */
+.feat-row{grid-template-columns:1fr 380px;align-items:center;gap:52px;padding:38px 0}
+.feat-row .col-text .meta{margin-bottom:10px}
+.feat-row:hover{padding-left:0}
+.go-inline{display:inline-block;margin-top:16px;font-family:var(--mono);font-size:13.5px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2);border-bottom:1px solid var(--rule);padding-bottom:2px}
+.feat-row:hover .go-inline{color:var(--ink);border-color:var(--ink)}
+
+.shot{box-shadow:0 16px 34px -26px rgba(14,17,20,.55);transition:transform .2s ease}
+.feat-row:hover .shot{transform:translateY(-3px)}
+.shot-bar{background:var(--slab);display:flex;align-items:center;gap:12px;padding:8px 12px;font-family:var(--mono);font-size:12px;color:#F0F2F4}
+.pb-dots{display:flex;gap:6px}
+.pb-dots i{width:9px;height:9px;border-radius:50%;display:block}
+.pb-chip{margin:0 auto;background:rgba(255,255,255,.12);padding:3px 10px;border-radius:5px;color:var(--amber);font-weight:500}
+.pb-time{color:#B6BDC4}
+.shot-panel{background:var(--panel);border:1px solid var(--rule);border-top:0;padding:18px 16px;font-family:var(--mono);font-size:12.5px}
+
+/* project hero + widget */
+.hero{padding:66px 0 56px}
+.hero h1{font-size:clamp(38px,7.4vw,86px);font-weight:800;letter-spacing:-.035em;line-height:.96;text-transform:uppercase;max-width:13ch;margin:22px 0 24px}
+.hero h1 em{font-style:normal;color:var(--ink-3)}
+.hero p.lede{font-size:clamp(17px,2.1vw,21px);color:var(--ink-2);max-width:54ch}
+.hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:56px;align-items:start}
+.widget{background:var(--panel);border:1px solid var(--rule);box-shadow:0 18px 40px -28px rgba(19,22,26,.5);font-family:var(--mono);font-size:13px}
+.widget .head{background:var(--slab);color:#E8EAED;padding:9px 14px;display:flex;justify-content:space-between;font-size:12px}
+.widget .body{padding:16px 14px}
+.w-plan{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin-bottom:16px}
+.meter{margin:0 0 15px}
+.meter:last-child{margin-bottom:0}
+.meter .top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px}
+.meter .name{color:var(--ink);font-size:13px;font-weight:500}
+.meter .val{font-weight:700;font-size:15px;font-variant-numeric:tabular-nums;color:var(--green)}
+.track{height:9px;background:#E4E7EA;overflow:hidden}
+.fill{height:100%;width:0;background:var(--green);transition:width 1.1s cubic-bezier(.2,.7,.2,1)}
+.meter .sub{font-size:12px;color:var(--ink-3);margin-top:6px}
+.val.amber{color:#C98A00}
+.fill.amber-fill{background:var(--amber)}
+
+/* feature list */
+.feat{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--rule);border:1px solid var(--rule)}
+.feat > div{background:var(--paper);padding:24px 22px}
+.feat h4{font-size:16.5px;font-weight:600;margin-bottom:7px;letter-spacing:-.01em}
+.feat p{font-size:15.5px;color:var(--ink-2);line-height:1.55}
+
+/* story */
+.story{display:grid;grid-template-columns:repeat(3,1fr);gap:36px}
+.story .v{font-family:var(--mono);font-size:13.5px;font-weight:700;color:var(--ink-2);letter-spacing:.06em;margin-bottom:10px}
+.story h4{font-size:18px;font-weight:600;margin-bottom:8px;letter-spacing:-.01em}
+.story p{font-size:15.5px;color:var(--ink-2);line-height:1.6}
+
+/* download band */
+.install{background:var(--slab);color:#E8EAED;padding:70px 0}
+.install .eyebrow{color:#6E7780}
+.install h2{color:#fff}
+.install .body-text{color:#A8B0B8}
+.install .btn{border-color:#fff;background:#fff;color:var(--slab)}
+.install .btn.ghost{background:transparent;color:#fff}
+pre{background:#111418;border:1px solid #2A3037;padding:18px;overflow-x:auto;font-family:var(--mono);font-size:12.5px;line-height:1.8;color:#C8D0D8;margin-top:22px}
+pre .c{color:#6E7780}
+.req{font-family:var(--mono);font-size:13.5px;color:#AEB6BE;margin-top:22px;letter-spacing:.04em}
+
+/* note */
+.note{border-left:3px solid var(--amber);padding:20px 24px;background:var(--panel)}
+.note h3{font-size:17px;font-weight:600;margin-bottom:10px}
+.note p{font-size:15.5px;color:var(--ink-2)}
+
+/* footer */
+footer{padding:50px 0 62px;border-top:1px solid var(--rule)}
+.foot{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap;font-family:var(--mono);font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2)}
+.foot a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--rule);cursor:pointer}
+.foot a:hover{border-color:var(--ink)}
+
+.view{display:none}
+.view.on{display:block}
+
+@media (max-width:860px){
+  .hero-grid,.two-col,.feat{grid-template-columns:1fr}
+  .story{grid-template-columns:1fr;gap:28px}
+  .ident{gap:18px}
+  .ident nav{gap:20px;font-size:13.5px}
+  .proj{grid-template-columns:1fr auto;gap:16px}
+  .proj .meta{grid-column:1 / -1}
+  .feat-row{grid-template-columns:1fr;gap:26px}
+  .feat-row .col-text{grid-column:1}
+  section{padding:52px 0}
+  .hero,.home{padding:48px 0 38px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+
+<div class="menubar">
+  <div class="mb-dots"><i style="background:#FF5F56"></i><i style="background:#FFBD2E"></i><i style="background:#27C93F"></i></div>
+  <div class="mb-spacer"></div>
+  <span class="mb-chip" id="mb-chip">Max 65% &middot; 42%</span>
+  <div class="mb-icons" aria-hidden="true">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M1.6 5.6a10 10 0 0 1 12.8 0"/><path d="M4 8.3a6.4 6.4 0 0 1 8 0"/><path d="M6.3 11a3 3 0 0 1 3.4 0"/><circle cx="8" cy="13.3" r=".85" fill="currentColor" stroke="none"/></svg>
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><circle cx="7" cy="7" r="4.4"/><path d="M10.3 10.3 14 14"/></svg>
+    <svg class="opt" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"><rect x="1.6" y="2.6" width="12.8" height="9" rx="1.2"/><path d="M5.6 13.8h4.8"/></svg>
+    <svg class="opt" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" stroke-linecap="round"><path d="M5 4.6 11 11.4 8 14V2l3 2.6L5 11.4"/></svg>
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="1.4" y="2.4" width="13.2" height="4.6" rx="2.3"/><circle cx="5" cy="4.7" r="1.15" fill="currentColor" stroke="none"/><rect x="1.4" y="9" width="13.2" height="4.6" rx="2.3"/><circle cx="11" cy="11.3" r="1.15" fill="currentColor" stroke="none"/></svg>
+  </div>
+  <div class="mb-clock" id="mb-clock">Fri Aug 7&ensp;9:20 PM</div>
+</div>
+
+
+<!-- ============ HOME ============ -->
+<div class="view on" id="view-home">
+<div class="wrap">
+
+  <div class="ident">
+    <div class="who">jrnobita
+      <span>I build small tools for my own Mac and open source the ones that work.</span>
+    </div>
+    <nav>
+      <a data-go="project">Claude Usage</a>
+      <a href="https://github.com/jrnobita">GitHub &#8599;</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </div>
+
+  <hr class="rule">
+
+  <header class="home">
+    <div class="eyebrow">macOS &middot; Open source</div>
+    <h1>Small tools that <em>stay</em> out of the way.</h1>
+    <p class="lede">Things I wanted on my own machine and could not find, so I built them. Everything here is free, open source, and short enough to read before you run it.</p>
+    <div class="cta-row">
+      <a class="btn" data-go="project">See the current project</a>
+      <a class="btn ghost" href="https://github.com/jrnobita">GitHub</a>
+    </div>
+  </header>
+
+  <section style="padding-top:30px">
+    <div class="sec-head"><span class="eyebrow">Projects</span></div>
+    <div class="projects">
+
+      <a class="proj feat-row" data-go="project">
+        <div class="col-text">
+          <div class="meta">v3.0.0 &middot; Shell &middot; macOS</div>
+          <h3>Claude Usage</h3>
+          <p>A menu bar meter for Claude subscription limits. Session and weekly windows, reset countdowns, and a notification before you hit the wall.</p>
+          <span class="go-inline">Open the project &#8594;</span>
+        </div>
+
+        <div class="shot">
+          <div class="shot-bar">
+            <span class="pb-dots"><i style="background:#FF5F56"></i><i style="background:#FFBD2E"></i><i style="background:#27C93F"></i></span>
+            <span class="pb-chip">Max 65% &middot; 42%</span>
+            <span class="pb-time">9:33</span>
+          </div>
+          <div class="shot-panel">
+            <div class="w-plan">Claude Max</div>
+            <div class="meter">
+              <div class="top"><span class="name">Session (5h)</span><span class="val amber">65%</span></div>
+              <div class="track"><div class="fill amber-fill" style="width:65%"></div></div>
+              <div class="sub">resets in 2h 12m</div>
+            </div>
+            <div class="meter">
+              <div class="top"><span class="name">Weekly (7d)</span><span class="val">42%</span></div>
+              <div class="track"><div class="fill" style="width:42%"></div></div>
+              <div class="sub">resets in 1d 16h</div>
+            </div>
+          </div>
+        </div>
+      </a>
+
+      <div class="proj soon">
+        <div class="meta">In progress</div>
+        <div><h3>Next thing</h3><p>Not finished yet.</p></div>
+        <div class="go">&#8594;</div>
+      </div>
+
+    </div>
+
+  </section>
+
+  <section id="contact">
+    <div class="sec-head"><span class="eyebrow">Contact</span><h2>Get in touch</h2></div>
+    <div class="two-col">
+      <div class="body-text">
+        <p>Bug reports and feature ideas are best filed as an issue on the repo, where other people can see the answer too.</p>
+        <p>For anything else, email works.</p>
+      </div>
+      <div class="body-text" style="font-family:var(--mono);font-size:14px">
+        <p><a href="https://github.com/jrnobita" style="color:var(--ink)">github.com/jrnobita &#8599;</a></p>
+        <p><a href="mailto:you@example.com" style="color:var(--ink)">you@example.com</a></p>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="foot">
+      <div>jrnobita &middot; Last updated August 2026</div>
+      <div>Built and hosted on GitHub Pages</div>
+      <div><a href="https://github.com/jrnobita">github.com/jrnobita</a></div>
+    </div>
+  </footer>
+
+</div>
+</div>
+
+
+<!-- ============ PROJECT ============ -->
+<div class="view" id="view-project">
+<div class="wrap">
+
+  <div class="ident">
+    <div class="who">jrnobita
+      <span>I build small tools for my own Mac and open source the ones that work.</span>
+    </div>
+    <nav>
+      <a data-go="home">&#8592; Home</a>
+      <a href="#download">Download</a>
+      <a href="https://github.com/jrnobita/claude-usage-menubar">Repo &#8599;</a>
+    </nav>
+  </div>
+
+  <hr class="rule">
+
+  <header class="hero">
+    <div class="hero-grid">
+      <div>
+        <div class="eyebrow">Claude Usage &middot; SwiftBar plugin &middot; macOS &middot; v3.0.0</div>
+        <h1>Know before <em>you</em> hit the wall.</h1>
+        <p class="lede">Your Claude session and weekly limits, sitting in the menu bar where you can see them. No browser tab, no guessing how much is left before a long task.</p>
+        <div class="cta-row">
+          <a class="btn" href="#download">Download</a>
+          <a class="btn ghost" href="https://github.com/jrnobita/claude-usage-menubar">View on GitHub</a>
+        </div>
+      </div>
+
+      <div class="widget" id="widget">
+        <div class="head"><span>Claude Usage</span><span>v3.0</span></div>
+        <div class="body">
+          <div class="w-plan">Claude Max</div>
+          <div class="meter">
+            <div class="top"><span class="name">Session (5h)</span><span class="val amber" data-count="65">0%</span></div>
+            <div class="track"><div class="fill amber-fill" data-w="65"></div></div>
+            <div class="sub">resets in 2h 12m</div>
+          </div>
+          <div class="meter">
+            <div class="top"><span class="name">Weekly (7d)</span><span class="val" data-count="42">0%</span></div>
+            <div class="track"><div class="fill" data-w="42"></div></div>
+            <div class="sub">resets in 1d 16h</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <hr class="rule">
+
+  <section>
+    <div class="sec-head"><span class="eyebrow">What it does</span></div>
+    <div class="feat">
+      <div><h4>Both limits, always visible</h4><p>Session and weekly percentages in the menu bar, next to your plan name. Green under 50, amber to 79, red above.</p></div>
+      <div><h4>Reset countdowns</h4><p>Not just how much is used, but how long until each window clears.</p></div>
+      <div><h4>Notify before the wall</h4><p>Pick a threshold from 50 to 95 percent. One alert per window, no repeats.</p></div>
+      <div><h4>Recent history</h4><p>A small graph under each meter showing how the last stretch has trended.</p></div>
+      <div><h4>Settings in the menu</h4><p>Threshold, label style, graph and idle hiding are all clicks. Nothing needs an editor.</p></div>
+      <div><h4>Stays quiet</h4><p>Responses cache for two minutes, so clicking around costs nothing and rate limits stay clear.</p></div>
+    </div>
+  </section>
+
+  <hr class="rule">
+
+  <section>
+    <div class="sec-head"><span class="eyebrow">How it came together</span></div>
+    <div class="story">
+      <div>
+        <div class="v">v1.0.0</div>
+        <h4>Finding the number</h4>
+        <p>Nothing public exposes subscription usage. The browser and desktop app leave nothing on the machine, but Claude Code stores a token in the Keychain. Everything else followed from that.</p>
+      </div>
+      <div>
+        <div class="v">v2.0.0</div>
+        <h4>Making it speak up</h4>
+        <p>A meter you have to look at is half a tool. This pass added notifications, the plan name, a history graph, and a settings menu.</p>
+      </div>
+      <div>
+        <div class="v">v3.0.0</div>
+        <h4>Fixing the wrong answer</h4>
+        <p>Rate limits appeared and a slower timer looked like the fix. It was not. The requests came from clicking, not the schedule. Caching solved it.</p>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<div class="install" id="download">
+  <div class="wrap">
+    <div class="sec-head"><span class="eyebrow">Download</span><h2>Get it running</h2></div>
+    <p class="body-text">Downloads the current version straight from the repo, so you always get the latest.</p>
+    <div class="cta-row">
+      <a class="btn" href="https://github.com/jrnobita/claude-usage-menubar/archive/refs/heads/main.zip">Download latest &#8595;</a>
+      <a class="btn ghost" href="https://github.com/jrnobita/claude-usage-menubar/releases">All releases</a>
+    </div>
+    <p class="body-text" style="margin-top:34px">Or install from the terminal. This shows you the installer before running it. Press <code>q</code> to exit the preview, then run the second line.</p>
+<pre><span class="c"># read it first</span>
+curl -fsSL https://raw.githubusercontent.com/jrnobita/claude-usage-menubar/main/install.sh \
+  -o /tmp/claude-usage-install.sh &amp;&amp; less /tmp/claude-usage-install.sh
+
+<span class="c"># then run it</span>
+bash /tmp/claude-usage-install.sh</pre>
+    <div class="req">REQUIRES &nbsp;macOS &nbsp;&middot;&nbsp; SwiftBar &nbsp;&middot;&nbsp; Claude Code signed in &nbsp;&middot;&nbsp; Claude Pro or Max</div>
+  </div>
+</div>
+
+<div class="wrap">
+  <section>
+    <div class="sec-head"><span class="eyebrow">Straight answers</span><h2>What it does not do</h2></div>
+    <div class="two-col">
+      <div class="note">
+        <h3>It reads an undocumented endpoint</h3>
+        <p>The same one Claude Code uses internally. Anthropic can change or remove it at any time, and the consumer terms restrict automated access, so whether a read-only status check sits inside them is unclear. Worth knowing before you install it.</p>
+      </div>
+      <div class="body-text">
+        <p><strong>It consumes nothing.</strong> No prompts, no output, no tokens. The request asks for a number and receives a number.</p>
+        <p><strong>It bypasses nothing.</strong> Every figure it shows is already available in <code>/usage</code> and on the settings page. It changes where you see them, not what they are.</p>
+        <p><strong>It stays on your machine.</strong> A shell script, no server, no telemetry, no account. One request to Anthropic's own API using a token already in your Keychain.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="foot">
+      <div>Claude Usage &middot; v3.0.0 &middot; MIT</div>
+      <div>Unofficial &middot; Not affiliated with Anthropic</div>
+      <div><a data-go="home">&#8592; Back to home</a></div>
+    </div>
+  </footer>
+</div>
+</div>
+
+
+<script>
+/* live menu bar clock */
+(function(){
+  var el=document.getElementById('mb-clock');
+  if(!el) return;
+  function tick(){
+    var d=new Date();
+    el.textContent = d.toLocaleDateString('en-US',{weekday:'short'})+' '
+      + d.toLocaleDateString('en-US',{month:'short'})+' '+d.getDate()
+      + '\u2003' + d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',hour12:true});
+  }
+  tick();
+  setTimeout(function(){ tick(); setInterval(tick,60000); },(60-new Date().getSeconds())*1000);
+})();
+
+/* view switching, chip only on the project view */
+(function(){
+  var views={home:document.getElementById('view-home'),project:document.getElementById('view-project')};
+  var chip=document.getElementById('mb-chip');
+  var meterDone=false;
+
+  function meters(){
+    if(meterDone) return; meterDone=true;
+    var w=document.getElementById('widget'); if(!w) return;
+    var reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    w.querySelectorAll('.fill').forEach(function(el){ el.style.width=el.dataset.w+'%'; });
+    w.querySelectorAll('[data-count]').forEach(function(el){
+      var target=parseInt(el.dataset.count,10);
+      if(reduce){ el.textContent=target+'%'; return; }
+      var n=0, step=Math.max(1,Math.round(target/28));
+      var t=setInterval(function(){ n+=step; if(n>=target){n=target;clearInterval(t);} el.textContent=n+'%'; },34);
+    });
+  }
+
+  function show(name){
+    for(var k in views) views[k].classList.toggle('on', k===name);
+    chip.classList.toggle('on', name==='project');
+    window.scrollTo(0,0);
+    history.replaceState(null,'', name==='project'?'#claude-usage':'#');
+    if(name==='project') setTimeout(meters,180);
+  }
+
+  document.addEventListener('click',function(e){
+    var a=e.target.closest('[data-go]');
+    if(!a) return;
+    e.preventDefault();
+    show(a.dataset.go);
+  });
+
+  if(location.hash==='#claude-usage') show('project');
+})();
+</script>
+</body>
+</html>
