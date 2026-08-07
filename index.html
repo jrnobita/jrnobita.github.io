@@ -5,6 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>jrnobita</title>
 <meta name="description" content="jrnobita — small tools built for my own Mac, open sourced when they work.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2214%22%20fill%3D%22%2316191D%22%2F%3E%3Cg%20fill%3D%22none%22%20stroke%3D%22%23FFFFFF%22%20stroke-width%3D%228.5%22%20stroke-linecap%3D%22butt%22%20stroke-linejoin%3D%22miter%22%3E%3Cpath%20d%3D%22M29%2012%20V32%20A10%2010%200%200%201%209%2032%22%2F%3E%3Cpath%20d%3D%22M40%2050%20V12%20L57%2050%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E">
+<meta name="theme-color" content="#16191D">
+<meta property="og:title" content="jrnobita">
+<meta property="og:description" content="Small tools built for my own Mac, open sourced when they work.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://jrnobita.github.io">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
@@ -60,6 +66,11 @@ section{padding:70px 0}
 
 /* identity */
 .ident{padding:38px 0 30px;display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap}
+.who-wrap{display:flex;align-items:center;gap:16px}
+.logo{flex:0 0 auto;width:46px;height:46px;display:block;transition:transform .18s ease}
+.logo svg{width:100%;height:100%;display:block;border-radius:11px}
+.logo:hover{transform:translateY(-2px)}
+.logo:focus-visible{outline:2px solid var(--green);outline-offset:4px;border-radius:11px}
 .ident .who{font-size:22px;font-weight:600;letter-spacing:-.015em}
 .ident .who span{display:block;font-size:16px;font-weight:400;color:var(--ink-2);margin-top:6px;max-width:44ch}
 .ident nav{display:flex;gap:28px;font-family:var(--mono);font-size:15px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;flex-wrap:wrap}
@@ -181,6 +192,8 @@ footer{padding:50px 0 62px;border-top:1px solid var(--rule)}
   .hero-grid,.two-col,.feat{grid-template-columns:1fr}
   .story{grid-template-columns:1fr;gap:28px}
   .ident{gap:18px}
+  .who-wrap{gap:13px}
+  .logo{width:40px;height:40px}
   .ident nav{gap:20px;font-size:13.5px}
   .proj{grid-template-columns:1fr auto;gap:16px}
   .proj .meta{grid-column:1 / -1}
@@ -214,8 +227,11 @@ footer{padding:50px 0 62px;border-top:1px solid var(--rule)}
 <div class="wrap">
 
   <div class="ident">
-    <div class="who">jrnobita
-      <span>I build small tools for my own Mac and open source the ones that work.</span>
+    <div class="who-wrap">
+      <a class="logo" data-go="home" aria-label="jrnobita home"><svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><rect width="64" height="64" rx="14" fill="#16191D"/><g fill="none" stroke="#FFFFFF" stroke-width="8.5" stroke-linecap="butt" stroke-linejoin="miter"><path d="M29 12 V32 A10 10 0 0 1 9 32"/><path d="M40 50 V12 L57 50"/></g></svg></a>
+      <div class="who">jrnobita
+        <span>I build small tools for my own Mac and open source the ones that work.</span>
+      </div>
     </div>
     <nav>
       <a data-go="project">Claude Usage</a>
@@ -328,8 +344,11 @@ footer{padding:50px 0 62px;border-top:1px solid var(--rule)}
 <div class="wrap">
 
   <div class="ident">
-    <div class="who">jrnobita
-      <span>I build small tools for my own Mac and open source the ones that work.</span>
+    <div class="who-wrap">
+      <a class="logo" data-go="home" aria-label="jrnobita home"><svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><rect width="64" height="64" rx="14" fill="#16191D"/><g fill="none" stroke="#FFFFFF" stroke-width="8.5" stroke-linecap="butt" stroke-linejoin="miter"><path d="M29 12 V32 A10 10 0 0 1 9 32"/><path d="M40 50 V12 L57 50"/></g></svg></a>
+      <div class="who">jrnobita
+        <span>I build small tools for my own Mac and open source the ones that work.</span>
+      </div>
     </div>
     <nav>
       <a data-go="home">&#8592; Home</a>
@@ -460,8 +479,11 @@ bash /tmp/claude-usage-install.sh</pre>
 <div class="wrap">
 
   <div class="ident">
-    <div class="who">jrnobita
-      <span>I build small tools for my own Mac and open source the ones that work.</span>
+    <div class="who-wrap">
+      <a class="logo" data-go="home" aria-label="jrnobita home"><svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><rect width="64" height="64" rx="14" fill="#16191D"/><g fill="none" stroke="#FFFFFF" stroke-width="8.5" stroke-linecap="butt" stroke-linejoin="miter"><path d="M29 12 V32 A10 10 0 0 1 9 32"/><path d="M40 50 V12 L57 50"/></g></svg></a>
+      <div class="who">jrnobita
+        <span>I build small tools for my own Mac and open source the ones that work.</span>
+      </div>
     </div>
     <nav>
       <a data-go="home">&#8592; Home</a>
