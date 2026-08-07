@@ -150,6 +150,19 @@ pre{background:#111418;border:1px solid #2A3037;padding:18px;overflow-x:auto;fon
 pre .c{color:#6E7780}
 .req{font-family:var(--mono);font-size:13.5px;color:#AEB6BE;margin-top:22px;letter-spacing:.04em}
 
+/* devblog */
+.post-row .meta{white-space:nowrap}
+.post{padding:56px 0 20px;max-width:72ch}
+.post h1{font-size:clamp(32px,5.6vw,60px);font-weight:800;letter-spacing:-.03em;line-height:1.02;text-transform:uppercase;margin:18px 0 22px}
+.post .stand{font-size:clamp(18px,2.2vw,22px);color:var(--ink-2);line-height:1.5;padding-bottom:30px;border-bottom:1px solid var(--rule)}
+.post h2{font-size:22px;font-weight:700;letter-spacing:-.015em;margin:38px 0 12px}
+.post p{font-size:17px;color:var(--ink-2);line-height:1.68}
+.post ul{margin:14px 0 0 20px}
+.post li{font-size:17px;color:var(--ink-2);line-height:1.65;margin-bottom:9px}
+.post-foot{margin-top:44px;padding-top:24px;border-top:1px solid var(--rule);font-family:var(--mono);font-size:14px}
+.post-foot a{color:var(--ink);cursor:pointer;border-bottom:1px solid var(--rule)}
+.post-foot a:hover{border-color:var(--ink)}
+
 /* note */
 .note{border-left:3px solid var(--amber);padding:20px 24px;background:var(--panel)}
 .note h3{font-size:17px;font-weight:600;margin-bottom:10px}
@@ -206,6 +219,7 @@ footer{padding:50px 0 62px;border-top:1px solid var(--rule)}
     </div>
     <nav>
       <a data-go="project">Claude Usage</a>
+      <a href="#devblog">Devblog</a>
       <a href="https://github.com/jrnobita">GitHub &#8599;</a>
       <a href="#contact">Contact</a>
     </nav>
@@ -265,6 +279,22 @@ footer{padding:50px 0 62px;border-top:1px solid var(--rule)}
 
     </div>
 
+  </section>
+
+  <section id="devblog">
+    <div class="sec-head"><span class="eyebrow">Devblog</span></div>
+    <div class="projects">
+
+      <a class="proj post-row" data-go="post1">
+        <div class="meta">Fri 7 Aug 2026</div>
+        <div>
+          <h3>Three versions in one day</h3>
+          <p>Built Claude Usage from nothing to v3.0.0 in an afternoon. The rate limit that showed up halfway through was not the bug I thought it was.</p>
+        </div>
+        <div class="go">&#8594;</div>
+      </a>
+
+    </div>
   </section>
 
   <section id="contact">
@@ -425,6 +455,72 @@ bash /tmp/claude-usage-install.sh</pre>
 </div>
 </div>
 
+<!-- ============ POST: 2026-08-07 ============ -->
+<div class="view" id="view-post1">
+<div class="wrap">
+
+  <div class="ident">
+    <div class="who">jrnobita
+      <span>I build small tools for my own Mac and open source the ones that work.</span>
+    </div>
+    <nav>
+      <a data-go="home">&#8592; Home</a>
+      <a data-go="project">Claude Usage</a>
+      <a href="https://github.com/jrnobita">GitHub &#8599;</a>
+    </nav>
+  </div>
+
+  <hr class="rule">
+
+  <article class="post">
+    <div class="eyebrow">Devblog &middot; Friday 7 August 2026</div>
+    <h1>Three versions in one day</h1>
+    <p class="stand">Built a menu bar meter for Claude usage limits, shipped it, and learned that the obvious explanation for a bug is usually the wrong one.</p>
+
+    <h2>Where it started</h2>
+    <p>Claude runs on two limits, a five hour session window and a seven day window. Checking either meant opening a browser tab, and I was doing that several times a day, usually right before starting something long. The reference point was iStat Menus. CPU and temperature sit in the corner of the screen and you absorb them without asking. That is the right shape for a number you want to be aware of.</p>
+
+    <h2>Finding the number</h2>
+    <p>The hard part was not display, it was access. Nothing published exposes subscription usage. Signing into Claude in a browser or the desktop app leaves nothing behind on the machine, so there was nothing to read.</p>
+    <p>Claude Code is different. It stores a token in the macOS Keychain. Once that was clear, everything else followed: read the token, ask for the numbers, draw them. v1 was working inside an hour, showing both meters with progress bars, reset countdowns and colour thresholds.</p>
+
+    <h2>Making it speak</h2>
+    <p>A meter you have to look at is half a tool. v2 added notifications at a threshold you choose, the plan name pulled from the stored credentials, a history graph, and a settings menu so nothing needed a text editor. It also cached the last good reading, so a failed request greyed the numbers out instead of blanking them.</p>
+
+    <h2>The rate limit, and the wrong answer</h2>
+    <p>Then it started refusing to load. HTTP 429. Rate limited.</p>
+    <p>The obvious read was that v2 had got greedy, and the obvious fix was a slower timer. Both wrong. v1 and v2 make exactly one request per run. Nothing had changed about how often it asked.</p>
+    <p>What changed was me. I had spent ten minutes swapping files, clicking refresh, and opening the settings menu, and every settings click forced an immediate re-fetch. Twenty odd requests in a few minutes will trip a limit that one per minute never touches. The tool was not the problem, the person testing it was.</p>
+    <p>So the fix was not a slower schedule, it was a cache. v3 holds responses for two minutes and serves everything inside that window from memory. Menu clicks, manual refreshes and restarts now cost nothing. Only the timer reaches the network. Same pass also flattened the escalating backoff into a single fifteen minute pause, made the plan name permanent, and collapsed three near identical meter blocks into one function, taking about ninety lines out while doing more.</p>
+
+    <h2>Things that cost more time than they should have</h2>
+    <ul>
+      <li>Files arrive on a Mac without permission to run. Hit that wall at least once per version before the installer started handling it.</li>
+      <li>SwiftBar has no slider, so the notification threshold became a submenu of preset values. Faster to use anyway.</li>
+      <li>An option to hide the icon when idle worked perfectly, including hiding the menu you would use to turn it back off. It needed a command line escape hatch before it could ship.</li>
+      <li>Notifications arrive attributed to Script Editor, because shell scripts raise them through the macOS scripting bridge. Not fixable from a plugin, so it went in the README instead.</li>
+    </ul>
+
+    <h2>What I would tell myself at the start</h2>
+    <p>When a bug appears alongside a new version, check whether the version actually caused it before you start changing the version. I nearly shipped a slower refresh interval that would have made the tool worse and fixed nothing.</p>
+
+    <h2>Next</h2>
+    <p>Windows is the obvious ask, but it is a rewrite rather than a port, since the whole thing hinges on the macOS Keychain. An iPhone widget is possible but needs a relay from a Mac that stays awake, which is a poor deal for anyone but me. For now v3 does what I wanted on the day I wanted it.</p>
+
+    <p class="post-foot"><a data-go="project">See the project &#8594;</a> &nbsp;&middot;&nbsp; <a href="https://github.com/jrnobita/claude-usage-menubar">Source on GitHub &#8599;</a></p>
+  </article>
+
+  <footer>
+    <div class="foot">
+      <div>Devblog &middot; 7 August 2026</div>
+      <div>jrnobita</div>
+      <div><a data-go="home">&#8592; Back to home</a></div>
+    </div>
+  </footer>
+
+</div>
+</div>
+
 
 <script>
 /* live menu bar clock */
@@ -443,7 +539,6 @@ bash /tmp/claude-usage-install.sh</pre>
 
 /* view switching, chip only on the project view */
 (function(){
-  var views={home:document.getElementById('view-home'),project:document.getElementById('view-project')};
   var chip=document.getElementById('mb-chip');
   var meterDone=false;
 
@@ -460,11 +555,15 @@ bash /tmp/claude-usage-install.sh</pre>
     });
   }
 
+  var hashes={home:'#', project:'#claude-usage', post1:'#devblog-2026-08-07'};
+
   function show(name){
-    for(var k in views) views[k].classList.toggle('on', k===name);
+    document.querySelectorAll('.view').forEach(function(v){
+      v.classList.toggle('on', v.id === 'view-' + name);
+    });
     chip.classList.toggle('on', name==='project');
     window.scrollTo(0,0);
-    history.replaceState(null,'', name==='project'?'#claude-usage':'#');
+    history.replaceState(null,'', hashes[name] || '#');
     if(name==='project') setTimeout(meters,180);
   }
 
@@ -475,7 +574,7 @@ bash /tmp/claude-usage-install.sh</pre>
     show(a.dataset.go);
   });
 
-  if(location.hash==='#claude-usage') show('project');
+  for(var k in hashes){ if(location.hash===hashes[k] && k!=='home') show(k); }
 })();
 </script>
 </body>
