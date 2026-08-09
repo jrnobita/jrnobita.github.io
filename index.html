@@ -60,8 +60,9 @@ code{font-family:var(--mono);font-size:.92em}
 .body-text strong{color:var(--ink);font-weight:600}
 p+p{margin-top:15px}
 section{padding:70px 0}
-.sec-head{display:flex;gap:16px;align-items:baseline;margin-bottom:32px}
-.sec-head h2{font-size:clamp(26px,4vw,42px);font-weight:800;letter-spacing:-.025em;text-transform:uppercase;line-height:1}
+.sec-head{display:flex;gap:8px 16px;align-items:baseline;flex-wrap:wrap;margin-bottom:32px}
+.sec-head h2{font-family:var(--mono);font-size:13px;font-weight:500;letter-spacing:.13em;text-transform:uppercase;color:var(--ink-2)}
+.sec-head .eyebrow{font-family:var(--sans);font-size:clamp(26px,4vw,42px);font-weight:800;letter-spacing:-.025em;color:var(--ink);line-height:1}
 .two-col{display:grid;grid-template-columns:1fr 1fr;gap:48px}
 
 /* identity */
@@ -99,7 +100,10 @@ section{padding:70px 0}
 .proj p{font-size:15.5px;color:var(--ink-2);margin-top:6px;max-width:52ch}
 .proj .go{font-family:var(--mono);font-size:18px;color:var(--ink-3)}
 .proj:hover .go{color:var(--ink)}
-.proj.soon{opacity:.5;pointer-events:none}
+.proj.soon{pointer-events:none;grid-template-columns:1fr;gap:0}
+.proj.soon .meta{font-family:var(--sans);font-size:clamp(26px,4vw,42px);font-weight:800;letter-spacing:-.025em;color:var(--ink);line-height:1;margin-bottom:14px}
+.proj.soon h3,.proj.soon p{opacity:.5}
+.proj.soon .go{display:none}
 
 /* homepage project mock */
 .feat-row{grid-template-columns:1fr 380px;align-items:center;gap:52px;padding:38px 0}
@@ -170,6 +174,20 @@ pre .c{color:#6E7780}
 .post p{font-size:17px;color:var(--ink-2);line-height:1.68}
 .post ul{margin:14px 0 0 20px}
 .post li{font-size:17px;color:var(--ink-2);line-height:1.65;margin-bottom:9px}
+.post p+p{margin-top:14px}
+.post h3{font-size:17px;font-weight:700;letter-spacing:-.01em;color:var(--ink);margin:26px 0 10px}
+.post strong{color:var(--ink);font-weight:650}
+.post ol{margin:14px 0 0 20px}
+.post ol li{padding-left:4px}
+.post hr.in-post{border:0;border-top:1px solid var(--rule);margin:42px 0 0}
+.post pre{background:var(--slab);color:#E6E9EC;font-family:var(--mono);font-size:13px;line-height:1.62;padding:18px 20px;margin:18px 0;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.post pre code{font-family:inherit;font-size:inherit;background:none;padding:0;color:inherit;white-space:pre}
+.post code{font-family:var(--mono);font-size:.88em;background:#DFE3E7;color:var(--ink);padding:2px 5px;border-radius:2px}
+.post .tbl{overflow-x:auto;margin:18px 0;-webkit-overflow-scrolling:touch}
+.post table{border-collapse:collapse;width:100%;min-width:440px;font-size:15px}
+.post th{text-align:left;font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-2);padding:0 16px 9px 0;border-bottom:1px solid var(--ink)}
+.post td{padding:11px 16px 11px 0;border-bottom:1px solid var(--rule);color:var(--ink-2);line-height:1.5;vertical-align:top}
+.post td code{font-size:.85em;white-space:nowrap}
 .post-foot{margin-top:44px;padding-top:24px;border-top:1px solid var(--rule);font-family:var(--mono);font-size:14px}
 .post-foot a{color:var(--ink);cursor:pointer;border-bottom:1px solid var(--rule)}
 .post-foot a:hover{border-color:var(--ink)}
@@ -287,6 +305,16 @@ footer{padding:50px 0 62px;border-top:1px solid var(--rule)}
         </div>
       </a>
 
+      <!-- ===== PROJECT 2 — FILL IN ===== -->
+      <a class="proj" data-go="project2">
+        <div class="meta">v1.0.0 &middot; LANGUAGE &middot; macOS</div>
+        <div>
+          <h3>Project name</h3>
+          <p>One or two sentences on what it does and why it exists.</p>
+        </div>
+        <div class="go">&#8594;</div>
+      </a>
+
       <div class="proj soon">
         <div class="meta">In progress</div>
         <div><h3>Next thing</h3><p>Not finished yet.</p></div>
@@ -300,6 +328,16 @@ footer{padding:50px 0 62px;border-top:1px solid var(--rule)}
   <section id="devblog">
     <div class="sec-head"><span class="eyebrow">Devblog</span></div>
     <div class="projects">
+
+      <!-- ===== POST 2 — FILL IN (newest first) ===== -->
+      <a class="proj post-row" data-go="post2">
+        <div class="meta">Sun 9 Aug 2026</div>
+        <div>
+          <h3>Building a payment gateway</h3>
+          <p>A double-entry ledger, a monitoring engine and an operations console in a day. The protection that worked correctly looked exactly like a bug.</p>
+        </div>
+        <div class="go">&#8594;</div>
+      </a>
 
       <a class="proj post-row" data-go="post1">
         <div class="meta">Fri 7 Aug 2026</div>
@@ -544,6 +582,346 @@ bash /tmp/claude-usage-install.sh</pre>
 </div>
 
 
+<!-- ============ PROJECT 2 — FILL IN ============ -->
+<div class="view" id="view-project2">
+<div class="wrap">
+
+  <div class="ident">
+    <div class="who-wrap">
+      <a class="logo" data-go="home" aria-label="jrnobita home"><svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><rect width="64" height="64" rx="14" fill="#16191D"/><g fill="none" stroke="#FFFFFF" stroke-width="8.5" stroke-linecap="butt" stroke-linejoin="miter"><path d="M29 12 V32 A10 10 0 0 1 9 32"/><path d="M40 50 V12 L57 50"/></g></svg></a>
+      <div class="who">jrnobita
+        <span>I build small tools for my own Mac and open source the ones that work.</span>
+      </div>
+    </div>
+    <nav>
+      <a data-go="home">&#8592; Home</a>
+      <a href="#download-2">Download</a>
+      <a href="https://github.com/jrnobita">Repo &#8599;</a>
+    </nav>
+  </div>
+
+  <hr class="rule">
+
+  <header class="hero">
+    <div class="eyebrow">Project name &middot; TYPE &middot; macOS &middot; v1.0.0</div>
+    <h1>Headline for <em>the</em> project.</h1>
+    <p class="lede">Two lines on the problem it solves and who it is for. Same voice as the Claude Usage page.</p>
+    <div class="cta-row">
+      <a class="btn" href="#download-2">Download</a>
+      <a class="btn ghost" href="https://github.com/jrnobita">View on GitHub</a>
+    </div>
+  </header>
+
+  <hr class="rule">
+
+  <section>
+    <div class="sec-head"><span class="eyebrow">What it does</span></div>
+    <div class="feat">
+      <div><h4>Feature one</h4><p>One or two sentences.</p></div>
+      <div><h4>Feature two</h4><p>One or two sentences.</p></div>
+      <div><h4>Feature three</h4><p>One or two sentences.</p></div>
+      <div><h4>Feature four</h4><p>One or two sentences.</p></div>
+    </div>
+  </section>
+
+  <hr class="rule">
+
+  <section id="download-2">
+    <div class="sec-head"><span class="eyebrow">Download</span><h2>Get it running</h2></div>
+    <div class="body-text">
+      <p>Install steps go here.</p>
+    </div>
+  </section>
+
+  <footer>
+    <div class="foot">
+      <div>Project name &middot; v1.0.0</div>
+      <div>jrnobita</div>
+      <div><a data-go="home">&#8592; Back to home</a></div>
+    </div>
+  </footer>
+
+</div>
+</div>
+
+
+<!-- ============ POST 2 — FILL IN ============ -->
+<div class="view" id="view-post2">
+<div class="wrap">
+
+  <div class="ident">
+    <div class="who-wrap">
+      <a class="logo" data-go="home" aria-label="jrnobita home"><svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><rect width="64" height="64" rx="14" fill="#16191D"/><g fill="none" stroke="#FFFFFF" stroke-width="8.5" stroke-linecap="butt" stroke-linejoin="miter"><path d="M29 12 V32 A10 10 0 0 1 9 32"/><path d="M40 50 V12 L57 50"/></g></svg></a>
+      <div class="who">jrnobita
+        <span>I build small tools for my own Mac and open source the ones that work.</span>
+      </div>
+    </div>
+    <nav>
+      <a data-go="home">&#8592; Home</a>
+      <a data-go="project2">Payment gateway</a>
+      <a href="https://github.com/jrnobita">GitHub &#8599;</a>
+    </nav>
+  </div>
+
+  <hr class="rule">
+
+  <article class="post">
+    <div class="eyebrow">Devblog &middot; Sunday 9 August 2026</div>
+    <h1>Building a payment gateway</h1>
+    <p class="stand">Roughly 4,200 lines of TypeScript and SQL in a day. A double-entry ledger, a transaction monitoring engine, settlement controls, and an operations console. This is what got decided, what broke, and what I&rsquo;d do differently.</p>
+
+    <h2>The three constraints</h2>
+    <p>Every structural decision came out of these.</p>
+    <p><strong>Everything must be provable after the fact.</strong> Who approved this payout. What the structuring threshold was in March. Why this alert was closed. So the ledger, audit log and compliance tables are append-only <em>at the database level</em>, not by convention. Someone with application access cannot rewrite history.</p>
+    <p><strong>Money and state must move together.</strong> A payment marked succeeded without its ledger postings, or postings without the payment, is a reconciliation break you may never fully resolve. Every capture commits the status change and the accounting in one transaction.</p>
+    <p><strong>Controls that depend on discipline fail.</strong> Maker-checker on payouts is a <code>CHECK</code> constraint, not a code path someone routes around at 2am.</p>
+    <hr class="in-post">
+    <h2>The ledger</h2>
+    <p>Double-entry, integer minor units, balances derived from postings.</p>
+    <h3>Money is integers</h3>
+    <p>No floats. No decimal library. Every amount arrives from an API or a rail statement as an integer and leaves as one. A decimal type only creates places where rounding can hide.</p>
+    <pre><code>export function assertMinor(value: unknown, field = 'amount'): asserts value is Minor {
+  if (typeof value !== 'number' || !Number.isInteger(value)) {
+    throw new TypeError(`${field} must be an integer in minor units`);
+  }
+}</code></pre>
+    <p>The one genuinely tricky function is splitting an amount without losing centavos:</p>
+    <pre><code>export function allocate(amount: Minor, weights: number[]): Minor[] {
+  const total = weights.reduce((a, b) =&gt; a + b, 0);
+  const parts = weights.map((w) =&gt; Math.floor((amount * w) / total));
+  let remainder = amount - parts.reduce((a, b) =&gt; a + b, 0);
+  for (let i = 0; remainder &gt; 0; i = (i + 1) % parts.length) {
+    parts[i] += 1;
+    remainder -= 1;
+  }
+  return parts;
+}</code></pre>
+    <p>Floor everything, then distribute the remainder one centavo at a time. Tested across a range of amounts and weight sets: the parts always sum back to the original.</p>
+    <h3>Balances are derived, never stored</h3>
+    <p>The temptation to add a <code>balance</code> column is strong. It's one query instead of an aggregate, and the aggregate gets slower as postings grow.</p>
+    <p>Resist it anyway. A cached balance is a second source of truth, and the two will disagree at the worst possible moment. If reads get slow, the answer is a materialised view you rebuild from postings, not a column you mutate.</p>
+    <pre><code>CREATE VIEW account_balances AS
+SELECT a.id, a.code, a.type,
+  CASE
+    WHEN a.type IN ('asset','expense')
+      THEN COALESCE(SUM(CASE WHEN p.direction='debit' THEN p.amount_minor ELSE -p.amount_minor END), 0)
+    ELSE  COALESCE(SUM(CASE WHEN p.direction='credit' THEN p.amount_minor ELSE -p.amount_minor END), 0)
+  END AS balance_minor
+FROM accounts a LEFT JOIN postings p ON p.account_id = a.id
+GROUP BY a.id;</code></pre>
+    <h3>Immutability enforced by the database</h3>
+    <pre><code>CREATE OR REPLACE FUNCTION forbid_mutation() RETURNS trigger AS $$
+BEGIN
+  RAISE EXCEPTION 'Table % is append-only', TG_TABLE_NAME;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER postings_immutable
+  BEFORE UPDATE OR DELETE ON postings
+  FOR EACH ROW EXECUTE FUNCTION forbid_mutation();</code></pre>
+    <p>Corrections are reversing entries. The original stays. What you believed and when survives intact.</p>
+    <h3>The balance check is deferred</h3>
+    <p>This one bit me later, so it's worth showing:</p>
+    <pre><code>CREATE CONSTRAINT TRIGGER postings_balanced
+  AFTER INSERT ON postings
+  DEFERRABLE INITIALLY DEFERRED
+  FOR EACH ROW EXECUTE FUNCTION assert_entry_balanced();</code></pre>
+    <p>Deferred means it evaluates at COMMIT, once every leg of an entry exists. Without that, you couldn't insert a two-leg entry at all — the trigger would fire after the first leg and see debits without credits.</p>
+    <h3>Chart of accounts</h3>
+    <div class="tbl"><table><thead><tr><th>Account</th><th>Type</th><th>Meaning</th></tr></thead><tbody><tr><td><code>rail:&lt;x&gt;:clearing</code></td><td>asset</td><td>Money the rail holds for us</td></tr><tr><td><code>bank:safeguarding</code></td><td>asset</td><td>Segregated client funds</td></tr><tr><td><code>merchant:&lt;id&gt;:payable</code></td><td>liability</td><td>Owed to merchant, settleable</td></tr><tr><td><code>merchant:&lt;id&gt;:reserve</code></td><td>liability</td><td>Owed to merchant, held back</td></tr><tr><td><code>revenue:fees</code></td><td>revenue</td><td>Ours</td></tr><tr><td><code>liability:suspense</code></td><td>liability</td><td>Received but unattributed</td></tr></tbody></table></div>
+    <p>Two decisions worth explaining.</p>
+    <p><strong>Reserve is a liability, not revenue.</strong> It's the merchant's money we're holding. Booking it as income flatters the P&amp;L and leaves you unable to fund the release when the hold expires.</p>
+    <p><strong>Suspense exists at all.</strong> Money that arrives and can't be matched goes there and stays until a human resolves it. Never let an unmatched credit flow into a merchant balance on the assumption it'll sort itself out. A growing suspense balance means reconciliation is falling behind.</p>
+    <h3>Posting recipes</h3>
+    <p>Every money movement goes through one function, so there's exactly one place to audit the accounting:</p>
+    <pre><code>Dr  rail clearing        gross
+  Cr  merchant payable     net
+  Cr  merchant reserve     reserve
+  Cr  fee revenue          fee</code></pre>
+    <p>Plus <code>postRefund</code>, <code>postChargeback</code>, <code>postReserveRelease</code>, <code>postPayoutSettled</code>, <code>postToSuspense</code>.</p>
+    <p>The chargeback recipe surfaces shortfall explicitly rather than letting a merchant account go quietly negative:</p>
+    <pre><code>const fromMerchant = Math.min(amountMinor, Math.max(availablePayableMinor, 0));
+const shortfall = amountMinor - fromMerchant;
+// shortfall hits expense:chargeback — the platform absorbs it, visibly</code></pre>
+    <hr class="in-post">
+    <h2>Transaction monitoring</h2>
+    <p>Ten rules. Two design decisions matter more than the rules themselves.</p>
+    <h3>Rules are data, not code</h3>
+    <p>Thresholds live in a table:</p>
+    <pre><code>INSERT INTO aml_rules (code, name, severity, params) VALUES
+  ('STRUCTURING', 'Deposits clustered below threshold', 90,
+   '{"threshold_minor": 500000000, "floor_pct": 80, "count": 3, "window_hours": 24}');</code></pre>
+    <p>Not for flexibility. Because the parameter set in force on any given date has to be recoverable. Change them through migrations, never by hand.</p>
+    <h3>Nothing auto-blocks</h3>
+    <p>Rules raise alerts; a human decides. Auto-blocking looks responsible and is worse in practice, because it trains operators to disable rules that create friction.</p>
+    <p>One exception, and it's categorical rather than a threshold: a payer outside the licensed jurisdiction fails outright. For a geo-fenced licence that's a perimeter breach, not a risk score — they shouldn't have been able to transact at all.</p>
+    <h3>Screening runs twice</h3>
+    <p>Pre-authorisation, before the payer is sent to the rail. Catches what's knowable then: geography, velocity, structuring patterns.</p>
+    <p>Post-settlement, on the callback, because that's the first moment the funding instrument holder name exists. <code>NAME_MISMATCH</code> and <code>SHARED_INSTRUMENT</code> can't be evaluated any earlier.</p>
+    <h3>The name matching problem</h3>
+    <p>The most interesting small problem of the day.</p>
+    <p>Exact string equality would flag most legitimate payments here. Filipino names carry middle names, maternal surnames and suffixes that appear inconsistently across ID documents and bank records. "Juan Cruz" versus "Juan Miguel Santos Cruz" is the same person and would fail.</p>
+    <p>Token similarity, weighted toward the smaller set:</p>
+    <pre><code>export function nameSimilarity(a: string, b: string): number {
+  const norm = (s: string) =&gt;
+    s.toLowerCase()
+      .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+      .replace(/\b(jr|sr|ii|iii|iv)\b\.?/g, '')
+      .replace(/[^a-z\s]/g, ' ')
+      .split(/\s+/).filter((t) =&gt; t.length &gt; 1);
+
+  const ta = new Set(norm(a));
+  const tb = new Set(norm(b));
+  let shared = 0;
+  for (const t of ta) if (tb.has(t)) shared += 1;
+  return shared / Math.min(ta.size, tb.size);
+}</code></pre>
+    <p>Dividing by the <em>smaller</em> set is the whole trick. Plain Jaccard would penalise the longer name for having extra tokens.</p>
+    <p>An alert everyone ignores is worse than no alert, and this is the rule most likely to generate them.</p>
+    <h3>A broken rule must not break payments</h3>
+    <pre><code>try {
+  const hit = await fn(client, ctx, rule.params);
+  if (hit) alerts.push({ ruleCode: rule.code, severity: rule.severity, detail: hit.detail });
+} catch (err) {
+  alerts.push({
+    ruleCode: rule.code, severity: 100,
+    detail: { rule_error: String(err), action_required: 'Rule failed to evaluate' },
+  });
+}</code></pre>
+    <p>The failure becomes a maximum-severity alert. Silent rule failure is how monitoring quietly stops working.</p>
+    <hr class="in-post">
+    <h2>Controls in the schema</h2>
+    <h3>Maker-checker</h3>
+    <pre><code>CONSTRAINT payout_maker_checker CHECK (approved_by IS NULL OR approved_by &lt;&gt; created_by)</code></pre>
+    <p>Four words in a table definition. Cannot be bypassed by a new code path, a refactor, or someone in a hurry.</p>
+    <h3>Idempotency</h3>
+    <p>Enforced by a unique index, not check-then-insert:</p>
+    <pre><code>UNIQUE (merchant_id, idempotency_key)</code></pre>
+    <p>Under concurrency, check-then-insert produces duplicate charges. Fastest way to lose a merchant's trust.</p>
+    <h3>Confirmation is row-locked</h3>
+    <pre><code>SELECT p.*, m.fee_bps FROM payments p JOIN merchants m ON m.id = p.merchant_id
+WHERE p.rail = $1 AND p.rail_reference = $2
+FOR UPDATE OF p</code></pre>
+    <p>Rails retry callbacks. Without the lock, two concurrent retries both capture.</p>
+    <hr class="in-post">
+    <h2>Things that broke</h2>
+    <h3>The seed script that wouldn't seed</h3>
+    <p>Best error of the day.</p>
+    <pre><code>severity: 'ERROR'
+where: 'PL/pgSQL function assert_entry_balanced() line 13 at RAISE'</code></pre>
+    <p>The balance check is <code>DEFERRABLE INITIALLY DEFERRED</code> — it evaluates at COMMIT. But the seed script inserted each posting on its own autocommit, so the trigger fired after the first leg, when debits were 100 and credits were 0.</p>
+    <p>Fix was one <code>BEGIN</code> and one <code>COMMIT</code> around the leg inserts.</p>
+    <p>Twenty minutes of annoyance, then a useful realisation: <strong>the protection working correctly looked exactly like a bug.</strong> If the balance check hadn't existed, the demo data would have loaded fine and the book would have been silently wrong.</p>
+    <h3>Background jobs burying the real error</h3>
+    <p>The database was unreachable. The API started anyway, and the webhook worker began this every five seconds:</p>
+    <pre><code>{"level":50,"msg":"webhook delivery failed","e":{"code":"ECONNREFUSED"}}</code></pre>
+    <p>Endlessly, scrolling the actual cause off screen.</p>
+    <pre><code>try {
+  await pool.query('SELECT 1');
+  app.log.info('database reachable');
+} catch (err) {
+  app.log.fatal({ err }, 'cannot reach database, refusing to start');
+  process.exit(1);
+}</code></pre>
+    <p>A gateway that starts without its ledger looks healthy to a load balancer while being unable to record a single peso. Worse than not starting.</p>
+    <h3>Password echoing to the terminal</h3>
+    <p><code>readline.question</code> doesn't mask input. The password appeared in plain text in the scrollback and, on one attempt, ended up in shell history.</p>
+    <p>Fixed with raw-mode stdin:</p>
+    <pre><code>const password = await new Promise((resolve) =&gt; {
+  stdout.write('Password (min 12 chars): ');
+  stdin.setRawMode?.(true);
+  let buf = '';
+  const onData = (ch) =&gt; {
+    const s = ch.toString('utf8');
+    if (s === '\n' || s === '\r') { /* finish */ }
+    else if (s === '\u0003') process.exit(1);
+    else if (s === '\u007f') buf = buf.slice(0, -1);
+    else buf += s;
+  };
+  stdin.on('data', onData);
+});</code></pre>
+    <h3>The HMAC scheme is broken</h3>
+    <p>Still open, and it's a design error rather than a typo.</p>
+    <p>The merchant API signs requests: <code>HMAC-SHA256(secret, METHOD \n PATH \n TIMESTAMP \n sha256(body))</code>. Sound scheme.</p>
+    <p>But I stored the secret as an argon2 hash. Correct for passwords, wrong here — the server needs the <em>actual secret</em> to recompute the signature, and an argon2 hash is one-way by design.</p>
+    <p>As written, verification cannot work. It needs either an encrypted-at-rest secret (KMS-wrapped) or a separate keyed verifier.</p>
+    <p>Logged, not papered over. Better a known-broken component with a comment on it than a quietly wrong one.</p>
+    <hr class="in-post">
+    <h2>The console</h2>
+    <p>React, Vite, no component library. Nine screens reading live from the database.</p>
+    <p>Design brief: control room, not marketing page. Dense, dark, monospaced tabular figures so a wrong digit is visible without reading. Severity carried by a left border rule rather than a background fill, so a screen full of alerts stays legible.</p>
+    <p>Three interactions that make the argument better than documentation:</p>
+    <p><strong>Clearing an alert requires a note of at least ten characters.</strong> Server-side, not a UI hint:</p>
+    <pre><code>if (!note || note.trim().length &lt; 10) {
+  return reply.code(422).send({
+    error: 'note_required',
+    message: 'Explain why this alert is not suspicious, in at least 10 characters.',
+  });
+}</code></pre>
+    <p>An alert cleared without a reason is indistinguishable from an alert nobody looked at.</p>
+    <p><strong>"Approve as preparer" is a real button that fails.</strong> The rejection comes from the database constraint, not the interface. Worth demonstrating, because it proves there's no path around it.</p>
+    <p><strong>Opening a case blocks that merchant's settlement</strong>, visible immediately on the payouts screen.</p>
+    <hr class="in-post">
+    <h2>Shadow mode</h2>
+    <p>The rescan endpoint runs the current rule set over historical payments:</p>
+    <pre><code>app.post('/internal/rescan', async (req) =&gt; {
+  const { hours = 168 } = req.body;
+  // delete un-cased alerts, re-evaluate, re-persist
+  return { scanned, alerts_created };
+});</code></pre>
+    <p>Change a threshold, rescan, see what the new configuration would have caught before putting a human on the queue. Also how you measure a false positive rate, which is the number deciding whether a rule is usable at all.</p>
+    <p>The demo seed plants four patterns deliberately, so rules can be seen firing on data that wasn't hand-picked for them: a structuring run, a threshold breach, a third-party funder, and one device across six accounts.</p>
+    <hr class="in-post">
+    <h2>Ledger integrity as a health check</h2>
+    <pre><code>app.get('/internal/ledger-check', async (_req, reply) =&gt; {
+  const result = await assertLedgerBalanced(pool);
+  return reply.code(result.ok ? 200 : 500).send(result);
+});</code></pre>
+    <p>Total debits minus total credits across the whole book. Must be zero.</p>
+    <p>Wired into three places: the health endpoint, a five-minute background job that logs <code>fatal</code> on drift, and CI. The CI one is the most valuable line in the pipeline — if the book doesn't balance there, it won't balance in production either.</p>
+    <pre><code>- name: Ledger integrity
+  run: |
+    npm run seed
+    node -e "/* SUM(debit) - SUM(credit) must be 0 */"</code></pre>
+    <hr class="in-post">
+    <h2>Setup friction, and fixing it</h2>
+    <p>First run took an hour, most of it environment problems: wrong working directory, Docker not installed, Postgres not on PATH, the seed bug above.</p>
+    <p>None of it interesting, all of it recurring on every new machine. So it became a script that checks state rather than assuming it:</p>
+    <pre><code>./start.sh</code></pre>
+    <p>Postgres running? Start it. Database exists? Create it. <code>.env</code> present? Generate one with real secrets. Dependencies current? Install. Migrations pending? Run them. Database empty? Seed it. Ports occupied? Free them. Then start both processes, verify the ledger balances, open the browser.</p>
+    <p>Idempotent throughout. Safe to run when everything is already up.</p>
+    <p>Two companions: <code>stop.sh</code> and <code>reset.sh</code> (wipes the database, asks first).</p>
+    <hr class="in-post">
+    <h2>Stack</h2>
+    <div class="tbl"><table><thead><tr><th>Layer</th><th>Choice</th><th>Why</th></tr></thead><tbody><tr><td>API</td><td>Fastify + TypeScript</td><td>Raw body access for signature verification</td></tr><tr><td>Store</td><td>Postgres 16</td><td>Deferred constraints and triggers do the enforcement</td></tr><tr><td>Ledger</td><td>Hand-rolled</td><td>Small enough to read in one sitting, which matters for the part holding the money</td></tr><tr><td>Console</td><td>React + Vite</td><td>No component library; nine screens don't need one</td></tr><tr><td>Auth</td><td>Sessions + TOTP</td><td>A JWT can't be revoked, and the one time you need that is the time it matters</td></tr><tr><td>Rails</td><td>Adapter interface</td><td>Mocks today; swapping acquirers should touch one folder</td></tr></tbody></table></div>
+    <p>Deliberately boring. Nothing here is clever, and that's the point.</p>
+    <hr class="in-post">
+    <h2>What I'd tell someone starting this</h2>
+    <p><strong>Build the ledger first and get it right.</strong> It's the layer you cannot fix later. Everything else is replaceable.</p>
+    <p><strong>Put controls in the schema.</strong> A control enforced by application code is a control someone routes around under deadline pressure. A <code>CHECK</code> constraint isn't.</p>
+    <p><strong>Derive, don't store.</strong> Any number you cache is a number that can drift from its source.</p>
+    <p><strong>A protection working correctly can look exactly like a bug.</strong> Sit with the error before weakening the constraint.</p>
+    <p><strong>Make failure loud.</strong> Silent rule failures, silent job retries, and quiet startup without a database are all worse than a crash.</p>
+    <p><strong>Write down why a threshold is what it is.</strong> Five minutes now, versus "I don't remember" later.</p>
+    <hr class="in-post">
+    <h2>Open items</h2>
+    <ol><li><strong>Fix the HMAC scheme.</strong> Blocks merchant onboarding.</li><li><strong>Calibrate the rules.</strong> Shadow mode over real volume, measure false positives per rule, tune before anyone works the queue.</li><li><strong>One real rail adapter</strong> to replace a mock.</li><li><strong>Property tests on the posting recipes.</strong> Currently only <code>allocate</code> is properly covered.</li><li><strong>Materialised balances</strong> if the aggregate gets slow. Rebuild-from-postings, never a mutable column.</li></ol>
+
+    <p class="post-foot"><a data-go="project2">See the project &#8594;</a> &nbsp;&middot;&nbsp; <a href="https://github.com/jrnobita">Source on GitHub &#8599;</a></p>
+  </article>
+
+  <footer>
+    <div class="foot">
+      <div>Devblog &middot; 9 August 2026</div>
+      <div>jrnobita</div>
+      <div><a data-go="home">&#8592; Back to home</a></div>
+    </div>
+  </footer>
+
+</div>
+</div>
+
+
 <script>
 /* live menu bar clock */
 (function(){
@@ -577,7 +955,7 @@ bash /tmp/claude-usage-install.sh</pre>
     });
   }
 
-  var hashes={home:'#', project:'#claude-usage', post1:'#devblog-2026-08-07'};
+  var hashes={home:'#', project:'#claude-usage', project2:'#project-2', post1:'#devblog-2026-08-07', post2:'#devblog-2026-08-09'};
 
   function show(name){
     document.querySelectorAll('.view').forEach(function(v){
