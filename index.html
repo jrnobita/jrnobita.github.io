@@ -305,12 +305,11 @@ footer{padding:50px 0 62px;border-top:1px solid var(--rule)}
         </div>
       </a>
 
-      <!-- ===== PROJECT 2 — FILL IN ===== -->
-      <a class="proj" data-go="project2">
-        <div class="meta">v1.0.0 &middot; LANGUAGE &middot; macOS</div>
+      <a class="proj" href="paygate.html">
+        <div class="meta">TypeScript &middot; Postgres &middot; Private repo</div>
         <div>
-          <h3>Project name</h3>
-          <p>One or two sentences on what it does and why it exists.</p>
+          <h3>PayGate</h3>
+          <p>A payment gateway with a double-entry ledger, transaction monitoring, and controls that live in the database. Not live, not authorised.</p>
         </div>
         <div class="go">&#8594;</div>
       </a>
@@ -582,69 +581,6 @@ bash /tmp/claude-usage-install.sh</pre>
 </div>
 
 
-<!-- ============ PROJECT 2 — FILL IN ============ -->
-<div class="view" id="view-project2">
-<div class="wrap">
-
-  <div class="ident">
-    <div class="who-wrap">
-      <a class="logo" data-go="home" aria-label="jrnobita home"><svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><rect width="64" height="64" rx="14" fill="#16191D"/><g fill="none" stroke="#FFFFFF" stroke-width="8.5" stroke-linecap="butt" stroke-linejoin="miter"><path d="M29 12 V32 A10 10 0 0 1 9 32"/><path d="M40 50 V12 L57 50"/></g></svg></a>
-      <div class="who">jrnobita
-        <span>I build small tools for my own Mac and open source the ones that work.</span>
-      </div>
-    </div>
-    <nav>
-      <a data-go="home">&#8592; Home</a>
-      <a href="#download-2">Download</a>
-      <a href="https://github.com/jrnobita">Repo &#8599;</a>
-    </nav>
-  </div>
-
-  <hr class="rule">
-
-  <header class="hero">
-    <div class="eyebrow">Project name &middot; TYPE &middot; macOS &middot; v1.0.0</div>
-    <h1>Headline for <em>the</em> project.</h1>
-    <p class="lede">Two lines on the problem it solves and who it is for. Same voice as the Claude Usage page.</p>
-    <div class="cta-row">
-      <a class="btn" href="#download-2">Download</a>
-      <a class="btn ghost" href="https://github.com/jrnobita">View on GitHub</a>
-    </div>
-  </header>
-
-  <hr class="rule">
-
-  <section>
-    <div class="sec-head"><span class="eyebrow">What it does</span></div>
-    <div class="feat">
-      <div><h4>Feature one</h4><p>One or two sentences.</p></div>
-      <div><h4>Feature two</h4><p>One or two sentences.</p></div>
-      <div><h4>Feature three</h4><p>One or two sentences.</p></div>
-      <div><h4>Feature four</h4><p>One or two sentences.</p></div>
-    </div>
-  </section>
-
-  <hr class="rule">
-
-  <section id="download-2">
-    <div class="sec-head"><span class="eyebrow">Download</span><h2>Get it running</h2></div>
-    <div class="body-text">
-      <p>Install steps go here.</p>
-    </div>
-  </section>
-
-  <footer>
-    <div class="foot">
-      <div>Project name &middot; v1.0.0</div>
-      <div>jrnobita</div>
-      <div><a data-go="home">&#8592; Back to home</a></div>
-    </div>
-  </footer>
-
-</div>
-</div>
-
-
 <!-- ============ POST 2 — FILL IN ============ -->
 <div class="view" id="view-post2">
 <div class="wrap">
@@ -658,7 +594,7 @@ bash /tmp/claude-usage-install.sh</pre>
     </div>
     <nav>
       <a data-go="home">&#8592; Home</a>
-      <a data-go="project2">Payment gateway</a>
+      <a href="paygate.html">PayGate</a>
       <a href="https://github.com/jrnobita">GitHub &#8599;</a>
     </nav>
   </div>
@@ -907,7 +843,7 @@ where: 'PL/pgSQL function assert_entry_balanced() line 13 at RAISE'</code></pre>
     <h2>Open items</h2>
     <ol><li><strong>Fix the HMAC scheme.</strong> Blocks merchant onboarding.</li><li><strong>Calibrate the rules.</strong> Shadow mode over real volume, measure false positives per rule, tune before anyone works the queue.</li><li><strong>One real rail adapter</strong> to replace a mock.</li><li><strong>Property tests on the posting recipes.</strong> Currently only <code>allocate</code> is properly covered.</li><li><strong>Materialised balances</strong> if the aggregate gets slow. Rebuild-from-postings, never a mutable column.</li></ol>
 
-    <p class="post-foot"><a data-go="project2">See the project &#8594;</a> &nbsp;&middot;&nbsp; <a href="https://github.com/jrnobita">Source on GitHub &#8599;</a></p>
+    <p class="post-foot"><a href="paygate.html">See the project &#8594;</a> &nbsp;&middot;&nbsp; <a href="https://github.com/jrnobita">Source on GitHub &#8599;</a></p>
   </article>
 
   <footer>
@@ -955,7 +891,7 @@ where: 'PL/pgSQL function assert_entry_balanced() line 13 at RAISE'</code></pre>
     });
   }
 
-  var hashes={home:'#', project:'#claude-usage', project2:'#project-2', post1:'#devblog-2026-08-07', post2:'#devblog-2026-08-09'};
+  var hashes={home:'#', project:'#claude-usage', post1:'#devblog-2026-08-07', post2:'#devblog-2026-08-09'};
 
   function show(name){
     document.querySelectorAll('.view').forEach(function(v){
