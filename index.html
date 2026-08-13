@@ -299,31 +299,29 @@ footer{padding:28px 0 64px;border-top:1px solid var(--line)}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}html{scroll-behavior:auto}}
 
-/* Sentry card mockup — the bracketed detection box, in miniature */
-.sy-shot .pb-chip{color:#F0BC55}
+/* Sentry card mockup — same daylight street as the project page, in miniature.
+   Dark figures on light asphalt so a person is legible at card size. */
+.sy-shot .pb-chip{color:#F5C45E}
 .sy-panel{position:relative;display:block;height:196px;overflow:hidden;
   background:
-    repeating-linear-gradient(97deg, rgba(255,255,255,.035) 0 14px, transparent 14px 58px),
-    radial-gradient(140% 105% at 50% 118%, #262F3B 0%, #10141A 62%, #0B0E13 100%)}
-.sy-panel .fg{position:absolute;left:22%;right:22%;top:7%;bottom:0;
-  border-radius:44% 44% 12% 12%/22% 22% 6% 6%;
-  background:linear-gradient(180deg,#39424F 0%,#232A34 60%,#1A2028 100%)}
-.sy-panel .fg::before{content:"";position:absolute;left:26%;right:26%;top:-14%;padding-top:26%;
-  border-radius:50%;background:#404A58}
-.sy-panel .b{position:absolute;border:1.4px solid #C8901F;border-radius:2px}
-.sy-panel .b i{position:absolute;width:9px;height:9px;border:2px solid #C8901F}
-.sy-panel .b i:nth-child(1){top:-2px;left:-2px;border-width:2px 0 0 2px}
-.sy-panel .b i:nth-child(2){top:-2px;right:-2px;border-width:2px 2px 0 0}
-.sy-panel .b i:nth-child(3){bottom:-2px;left:-2px;border-width:0 0 2px 2px}
-.sy-panel .b i:nth-child(4){bottom:-2px;right:-2px;border-width:0 2px 2px 0}
-.sy-panel .b.one{left:7%;top:30%;width:16%;height:54%}
-.sy-panel .b.mid{left:38%;top:22%;width:15%;height:62%}
-.sy-panel .b.two{left:70%;top:28%;width:16%;height:58%;border-color:#B4342A}
-.sy-panel .b.two i{border-color:#B4342A}
-.sy-panel .t{position:absolute;bottom:calc(100% + 6px);left:-1px;background:#05070A;color:#EDEFF2;
-  font-family:var(--mono);font-size:10px;line-height:1;padding:4px 7px;border-radius:3px;white-space:nowrap}
+    repeating-linear-gradient(74deg, rgba(255,255,255,.62) 0 15px, rgba(255,255,255,0) 15px 56px),
+    linear-gradient(178deg,#8E959C 0%,#A9AFB5 36%,#B6BCC1 70%,#9CA3A9 100%)}
+.sy-panel::before{content:"";position:absolute;left:0;right:0;top:0;height:24%;
+  background:linear-gradient(#6E767E,#8E959C);border-bottom:2px solid rgba(255,255,255,.25)}
+.sy-panel .b{position:absolute;z-index:2}
+.sy-panel .b .r{position:absolute;inset:-6% -16%;border:1.4px solid #C8901F;border-radius:2px}
+.sy-panel .b .r i{position:absolute;width:7px;height:7px;border:1.8px solid #C8901F}
+.sy-panel .b .r i:nth-child(1){top:-2px;left:-2px;border-width:1.8px 0 0 1.8px}
+.sy-panel .b .r i:nth-child(2){top:-2px;right:-2px;border-width:1.8px 1.8px 0 0}
+.sy-panel .b .r i:nth-child(3){bottom:-2px;left:-2px;border-width:0 0 1.8px 1.8px}
+.sy-panel .b .r i:nth-child(4){bottom:-2px;right:-2px;border-width:0 1.8px 1.8px 0}
+.sy-panel .b.two .r{border-color:#B4342A} .sy-panel .b.two .r i{border-color:#B4342A}
+.sy-panel .b svg{display:block;width:100%;height:100%;fill:#20242A}
+.sy-panel .b.pale svg{fill:#43474D}
+.sy-panel .t{position:absolute;left:calc(116% + 7px);top:-8%;background:#0A0C0F;color:#F2F4F6;
+  font-family:var(--mono);font-size:9px;line-height:1;letter-spacing:.05em;text-transform:uppercase;
+  padding:4px 6px;border-radius:2px;white-space:nowrap}
 .sy-panel .b.two .t{color:#FF6B60}
-
 </style>
 </head>
 <body>
@@ -393,12 +391,12 @@ footer{padding:28px 0 64px;border-top:1px solid var(--line)}
             <span class="pb-time">14:03</span>
           </div>
           <div class="shot-panel sy-panel">
-            <div class="b one"><i></i><i></i><i></i><i></i><span class="fg"></span>
-              <span class="t">#7</span></div>
-            <div class="b mid"><i></i><i></i><i></i><i></i><span class="fg"></span>
-              <span class="t">#1 running</span></div>
-            <div class="b two"><i></i><i></i><i></i><i></i><span class="fg"></span>
-              <span class="t">MASKED</span></div>
+            <div class="b pale" style="left:9%;top:26%;width:9%;height:26%">
+              <div class="r"><i></i><i></i><i></i><i></i></div><svg viewBox="0 0 60 136" preserveAspectRatio="xMidYMax meet" aria-hidden="true"><circle cx="30" cy="13" r="10.5"/><rect x="5" y="30" width="9" height="38" rx="4.5"/><rect x="46" y="30" width="9" height="38" rx="4.5"/><rect x="14" y="26" width="32" height="50" rx="9"/><rect x="17" y="72" width="11" height="60" rx="5"/><rect x="32" y="72" width="11" height="60" rx="5"/></svg><span class="t">#7</span></div>
+            <div class="b" style="left:44%;top:22%;width:9.5%;height:28%">
+              <div class="r"><i></i><i></i><i></i><i></i></div><svg viewBox="0 0 60 136" preserveAspectRatio="xMidYMax meet" aria-hidden="true"><circle cx="30" cy="13" r="10.5"/><rect x="5" y="30" width="9" height="38" rx="4.5" transform="rotate(14 9 34)"/><rect x="46" y="30" width="9" height="38" rx="4.5" transform="rotate(-12 50 34)"/><rect x="14" y="26" width="32" height="50" rx="9"/><rect x="17" y="72" width="11" height="60" rx="5" transform="rotate(-13 22 76)"/><rect x="32" y="72" width="11" height="60" rx="5" transform="rotate(15 37 76)"/></svg><span class="t">#2</span></div>
+            <div class="b two" style="left:20%;top:58%;width:13%;height:36%">
+              <div class="r"><i></i><i></i><i></i><i></i></div><svg viewBox="0 0 60 136" preserveAspectRatio="xMidYMax meet" aria-hidden="true"><circle cx="30" cy="13" r="10.5"/><rect x="5" y="30" width="9" height="38" rx="4.5"/><rect x="46" y="30" width="9" height="38" rx="4.5"/><rect x="14" y="26" width="32" height="50" rx="9"/><rect x="17" y="72" width="11" height="60" rx="5"/><rect x="32" y="72" width="11" height="60" rx="5"/></svg><span class="t">masked</span></div>
           </div>
         </div>
       </a>

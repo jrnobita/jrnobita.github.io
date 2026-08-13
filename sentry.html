@@ -199,38 +199,37 @@ footer a:hover{color:var(--ink)}
 @keyframes sypulse{70%{box-shadow:0 0 0 7px rgba(180,52,42,0)}100%{box-shadow:0 0 0 0 rgba(180,52,42,0)}}
 @media (prefers-reduced-motion:reduce){.frame .fbar .live{animation:none}}
 
-/* the wide scene: several subjects at different depths, labelled in stacks */
-.frame .fbody{position:relative;height:392px;overflow:hidden;
+/* the wide scene — daylight asphalt, people as dark silhouettes against it.
+   The value structure matters: dark figures on a light road read instantly,
+   which is the opposite of what a dark "security camera" palette gives you. */
+.frame .fbody{position:relative;height:400px;overflow:hidden;
   background:
-    repeating-linear-gradient(97deg, rgba(255,255,255,.035) 0 22px, transparent 22px 92px),
-    radial-gradient(140% 105% at 50% 118%, #262F3B 0%, #10141A 62%, #0B0E13 100%)}
-.frame .fbody::after{content:"";position:absolute;inset:0;
-  background:linear-gradient(to bottom, rgba(11,14,19,.85) 0%, transparent 26%)}
-@media (max-width:820px){.frame .fbody{height:300px}}
-@media (max-width:600px){.frame .fbody{height:236px}}
+    repeating-linear-gradient(74deg,
+      rgba(255,255,255,.62) 0 26px, rgba(255,255,255,0) 26px 96px),
+    linear-gradient(178deg,#8E959C 0%,#A9AFB5 34%,#B6BCC1 68%,#9CA3A9 100%)}
+.frame .fbody::before{content:"";position:absolute;left:0;right:0;top:0;height:26%;
+  background:linear-gradient(#6E767E,#8E959C);border-bottom:2px solid rgba(255,255,255,.25)}
+@media (max-width:820px){.frame .fbody{height:310px}}
+@media (max-width:600px){.frame .fbody{height:240px}}
 
-/* one tracked subject */
 .sub{position:absolute;z-index:2}
-.sub .bx{position:absolute;inset:0;border:1.4px solid var(--box);border-radius:2px}
-.sub .bx i{position:absolute;width:9px;height:9px;border:2px solid var(--box)}
+.sub .bx{position:absolute;inset:-6% -14%;border:1.6px solid var(--box);border-radius:2px}
+.sub .bx i{position:absolute;width:8px;height:8px;border:2px solid var(--box)}
 .sub .bx i:nth-child(1){top:-2px;left:-2px;border-width:2px 0 0 2px}
 .sub .bx i:nth-child(2){top:-2px;right:-2px;border-width:2px 2px 0 0}
 .sub .bx i:nth-child(3){bottom:-2px;left:-2px;border-width:0 0 2px 2px}
 .sub .bx i:nth-child(4){bottom:-2px;right:-2px;border-width:0 2px 2px 0}
 .sub.alert .bx{border-color:var(--hit)} .sub.alert .bx i{border-color:var(--hit)}
-/* the body inside the box, suggested rather than drawn */
-.sub .fig{position:absolute;left:22%;right:22%;top:6%;bottom:0;border-radius:44% 44% 12% 12%/22% 22% 6% 6%;
-  background:linear-gradient(180deg,#39424F 0%,#232A34 60%,#1A2028 100%);opacity:.92}
-.sub .fig::before{content:"";position:absolute;left:26%;right:26%;top:-13%;padding-top:26%;
-  border-radius:50%;background:#404A58}
+.sub svg{display:block;width:100%;height:100%;fill:#20242A}
+.sub.pale svg{fill:#43474D}
 
-.stk{position:absolute;left:calc(100% + 7px);top:0;display:flex;flex-direction:column;gap:3px;z-index:3}
-.stk.left{left:auto;right:calc(100% + 7px);align-items:flex-end}
-.stk span{background:#05070A;color:#E9ECEF;font:500 10px/1 var(--mono);letter-spacing:.05em;
-  padding:4px 7px;border-radius:2px;white-space:nowrap}
+.stk{position:absolute;left:calc(114% + 11px);top:-6%;display:flex;flex-direction:column;gap:3px;z-index:3}
+.stk.left{left:auto;right:calc(114% + 11px);align-items:flex-end}
+.stk span{background:#0A0C0F;color:#F2F4F6;font:500 10px/1 var(--mono);letter-spacing:.06em;
+  text-transform:uppercase;padding:4px 7px;border-radius:2px;white-space:nowrap}
 .stk span.red{color:#FF6B60}
-.stk span.amb{color:#F0BC55}
-@media (max-width:820px){.stk span{font-size:9px;padding:3px 5px}}
+.stk span.amb{color:#F5C45E}
+@media (max-width:820px){.stk span{font-size:9px;padding:3px 5px;letter-spacing:.03em}}
 @media (max-width:600px){.stk{display:none}}
 
 /* discord side of the story */
@@ -305,7 +304,7 @@ footer a:hover{color:var(--ink)}
     <a class="btn" href="#devlog">Read the devlog</a>
   </div>
 
-  <div class="frame" aria-label="A street scene with five people tracked, one with a covered face">
+  <div class="frame" aria-label="A daylight street scene with five people tracked, one with a covered face">
     <div class="fbar">
       <span class="live"></span>
       <span>rtsp://junction-north</span>
@@ -313,29 +312,34 @@ footer a:hover{color:var(--ink)}
     </div>
     <div class="fbody">
 
-      <div class="sub" style="left:5%;top:26%;width:7.5%;height:30%">
-        <div class="bx"><i></i><i></i><i></i><i></i></div><div class="fig"></div>
-        <div class="stk"><span>#7</span><span class="amb">standing</span><span>brown coat</span></div>
+      <div class="sub pale" style="left:7%;top:24%;width:6%;height:25%">
+        <div class="bx"><i></i><i></i><i></i><i></i></div>
+        <svg viewBox="0 0 60 136" preserveAspectRatio="xMidYMax meet" aria-hidden="true"><circle cx="30" cy="13" r="10.5"/><rect x="5" y="30" width="9" height="38" rx="4.5"/><rect x="46" y="30" width="9" height="38" rx="4.5"/><rect x="14" y="26" width="32" height="50" rx="9"/><rect x="17" y="72" width="11" height="60" rx="5"/><rect x="32" y="72" width="11" height="60" rx="5"/></svg>
+        <div class="stk "><span>#7</span><span class="amb">standing</span><span>brown coat</span></div>
       </div>
 
-      <div class="sub" style="left:37%;top:21%;width:7%;height:28%">
-        <div class="bx"><i></i><i></i><i></i><i></i></div><div class="fig"></div>
-        <div class="stk"><span>#2</span><span class="amb">walking</span><span>light coat</span></div>
+      <div class="sub" style="left:33%;top:21%;width:6.5%;height:26%">
+        <div class="bx"><i></i><i></i><i></i><i></i></div>
+        <svg viewBox="0 0 60 136" preserveAspectRatio="xMidYMax meet" aria-hidden="true"><circle cx="30" cy="13" r="10.5"/><rect x="5" y="30" width="9" height="38" rx="4.5" transform="rotate(14 9 34)"/><rect x="46" y="30" width="9" height="38" rx="4.5" transform="rotate(-12 50 34)"/><rect x="14" y="26" width="32" height="50" rx="9"/><rect x="17" y="72" width="11" height="60" rx="5" transform="rotate(-13 22 76)"/><rect x="32" y="72" width="11" height="60" rx="5" transform="rotate(15 37 76)"/></svg>
+        <div class="stk "><span>#2</span><span class="amb">walking</span><span>light coat</span></div>
       </div>
 
-      <div class="sub" style="left:70%;top:24%;width:7%;height:29%">
-        <div class="bx"><i></i><i></i><i></i><i></i></div><div class="fig"></div>
-        <div class="stk left"><span>Unidentified</span><span class="amb">walking</span></div>
+      <div class="sub pale" style="left:76%;top:22%;width:6%;height:25%">
+        <div class="bx"><i></i><i></i><i></i><i></i></div>
+        <svg viewBox="0 0 60 136" preserveAspectRatio="xMidYMax meet" aria-hidden="true"><circle cx="30" cy="13" r="10.5"/><rect x="5" y="30" width="9" height="38" rx="4.5" transform="rotate(14 9 34)"/><rect x="46" y="30" width="9" height="38" rx="4.5" transform="rotate(-12 50 34)"/><rect x="14" y="26" width="32" height="50" rx="9"/><rect x="17" y="72" width="11" height="60" rx="5" transform="rotate(-13 22 76)"/><rect x="32" y="72" width="11" height="60" rx="5" transform="rotate(15 37 76)"/></svg>
+        <div class="stk left"><span>unidentified</span><span class="amb">walking</span></div>
       </div>
 
-      <div class="sub" style="left:15%;top:59%;width:9.5%;height:37%">
-        <div class="bx"><i></i><i></i><i></i><i></i></div><div class="fig"></div>
-        <div class="stk"><span>#1</span><span class="amb">running</span><span>black hoodie</span><span>blue jeans</span></div>
+      <div class="sub" style="left:12%;top:60%;width:9%;height:35%">
+        <div class="bx"><i></i><i></i><i></i><i></i></div>
+        <svg viewBox="0 0 60 136" preserveAspectRatio="xMidYMax meet" aria-hidden="true"><circle cx="30" cy="13" r="10.5"/><rect x="5" y="30" width="9" height="38" rx="4.5" transform="rotate(14 9 34)"/><rect x="46" y="30" width="9" height="38" rx="4.5" transform="rotate(-12 50 34)"/><rect x="14" y="26" width="32" height="50" rx="9"/><rect x="17" y="72" width="11" height="60" rx="5" transform="rotate(-13 22 76)"/><rect x="32" y="72" width="11" height="60" rx="5" transform="rotate(15 37 76)"/></svg>
+        <div class="stk "><span>#1</span><span class="amb">running</span><span>black hoodie</span><span>blue jeans</span></div>
       </div>
 
-      <div class="sub alert" style="left:60%;top:56%;width:9.5%;height:39%">
-        <div class="bx"><i></i><i></i><i></i><i></i></div><div class="fig"></div>
-        <div class="stk"><span class="red">MASKED</span><span>#4</span><span class="amb">balaclava</span><span>dark jacket</span></div>
+      <div class="sub alert" style="left:57%;top:59%;width:9.5%;height:36%">
+        <div class="bx"><i></i><i></i><i></i><i></i></div>
+        <svg viewBox="0 0 60 136" preserveAspectRatio="xMidYMax meet" aria-hidden="true"><circle cx="30" cy="13" r="10.5"/><rect x="5" y="30" width="9" height="38" rx="4.5"/><rect x="46" y="30" width="9" height="38" rx="4.5"/><rect x="14" y="26" width="32" height="50" rx="9"/><rect x="17" y="72" width="11" height="60" rx="5"/><rect x="32" y="72" width="11" height="60" rx="5"/></svg>
+        <div class="stk "><span class="red">masked</span><span>#4</span><span class="amb">balaclava</span><span>dark jacket</span></div>
       </div>
 
     </div>
