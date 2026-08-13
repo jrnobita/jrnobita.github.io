@@ -298,6 +298,24 @@ footer{padding:28px 0 64px;border-top:1px solid var(--line)}
   .ident nav{gap:18px;font-size:13.5px}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}html{scroll-behavior:auto}}
+
+/* Sentry card mockup — the bracketed detection box, in miniature */
+.sy-shot .pb-chip{color:#F0BC55}
+.sy-panel{position:relative;display:block;height:196px;
+  background:radial-gradient(120% 95% at 46% 6%,#1D242E 0%,#0E1116 68%)}
+.sy-panel .b{position:absolute;border:1.4px solid #C8901F;border-radius:2px}
+.sy-panel .b i{position:absolute;width:9px;height:9px;border:2px solid #C8901F}
+.sy-panel .b i:nth-child(1){top:-2px;left:-2px;border-width:2px 0 0 2px}
+.sy-panel .b i:nth-child(2){top:-2px;right:-2px;border-width:2px 2px 0 0}
+.sy-panel .b i:nth-child(3){bottom:-2px;left:-2px;border-width:0 0 2px 2px}
+.sy-panel .b i:nth-child(4){bottom:-2px;right:-2px;border-width:0 2px 2px 0}
+.sy-panel .b.one{left:12%;top:12%;width:24%;height:76%}
+.sy-panel .b.two{left:56%;top:19%;width:21%;height:70%;border-color:#B4342A}
+.sy-panel .b.two i{border-color:#B4342A}
+.sy-panel .t{position:absolute;bottom:calc(100% + 6px);left:-1px;background:#05070A;color:#EDEFF2;
+  font-family:var(--mono);font-size:10px;line-height:1;padding:4px 7px;border-radius:3px;white-space:nowrap}
+.sy-panel .b.two .t{color:#FF6B60}
+
 </style>
 </head>
 <body>
@@ -351,6 +369,29 @@ footer{padding:28px 0 64px;border-top:1px solid var(--line)}
   <section style="padding-top:30px">
     <div class="sec-head"><span class="eyebrow">Projects</span></div>
     <div class="projects">
+
+      <a class="proj feat-row" href="sentry.html">
+        <div class="col-text">
+          <div class="meta">Sentry &middot; Python + YOLO + CLIP &middot; macOS</div>
+          <h3>Sentry</h3>
+          <p>A local vision monitor for a webcam or a CCTV stream. Tracks everyone in frame, remembers faces so a person keeps their number, and sends only the events worth knowing to Discord.</p>
+          <span class="go-inline">Open the project &#8594;</span>
+        </div>
+
+        <div class="shot sy-shot">
+          <div class="shot-bar">
+            <span class="pb-dots"><i style="background:#FF5F56"></i><i style="background:#FFBD2E"></i><i style="background:#27C93F"></i></span>
+            <span class="pb-chip">2 tracked &middot; 1 alert</span>
+            <span class="pb-time">14:03</span>
+          </div>
+          <div class="shot-panel sy-panel">
+            <div class="b one"><i></i><i></i><i></i><i></i>
+              <span class="t">#1 walking</span></div>
+            <div class="b two"><i></i><i></i><i></i><i></i>
+              <span class="t">MASKED</span></div>
+          </div>
+        </div>
+      </a>
 
       <a class="proj feat-row" data-go="project">
         <div class="col-text">
@@ -433,6 +474,16 @@ footer{padding:28px 0 64px;border-top:1px solid var(--line)}
   <section id="devblog">
     <div class="sec-head"><span class="eyebrow">Devblog</span></div>
     <div class="projects">
+
+
+      <a class="proj post-row" href="sentry.html#devlog">
+        <div class="meta">Thu 13 Aug 2026</div>
+        <div>
+          <h3>A webcam toy that turned into a monitor</h3>
+          <p>A hundred-line skeleton demo became a CCTV monitor in a day. Every real bug was found by checking against an answer I already knew &mdash; the live preview looked right the whole time.</p>
+        </div>
+        <div class="go">&#8594;</div>
+      </a>
 
       <!-- ===== POST 2 — FILL IN (newest first) ===== -->
       <a class="proj post-row" data-go="post2">
