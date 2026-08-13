@@ -189,7 +189,7 @@ footer a:hover{color:var(--ink)}
 .brk::before{top:0;left:0;border-width:1.5px 0 0 1.5px}
 .brk::after{bottom:0;right:0;border-width:0 1.5px 1.5px 0}
 
-/* the hero frame — a video still with one person picked out */
+/* the hero frame — a wide scene with several subjects */
 .frame{background:#0E1116;border-radius:12px;overflow:hidden;margin-top:34px;
   box-shadow:0 24px 48px -34px rgba(21,23,26,.7)}
 .frame .fbar{display:flex;align-items:center;gap:10px;padding:9px 13px;
@@ -198,28 +198,40 @@ footer a:hover{color:var(--ink)}
   box-shadow:0 0 0 0 rgba(180,52,42,.6);animation:sypulse 2s infinite}
 @keyframes sypulse{70%{box-shadow:0 0 0 7px rgba(180,52,42,0)}100%{box-shadow:0 0 0 0 rgba(180,52,42,0)}}
 @media (prefers-reduced-motion:reduce){.frame .fbar .live{animation:none}}
-.frame .fbody{position:relative;height:290px;
-  background:radial-gradient(120% 95% at 46% 8%,#1D242E 0%,#0E1116 68%)}
-@media (max-width:640px){.frame .fbody{height:230px}}
 
-/* the tracked person: bracketed box + skeleton + id */
-.pbox{position:absolute;left:24%;top:11%;width:20%;height:78%;
-  border:1.5px solid var(--box);border-radius:2px}
-.pbox i{position:absolute;width:11px;height:11px;border:2px solid var(--box)}
-.pbox i:nth-child(1){top:-2px;left:-2px;border-width:2px 0 0 2px}
-.pbox i:nth-child(2){top:-2px;right:-2px;border-width:2px 2px 0 0}
-.pbox i:nth-child(3){bottom:-2px;left:-2px;border-width:0 0 2px 2px}
-.pbox i:nth-child(4){bottom:-2px;right:-2px;border-width:0 2px 2px 0}
-.pbox.flag{border-color:var(--hit)} .pbox.flag i{border-color:var(--hit)}
-.pbox.dim{border-color:#5C6675;opacity:.75} .pbox.dim i{border-color:#5C6675}
-.pbox.two{left:56%;width:18%;top:17%;height:72%}
-.chips{position:absolute;left:calc(100% + 9px);top:0;display:flex;flex-direction:column;gap:5px}
-.chips.l{left:auto;right:calc(100% + 9px);align-items:flex-end}
-.chip{background:#05070A;color:#EDEFF2;font:500 11px/1 var(--mono);
-  padding:5px 8px;border-radius:3px;white-space:nowrap}
-.chip.red{color:#FF6B60}
-.chip.tag{color:#F0BC55}
-@media (max-width:640px){.chips{display:none}}
+/* the wide scene: several subjects at different depths, labelled in stacks */
+.frame .fbody{position:relative;height:392px;overflow:hidden;
+  background:
+    repeating-linear-gradient(97deg, rgba(255,255,255,.035) 0 22px, transparent 22px 92px),
+    radial-gradient(140% 105% at 50% 118%, #262F3B 0%, #10141A 62%, #0B0E13 100%)}
+.frame .fbody::after{content:"";position:absolute;inset:0;
+  background:linear-gradient(to bottom, rgba(11,14,19,.85) 0%, transparent 26%)}
+@media (max-width:820px){.frame .fbody{height:300px}}
+@media (max-width:600px){.frame .fbody{height:236px}}
+
+/* one tracked subject */
+.sub{position:absolute;z-index:2}
+.sub .bx{position:absolute;inset:0;border:1.4px solid var(--box);border-radius:2px}
+.sub .bx i{position:absolute;width:9px;height:9px;border:2px solid var(--box)}
+.sub .bx i:nth-child(1){top:-2px;left:-2px;border-width:2px 0 0 2px}
+.sub .bx i:nth-child(2){top:-2px;right:-2px;border-width:2px 2px 0 0}
+.sub .bx i:nth-child(3){bottom:-2px;left:-2px;border-width:0 0 2px 2px}
+.sub .bx i:nth-child(4){bottom:-2px;right:-2px;border-width:0 2px 2px 0}
+.sub.alert .bx{border-color:var(--hit)} .sub.alert .bx i{border-color:var(--hit)}
+/* the body inside the box, suggested rather than drawn */
+.sub .fig{position:absolute;left:22%;right:22%;top:6%;bottom:0;border-radius:44% 44% 12% 12%/22% 22% 6% 6%;
+  background:linear-gradient(180deg,#39424F 0%,#232A34 60%,#1A2028 100%);opacity:.92}
+.sub .fig::before{content:"";position:absolute;left:26%;right:26%;top:-13%;padding-top:26%;
+  border-radius:50%;background:#404A58}
+
+.stk{position:absolute;left:calc(100% + 7px);top:0;display:flex;flex-direction:column;gap:3px;z-index:3}
+.stk.left{left:auto;right:calc(100% + 7px);align-items:flex-end}
+.stk span{background:#05070A;color:#E9ECEF;font:500 10px/1 var(--mono);letter-spacing:.05em;
+  padding:4px 7px;border-radius:2px;white-space:nowrap}
+.stk span.red{color:#FF6B60}
+.stk span.amb{color:#F0BC55}
+@media (max-width:820px){.stk span{font-size:9px;padding:3px 5px}}
+@media (max-width:600px){.stk{display:none}}
 
 /* discord side of the story */
 .evt{display:flex;gap:11px;align-items:flex-start;padding:11px 0;border-bottom:1px solid var(--line)}
@@ -293,29 +305,39 @@ footer a:hover{color:var(--ink)}
     <a class="btn" href="#devlog">Read the devlog</a>
   </div>
 
-  <div class="frame" aria-label="Two people tracked, one with a covered face">
+  <div class="frame" aria-label="A street scene with five people tracked, one with a covered face">
     <div class="fbar">
       <span class="live"></span>
-      <span>rtsp://front-door</span>
-      <span style="margin-left:auto">2 tracked &middot; 1 alert</span>
+      <span>rtsp://junction-north</span>
+      <span style="margin-left:auto">5 tracked &middot; 1 alert</span>
     </div>
     <div class="fbody">
-      <div class="pbox">
-        <i></i><i></i><i></i><i></i>
-        <div class="chips l">
-          <span class="chip">#1</span>
-          <span class="chip tag">walking</span>
-          <span class="chip">black hoodie</span>
-        </div>
+
+      <div class="sub" style="left:5%;top:26%;width:7.5%;height:30%">
+        <div class="bx"><i></i><i></i><i></i><i></i></div><div class="fig"></div>
+        <div class="stk"><span>#7</span><span class="amb">standing</span><span>brown coat</span></div>
       </div>
-      <div class="pbox two flag">
-        <i></i><i></i><i></i><i></i>
-        <div class="chips">
-          <span class="chip red">MASKED</span>
-          <span class="chip">#4</span>
-          <span class="chip tag">balaclava</span>
-        </div>
+
+      <div class="sub" style="left:37%;top:21%;width:7%;height:28%">
+        <div class="bx"><i></i><i></i><i></i><i></i></div><div class="fig"></div>
+        <div class="stk"><span>#2</span><span class="amb">walking</span><span>light coat</span></div>
       </div>
+
+      <div class="sub" style="left:70%;top:24%;width:7%;height:29%">
+        <div class="bx"><i></i><i></i><i></i><i></i></div><div class="fig"></div>
+        <div class="stk left"><span>Unidentified</span><span class="amb">walking</span></div>
+      </div>
+
+      <div class="sub" style="left:15%;top:59%;width:9.5%;height:37%">
+        <div class="bx"><i></i><i></i><i></i><i></i></div><div class="fig"></div>
+        <div class="stk"><span>#1</span><span class="amb">running</span><span>black hoodie</span><span>blue jeans</span></div>
+      </div>
+
+      <div class="sub alert" style="left:60%;top:56%;width:9.5%;height:39%">
+        <div class="bx"><i></i><i></i><i></i><i></i></div><div class="fig"></div>
+        <div class="stk"><span class="red">MASKED</span><span>#4</span><span class="amb">balaclava</span><span>dark jacket</span></div>
+      </div>
+
     </div>
   </div>
 </header>

@@ -301,16 +301,24 @@ footer{padding:28px 0 64px;border-top:1px solid var(--line)}
 
 /* Sentry card mockup — the bracketed detection box, in miniature */
 .sy-shot .pb-chip{color:#F0BC55}
-.sy-panel{position:relative;display:block;height:196px;
-  background:radial-gradient(120% 95% at 46% 6%,#1D242E 0%,#0E1116 68%)}
+.sy-panel{position:relative;display:block;height:196px;overflow:hidden;
+  background:
+    repeating-linear-gradient(97deg, rgba(255,255,255,.035) 0 14px, transparent 14px 58px),
+    radial-gradient(140% 105% at 50% 118%, #262F3B 0%, #10141A 62%, #0B0E13 100%)}
+.sy-panel .fg{position:absolute;left:22%;right:22%;top:7%;bottom:0;
+  border-radius:44% 44% 12% 12%/22% 22% 6% 6%;
+  background:linear-gradient(180deg,#39424F 0%,#232A34 60%,#1A2028 100%)}
+.sy-panel .fg::before{content:"";position:absolute;left:26%;right:26%;top:-14%;padding-top:26%;
+  border-radius:50%;background:#404A58}
 .sy-panel .b{position:absolute;border:1.4px solid #C8901F;border-radius:2px}
 .sy-panel .b i{position:absolute;width:9px;height:9px;border:2px solid #C8901F}
 .sy-panel .b i:nth-child(1){top:-2px;left:-2px;border-width:2px 0 0 2px}
 .sy-panel .b i:nth-child(2){top:-2px;right:-2px;border-width:2px 2px 0 0}
 .sy-panel .b i:nth-child(3){bottom:-2px;left:-2px;border-width:0 0 2px 2px}
 .sy-panel .b i:nth-child(4){bottom:-2px;right:-2px;border-width:0 2px 2px 0}
-.sy-panel .b.one{left:12%;top:12%;width:24%;height:76%}
-.sy-panel .b.two{left:56%;top:19%;width:21%;height:70%;border-color:#B4342A}
+.sy-panel .b.one{left:7%;top:30%;width:16%;height:54%}
+.sy-panel .b.mid{left:38%;top:22%;width:15%;height:62%}
+.sy-panel .b.two{left:70%;top:28%;width:16%;height:58%;border-color:#B4342A}
 .sy-panel .b.two i{border-color:#B4342A}
 .sy-panel .t{position:absolute;bottom:calc(100% + 6px);left:-1px;background:#05070A;color:#EDEFF2;
   font-family:var(--mono);font-size:10px;line-height:1;padding:4px 7px;border-radius:3px;white-space:nowrap}
@@ -381,13 +389,15 @@ footer{padding:28px 0 64px;border-top:1px solid var(--line)}
         <div class="shot sy-shot">
           <div class="shot-bar">
             <span class="pb-dots"><i style="background:#FF5F56"></i><i style="background:#FFBD2E"></i><i style="background:#27C93F"></i></span>
-            <span class="pb-chip">2 tracked &middot; 1 alert</span>
+            <span class="pb-chip">3 tracked &middot; 1 alert</span>
             <span class="pb-time">14:03</span>
           </div>
           <div class="shot-panel sy-panel">
-            <div class="b one"><i></i><i></i><i></i><i></i>
-              <span class="t">#1 walking</span></div>
-            <div class="b two"><i></i><i></i><i></i><i></i>
+            <div class="b one"><i></i><i></i><i></i><i></i><span class="fg"></span>
+              <span class="t">#7</span></div>
+            <div class="b mid"><i></i><i></i><i></i><i></i><span class="fg"></span>
+              <span class="t">#1 running</span></div>
+            <div class="b two"><i></i><i></i><i></i><i></i><span class="fg"></span>
               <span class="t">MASKED</span></div>
           </div>
         </div>
