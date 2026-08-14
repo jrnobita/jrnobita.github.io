@@ -1,0 +1,547 @@
+# =====================================================================
+#  AUTO RESEARCH - standalone drop-in
+# =====================================================================
+#  Drop this single file into:
+#     Steam/steamapps/common/Hearts of Iron IV/common/on_actions/
+#  Nothing else to install. No descriptor, no mod folder, no launcher.
+#  Delete the file to uninstall.
+#
+#  Every AR_INTERVAL days you are granted one technology that you do
+#  not have and that is not ahead of the calendar.
+#
+#  --- HOW THE PICK WORKS ------------------------------------------
+#  The list below is sorted by year, earliest first. The first entry
+#  that is (a) unresearched and (b) not in the future gets granted,
+#  and the pass stops there.
+#
+#  Your case: it is 1940, Infantry Equipment III is done.
+#    infantry_weapons3  1942  -> in the future, skipped
+#    construction3      1940  -> GRANTED
+#  It never stalls on a tech two years out of reach.
+#
+#  --- SETTINGS ------------------------------------------------------
+#  Interval: search this file for "= 5 }" on the two ar_cd lines and
+#  change both to the same number. 5 days is about 5 seconds at speed
+#  5. Use 1 for near-instant.
+#
+#  Reach further ahead: lower a YEAR number. Setting infantry_weapons3
+#  to 1940 makes it grab that gun two years early instead of skipping.
+#
+#  Remove a tech: delete its whole if = { ... } block.
+#
+#  --- WARNINGS ------------------------------------------------------
+#  * A Steam update or "Verify integrity of game files" DELETES this
+#    file. Keep a backup copy somewhere else.
+#  * Tech ids are unverified against your build. A wrong id fails
+#    silently - the block just never fires. Check names against
+#    common/technologies/ and check logs/error.log on first load.
+#  * Human players only. The AI is untouched.
+#  * No doctrines: they are mutually exclusive and set_technology
+#    ignores that, so it would hand you incompatible doctrine paths.
+# =====================================================================
+
+on_actions = {
+	on_daily = {
+		effect = {
+			if = {
+				limit = { is_ai = no }
+
+				# lazy init - no on_startup hook needed
+				if = {
+					limit = { NOT = { has_variable = ar_cd } }
+					set_variable = { ar_cd = 5 }
+				}
+				add_to_variable = { ar_cd = -1 }
+
+				if = {
+					limit = { check_variable = { ar_cd < 1 } }
+					set_variable = { ar_cd = 5 }
+					set_variable = { ar_done = 0 }
+					# infantry_weapons (1918)
+					if = {
+						limit = {
+							check_variable = { ar_done < 1 }
+							NOT = { has_tech = infantry_weapons }
+							NOT = { date < 1918.1.1 }
+						}
+						set_technology = { infantry_weapons = 1 popup = no }
+						set_variable = { ar_done = 1 }
+					}
+					# tech_support (1918)
+					if = {
+						limit = {
+							check_variable = { ar_done < 1 }
+							NOT = { has_tech = tech_support }
+							NOT = { date < 1918.1.1 }
+						}
+						set_technology = { tech_support = 1 popup = no }
+						set_variable = { ar_done = 1 }
+					}
+					# tech_engineers (1918)
+					if = {
+						limit = {
+							check_variable = { ar_done < 1 }
+							NOT = { has_tech = tech_engineers }
+							NOT = { date < 1918.1.1 }
+						}
+						set_technology = { tech_engineers = 1 popup = no }
+						set_variable = { ar_done = 1 }
+					}
+					# gw_artillery (1918)
+					if = {
+						limit = {
+							check_variable = { ar_done < 1 }
+							NOT = { has_tech = gw_artillery }
+							NOT = { date < 1918.1.1 }
+						}
+						set_technology = { gw_artillery = 1 popup = no }
+						set_variable = { ar_done = 1 }
+					}
+					# interwar_antiair (1934)
+					if = {
+						limit = {
+							check_variable = { ar_done < 1 }
+							NOT = { has_tech = interwar_antiair }
+							NOT = { date < 1934.1.1 }
+						}
+						set_technology = { interwar_antiair = 1 popup = no }
+						set_variable = { ar_done = 1 }
+					}
+					# interwar_antitank (1934)
+					if = {
+						limit = {
+							check_variable = { ar_done < 1 }
+							NOT = { has_tech = interwar_antitank }
+							NOT = { date < 1934.1.1 }
+						}
+						set_technology = { interwar_antitank = 1 popup = no }
+						set_variable = { ar_done = 1 }
+					}
+					# interwar_artillery (1934)
+					if = {
+						limit = {
+							check_variable = { ar_done < 1 }
+							NOT = { has_tech = interwar_artillery }
+							NOT = { date < 1934.1.1 }
+						}
+						set_technology = { interwar_artillery = 1 popup = no }
+						set_variable = { ar_done = 1 }
+					}
+					# infantry_weapons1 (1936)
+					if = {
+						limit = {
+							check_variable = { ar_done < 1 }
+							NOT = { has_tech = infantry_weapons1 }
+							NOT = { date < 1936.1.1 }
+						}
+						set_technology = { infantry_weapons1 = 1 popup = no }
+						set_variable = { ar_done = 1 }
+					}
+					# support_weapons (1936)
+					if = {
+						limit = {
+							check_variable = { ar_done < 1 }
+							NOT = { has_tech = support_weapons }
+							NOT = { date < 1936.1.1 }
+						}
+						set_technology = { support_weapons = 1 popup = no }
+						set_variable = { ar_done = 1 }
+					}
+					# tech_recon (1936)
+					if = {
+						limit = {
+							check_variable = { ar_done < 1 }
+							NOT = { has_tech = tech_recon }
+							NOT = { date < 1936.1.1 }
+						}
+						set_technology = { tech_recon = 1 popup = no }
+						set_variable = { ar_done = 1 }
+					}
+					# tech_military_police (1936)
+					if = {
+						limit = {
+							check_variable = { ar_done < 1 }
+							NOT = { has_tech = tech_military_police }
+							NOT = { date < 1936.1.1 }
+						}
+						set_technology = { tech_military_police = 1 popup = no }
+						set_variable = { ar_done = 1 }
+					}
+					# construction1 (1936)
+					if = {
+						limit = {
+							check_variable = { ar_done < 1 }
+							NOT = { has_tech = construction1 }
+							NOT = { date < 1936.1.1 }
+						}
+						set_technology = { construction1 = 1 popup = no }
+						set_variable = { ar_done = 1 }
+					}
+					# excavation1 (1936)
+					if = {
+						limit = {
+							check_variable = { ar_done < 1 }
+							NOT = { has_tech = excavation1 }
+							NOT = { date < 1936.1.1 }
+						}
+						set_technology = { excavation1 = 1 popup = no }
+						set_variable = { ar_done = 1 }
+					}
+					# fuel_silos (1936)
+					if = {
+						limit = {
+							check_variable = { ar_done < 1 }
+							NOT = { has_tech = fuel_silos }
+							NOT = { date < 1936.1.1 }
+						}
+						set_technology = { fuel_silos = 1 popup = no }
+						set_variable = { ar_done = 1 }
+					}
+					# concentrated_industry (1936)
+					if = {
+						limit = {
+							check_variable = { ar_done < 1 }
+							NOT = { has_tech = concentrated_industry }
+							NOT = { date < 1936.1.1 }
+							NOT = { has_tech = dispersed_industry }
+						}
+						set_technology = { concentrated_industry = 1 popup = no }
+						set_variable = { ar_done = 1 }
+					}
+					# electronic_mechanical_engineering (1936)
+					if = {
+						limit = {
+							check_variable = { ar_done < 1 }
+							NOT = { has_tech = electronic_mechanical_engineering }
+							NOT = { date < 1936.1.1 }
+						}
+						set_technology = { electronic_mechanical_engineering = 1 popup = no }
+						set_variable = { ar_done = 1 }
+					}
+					# radio (1936)
+					if = {
+						limit = {
+							check_variable = { ar_done < 1 }
+							NOT = { has_tech = radio }
+							NOT = { date < 1936.1.1 }
+						}
+						set_technology = { radio = 1 popup = no }
+						set_variable = { ar_done = 1 }
+					}
+					# basic_encryption (1936)
+					if = {
+						limit = {
+							check_variable = { ar_done < 1 }
+							NOT = { has_tech = basic_encryption }
+							NOT = { date < 1936.1.1 }
+						}
+						set_technology = { basic_encryption = 1 popup = no }
+						set_variable = { ar_done = 1 }
+					}
+					# tech_hospital (1937)
+					if = {
+						limit = {
+							check_variable = { ar_done < 1 }
+							NOT = { has_tech = tech_hospital }
+							NOT = { date < 1937.1.1 }
+						}
+						set_technology = { tech_hospital = 1 popup = no }
+						set_variable = { ar_done = 1 }
+					}
+					# basic_decryption (1937)
+					if = {
+						limit = {
+							check_variable = { ar_done < 1 }
+							NOT = { has_tech = basic_decryption }
+							NOT = { date < 1937.1.1 }
+						}
+						set_technology = { basic_decryption = 1 popup = no }
+						set_variable = { ar_done = 1 }
+					}
+					# tech_maintenance_company (1938)
+					if = {
+						limit = {
+							check_variable = { ar_done < 1 }
+							NOT = { has_tech = tech_maintenance_company }
+							NOT = { date < 1938.1.1 }
+						}
+						set_technology = { tech_maintenance_company = 1 popup = no }
+						set_variable = { ar_done = 1 }
+					}
+					# tech_logistics_company (1938)
+					if = {
+						limit = {
+							check_variable = { ar_done < 1 }
+							NOT = { has_tech = tech_logistics_company }
+							NOT = { date < 1938.1.1 }
+						}
+						set_technology = { tech_logistics_company = 1 popup = no }
+						set_variable = { ar_done = 1 }
+					}
+					# artillery1 (1938)
+					if = {
+						limit = {
+							check_variable = { ar_done < 1 }
+							NOT = { has_tech = artillery1 }
+							NOT = { date < 1938.1.1 }
+						}
+						set_technology = { artillery1 = 1 popup = no }
+						set_variable = { ar_done = 1 }
+					}
+					# antiair1 (1938)
+					if = {
+						limit = {
+							check_variable = { ar_done < 1 }
+							NOT = { has_tech = antiair1 }
+							NOT = { date < 1938.1.1 }
+						}
+						set_technology = { antiair1 = 1 popup = no }
+						set_variable = { ar_done = 1 }
+					}
+					# construction2 (1938)
+					if = {
+						limit = {
+							check_variable = { ar_done < 1 }
+							NOT = { has_tech = construction2 }
+							NOT = { date < 1938.1.1 }
+						}
+						set_technology = { construction2 = 1 popup = no }
+						set_variable = { ar_done = 1 }
+					}
+					# excavation2 (1938)
+					if = {
+						limit = {
+							check_variable = { ar_done < 1 }
+							NOT = { has_tech = excavation2 }
+							NOT = { date < 1938.1.1 }
+						}
+						set_technology = { excavation2 = 1 popup = no }
+						set_variable = { ar_done = 1 }
+					}
+					# radio_detection (1938)
+					if = {
+						limit = {
+							check_variable = { ar_done < 1 }
+							NOT = { has_tech = radio_detection }
+							NOT = { date < 1938.1.1 }
+						}
+						set_technology = { radio_detection = 1 popup = no }
+						set_variable = { ar_done = 1 }
+					}
+					# infantry_weapons2 (1939)
+					if = {
+						limit = {
+							check_variable = { ar_done < 1 }
+							NOT = { has_tech = infantry_weapons2 }
+							NOT = { date < 1939.1.1 }
+						}
+						set_technology = { infantry_weapons2 = 1 popup = no }
+						set_variable = { ar_done = 1 }
+					}
+					# support_weapons1 (1939)
+					if = {
+						limit = {
+							check_variable = { ar_done < 1 }
+							NOT = { has_tech = support_weapons1 }
+							NOT = { date < 1939.1.1 }
+						}
+						set_technology = { support_weapons1 = 1 popup = no }
+						set_variable = { ar_done = 1 }
+					}
+					# antitank1 (1939)
+					if = {
+						limit = {
+							check_variable = { ar_done < 1 }
+							NOT = { has_tech = antitank1 }
+							NOT = { date < 1939.1.1 }
+						}
+						set_technology = { antitank1 = 1 popup = no }
+						set_variable = { ar_done = 1 }
+					}
+					# concentrated_industry2 (1939)
+					if = {
+						limit = {
+							check_variable = { ar_done < 1 }
+							NOT = { has_tech = concentrated_industry2 }
+							NOT = { date < 1939.1.1 }
+							NOT = { has_tech = dispersed_industry }
+						}
+						set_technology = { concentrated_industry2 = 1 popup = no }
+						set_variable = { ar_done = 1 }
+					}
+					# fuel_refining (1939)
+					if = {
+						limit = {
+							check_variable = { ar_done < 1 }
+							NOT = { has_tech = fuel_refining }
+							NOT = { date < 1939.1.1 }
+						}
+						set_technology = { fuel_refining = 1 popup = no }
+						set_variable = { ar_done = 1 }
+					}
+					# computing_machine (1939)
+					if = {
+						limit = {
+							check_variable = { ar_done < 1 }
+							NOT = { has_tech = computing_machine }
+							NOT = { date < 1939.1.1 }
+						}
+						set_technology = { computing_machine = 1 popup = no }
+						set_variable = { ar_done = 1 }
+					}
+					# construction3 (1940)
+					if = {
+						limit = {
+							check_variable = { ar_done < 1 }
+							NOT = { has_tech = construction3 }
+							NOT = { date < 1940.1.1 }
+						}
+						set_technology = { construction3 = 1 popup = no }
+						set_variable = { ar_done = 1 }
+					}
+					# excavation3 (1940)
+					if = {
+						limit = {
+							check_variable = { ar_done < 1 }
+							NOT = { has_tech = excavation3 }
+							NOT = { date < 1940.1.1 }
+						}
+						set_technology = { excavation3 = 1 popup = no }
+						set_variable = { ar_done = 1 }
+					}
+					# decimetric_radar (1940)
+					if = {
+						limit = {
+							check_variable = { ar_done < 1 }
+							NOT = { has_tech = decimetric_radar }
+							NOT = { date < 1940.1.1 }
+						}
+						set_technology = { decimetric_radar = 1 popup = no }
+						set_variable = { ar_done = 1 }
+					}
+					# improved_decryption (1940)
+					if = {
+						limit = {
+							check_variable = { ar_done < 1 }
+							NOT = { has_tech = improved_decryption }
+							NOT = { date < 1940.1.1 }
+						}
+						set_technology = { improved_decryption = 1 popup = no }
+						set_variable = { ar_done = 1 }
+					}
+					# artillery2 (1941)
+					if = {
+						limit = {
+							check_variable = { ar_done < 1 }
+							NOT = { has_tech = artillery2 }
+							NOT = { date < 1941.1.1 }
+						}
+						set_technology = { artillery2 = 1 popup = no }
+						set_variable = { ar_done = 1 }
+					}
+					# antiair2 (1941)
+					if = {
+						limit = {
+							check_variable = { ar_done < 1 }
+							NOT = { has_tech = antiair2 }
+							NOT = { date < 1941.1.1 }
+						}
+						set_technology = { antiair2 = 1 popup = no }
+						set_variable = { ar_done = 1 }
+					}
+					# antitank2 (1941)
+					if = {
+						limit = {
+							check_variable = { ar_done < 1 }
+							NOT = { has_tech = antitank2 }
+							NOT = { date < 1941.1.1 }
+						}
+						set_technology = { antitank2 = 1 popup = no }
+						set_variable = { ar_done = 1 }
+					}
+					# concentrated_industry3 (1941)
+					if = {
+						limit = {
+							check_variable = { ar_done < 1 }
+							NOT = { has_tech = concentrated_industry3 }
+							NOT = { date < 1941.1.1 }
+							NOT = { has_tech = dispersed_industry }
+						}
+						set_technology = { concentrated_industry3 = 1 popup = no }
+						set_variable = { ar_done = 1 }
+					}
+					# infantry_weapons3 (1942)
+					if = {
+						limit = {
+							check_variable = { ar_done < 1 }
+							NOT = { has_tech = infantry_weapons3 }
+							NOT = { date < 1942.1.1 }
+						}
+						set_technology = { infantry_weapons3 = 1 popup = no }
+						set_variable = { ar_done = 1 }
+					}
+					# support_weapons2 (1942)
+					if = {
+						limit = {
+							check_variable = { ar_done < 1 }
+							NOT = { has_tech = support_weapons2 }
+							NOT = { date < 1942.1.1 }
+						}
+						set_technology = { support_weapons2 = 1 popup = no }
+						set_variable = { ar_done = 1 }
+					}
+					# construction4 (1942)
+					if = {
+						limit = {
+							check_variable = { ar_done < 1 }
+							NOT = { has_tech = construction4 }
+							NOT = { date < 1942.1.1 }
+						}
+						set_technology = { construction4 = 1 popup = no }
+						set_variable = { ar_done = 1 }
+					}
+					# excavation4 (1942)
+					if = {
+						limit = {
+							check_variable = { ar_done < 1 }
+							NOT = { has_tech = excavation4 }
+							NOT = { date < 1942.1.1 }
+						}
+						set_technology = { excavation4 = 1 popup = no }
+						set_variable = { ar_done = 1 }
+					}
+					# artillery3 (1944)
+					if = {
+						limit = {
+							check_variable = { ar_done < 1 }
+							NOT = { has_tech = artillery3 }
+							NOT = { date < 1944.1.1 }
+						}
+						set_technology = { artillery3 = 1 popup = no }
+						set_variable = { ar_done = 1 }
+					}
+					# construction5 (1944)
+					if = {
+						limit = {
+							check_variable = { ar_done < 1 }
+							NOT = { has_tech = construction5 }
+							NOT = { date < 1944.1.1 }
+						}
+						set_technology = { construction5 = 1 popup = no }
+						set_variable = { ar_done = 1 }
+					}
+					# excavation5 (1944)
+					if = {
+						limit = {
+							check_variable = { ar_done < 1 }
+							NOT = { has_tech = excavation5 }
+							NOT = { date < 1944.1.1 }
+						}
+						set_technology = { excavation5 = 1 popup = no }
+						set_variable = { ar_done = 1 }
+					}
+				}
+			}
+		}
+	}
+}
