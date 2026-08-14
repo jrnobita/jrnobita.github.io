@@ -1,0 +1,128 @@
+# =====================================================================
+#  AUTO RESEARCH - core helpers
+# =====================================================================
+#  ar_try            grant a tech if it is unresearched AND in-era
+#  ar_try_x          same, but blocked by a mutually-exclusive tech
+#  ar_tick           one full evaluation pass (called by the timer event)
+#
+#  Country variables used:
+#    ar_on             1 = auto research enabled
+#    ar_done           1 = a tech was already granted this tick
+#    ar_ignore_year    1 = year gate disabled (fallback pass)
+#    ar_future         1 = allowed to reach into future techs at all
+#    ar_focus          0 auto / 1 infantry / 2 artillery / 3 industry / 4 electronics
+#    ar_interval_days  days between grants (1 day ~= 1 second at speed 5)
+#    ar_cd             countdown to the next grant
+#    ar_count          how many techs this mod has granted
+# =====================================================================
+
+# --- grant one tech, if allowed -------------------------------------
+# TECH = <tech id>   YEAR = <first year the tech is sane to own>
+ar_try = {
+	if = {
+		limit = {
+			check_variable = { ar_done < 1 }
+			NOT = { has_tech = $TECH$ }
+			OR = {
+				NOT = { date < $YEAR$.1.1 }
+				check_variable = { ar_ignore_year > 0 }
+			}
+		}
+		set_technology = { $TECH$ = 1 popup = no }
+		set_variable = { ar_done = 1 }
+		add_to_variable = { ar_count = 1 }
+	}
+}
+
+# --- same, but refuse if the exclusive partner tech is already owned -
+# TECH = <tech id>   YEAR = <year>   BLOCK = <tech that forbids it>
+# Written out longhand rather than wrapping ar_try: nesting one
+# parameterised scripted effect inside another leans on textual $PARAM$
+# substitution and is the first thing to break between patches.
+ar_try_x = {
+	if = {
+		limit = {
+			check_variable = { ar_done < 1 }
+			NOT = { has_tech = $TECH$ }
+			NOT = { has_tech = $BLOCK$ }
+			OR = {
+				NOT = { date < $YEAR$.1.1 }
+				check_variable = { ar_ignore_year > 0 }
+			}
+		}
+		set_technology = { $TECH$ = 1 popup = no }
+		set_variable = { ar_done = 1 }
+		add_to_variable = { ar_count = 1 }
+	}
+}
+
+# =====================================================================
+#  One evaluation pass
+# =====================================================================
+ar_tick = {
+	set_variable = { ar_done = 0 }
+	set_variable = { ar_ignore_year = 0 }
+
+	# --- pass 1: the focus lane, in-era only ------------------------
+	if = {
+		limit = { check_variable = { ar_focus = 1 } }
+		ar_lane_infantry = yes
+	}
+	if = {
+		limit = { check_variable = { ar_focus = 2 } }
+		ar_lane_artillery = yes
+	}
+	if = {
+		limit = { check_variable = { ar_focus = 3 } }
+		ar_lane_industry = yes
+	}
+	if = {
+		limit = { check_variable = { ar_focus = 4 } }
+		ar_lane_electronics = yes
+	}
+
+	# --- pass 2: every lane, in-era only ----------------------------
+	# This is the behaviour you asked for. If it is 1940 and the next
+	# infantry weapon is a 1942 tech, ar_try skips it and the pass just
+	# keeps walking - support weapons, artillery, industry, radar -
+	# until it lands on something that is actually era-appropriate.
+	if = {
+		limit = { check_variable = { ar_done < 1 } }
+		ar_all_lanes = yes
+	}
+
+	# --- pass 3: nothing left in-era, so reach forward --------------
+	# Only runs when the era is genuinely exhausted, and only if the
+	# player has opted in with the "allow future techs" decision.
+	if = {
+		limit = {
+			check_variable = { ar_done < 1 }
+			check_variable = { ar_future > 0 }
+		}
+		set_variable = { ar_ignore_year = 1 }
+		ar_all_lanes = yes
+		set_variable = { ar_ignore_year = 0 }
+	}
+}
+
+# Lane order = priority order when no focus is set.
+ar_all_lanes = {
+	ar_lane_infantry = yes
+	ar_lane_artillery = yes
+	ar_lane_industry = yes
+	ar_lane_electronics = yes
+}
+
+# =====================================================================
+#  Defaults
+# =====================================================================
+ar_init = {
+	set_variable = { ar_on = 1 }
+	set_variable = { ar_future = 0 }
+	set_variable = { ar_focus = 0 }
+	set_variable = { ar_interval_days = 5 }
+	set_variable = { ar_cd = 5 }
+	set_variable = { ar_count = 0 }
+	set_variable = { ar_done = 0 }
+	set_variable = { ar_ignore_year = 0 }
+}

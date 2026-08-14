@@ -1,0 +1,38 @@
+add_namespace = auto_research
+
+# =====================================================================
+#  auto_research.1 - the heartbeat
+# =====================================================================
+#  Hidden, silent, and it re-fires itself every single day, so the loop
+#  survives save/load and never depends on an on_action firing order.
+#
+#  Why a day loop and not a real 5-second timer: HOI4 script has no
+#  wall-clock hook, the finest tick available to a modder is one day.
+#  At speed 5 a day passes in roughly a second, so ar_interval_days = 5
+#  lands almost exactly on the "nothing happening for 5 seconds, grant
+#  something" behaviour you asked for. Lower it to 1 for near-instant,
+#  raise it to slow the drip down.
+# =====================================================================
+country_event = {
+	id = auto_research.1
+	hidden = yes
+	is_triggered_only = yes
+
+	immediate = {
+		add_to_variable = { ar_cd = -1 }
+
+		if = {
+			limit = {
+				check_variable = { ar_on > 0 }
+				check_variable = { ar_cd < 1 }
+			}
+			ar_tick = yes
+			set_variable = { ar_cd = ar_interval_days }
+		}
+
+		# keep the heartbeat going
+		country_event = { id = auto_research.1 days = 1 }
+	}
+
+	option = { name = auto_research.1.a }
+}

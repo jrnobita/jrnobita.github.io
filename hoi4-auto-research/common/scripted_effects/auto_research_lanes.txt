@@ -1,0 +1,120 @@
+# =====================================================================
+#  AUTO RESEARCH - tech tables
+# =====================================================================
+#  Each lane is a list of (tech id, earliest sensible year), sorted by
+#  year ascending. ar_try walks the list and takes the FIRST entry that
+#  is both unresearched and not ahead of the calendar.
+#
+#  That ordering is the whole optimisation. Worked example, the one you
+#  described:
+#
+#     it is 1940, Infantry Equipment II is done
+#     -> infantry_weapons2 is a 1939 tech  -> in era  -> taken
+#     it is 1940, Infantry Equipment III is done
+#     -> infantry_weapons3 is a 1942 tech  -> skipped
+#     -> support_weapons1 (1939)           -> maybe already done
+#     -> artillery2 (1941)                 -> skipped
+#     -> construction3 (1940)              -> in era -> taken
+#
+#  So it never burns the timer on a tech two years out of reach; it
+#  drops sideways onto the best thing the era actually offers.
+#
+#  ---------------------------------------------------------------
+#  TUNING: the YEAR values are "when is this reasonable to own", not
+#  literally the tech's start_year from the vanilla files. Raise a
+#  year to make the mod hold off longer, lower it to make the mod
+#  grab it sooner. Reorder lines to change preference inside a lane.
+#
+#  VERIFY BEFORE ADDING: tech ids change between game versions and
+#  DLC (NSB reworked armour, BBA reworked aircraft). If you add a
+#  line with a tech id that does not exist in your version, the game
+#  logs an error and that line silently does nothing. Check the id
+#  against Hearts of Iron IV/common/technologies/ first.
+#
+#  DOCTRINES ARE DELIBERATELY ABSENT. Doctrine branches are mutually
+#  exclusive choices; set_technology ignores that restriction and
+#  would happily hand you two incompatible doctrine paths. Pick those
+#  yourself.
+# =====================================================================
+
+ar_lane_infantry = {
+	ar_try = { TECH = infantry_weapons      YEAR = 1918 }
+	ar_try = { TECH = tech_support          YEAR = 1918 }
+	ar_try = { TECH = tech_engineers        YEAR = 1918 }
+	ar_try = { TECH = infantry_weapons1     YEAR = 1936 }
+	ar_try = { TECH = support_weapons       YEAR = 1936 }
+	ar_try = { TECH = tech_recon            YEAR = 1936 }
+	ar_try = { TECH = tech_military_police  YEAR = 1936 }
+	ar_try = { TECH = tech_hospital         YEAR = 1937 }
+	ar_try = { TECH = tech_maintenance_company YEAR = 1938 }
+	ar_try = { TECH = tech_logistics_company   YEAR = 1938 }
+	ar_try = { TECH = infantry_weapons2     YEAR = 1939 }
+	ar_try = { TECH = support_weapons1      YEAR = 1939 }
+	ar_try = { TECH = infantry_weapons3     YEAR = 1942 }
+	ar_try = { TECH = support_weapons2      YEAR = 1942 }
+}
+
+ar_lane_artillery = {
+	ar_try = { TECH = gw_artillery          YEAR = 1918 }
+	ar_try = { TECH = interwar_antiair      YEAR = 1934 }
+	ar_try = { TECH = interwar_antitank     YEAR = 1934 }
+	ar_try = { TECH = interwar_artillery    YEAR = 1934 }
+	ar_try = { TECH = artillery1            YEAR = 1938 }
+	ar_try = { TECH = antiair1              YEAR = 1938 }
+	ar_try = { TECH = antitank1             YEAR = 1939 }
+	ar_try = { TECH = artillery2            YEAR = 1941 }
+	ar_try = { TECH = antiair2              YEAR = 1941 }
+	ar_try = { TECH = antitank2             YEAR = 1941 }
+	ar_try = { TECH = artillery3            YEAR = 1944 }
+}
+
+ar_lane_industry = {
+	ar_try = { TECH = construction1         YEAR = 1936 }
+	ar_try = { TECH = excavation1           YEAR = 1936 }
+	ar_try = { TECH = fuel_silos            YEAR = 1936 }
+	# concentrated vs dispersed are an either/or choice - take one lane
+	# only, and never both. Swap the two lines to prefer dispersed.
+	ar_try_x = { TECH = concentrated_industry YEAR = 1936 BLOCK = dispersed_industry }
+	ar_try_x = { TECH = dispersed_industry    YEAR = 1936 BLOCK = concentrated_industry }
+	ar_try = { TECH = construction2         YEAR = 1938 }
+	ar_try = { TECH = excavation2           YEAR = 1938 }
+	ar_try_x = { TECH = concentrated_industry2 YEAR = 1939 BLOCK = dispersed_industry }
+	ar_try_x = { TECH = dispersed_industry2    YEAR = 1939 BLOCK = concentrated_industry }
+	ar_try = { TECH = fuel_refining         YEAR = 1939 }
+	ar_try = { TECH = construction3         YEAR = 1940 }
+	ar_try = { TECH = excavation3           YEAR = 1940 }
+	ar_try_x = { TECH = concentrated_industry3 YEAR = 1941 BLOCK = dispersed_industry }
+	ar_try_x = { TECH = dispersed_industry3    YEAR = 1941 BLOCK = concentrated_industry }
+	ar_try = { TECH = construction4         YEAR = 1942 }
+	ar_try = { TECH = excavation4           YEAR = 1942 }
+	ar_try = { TECH = construction5         YEAR = 1944 }
+	ar_try = { TECH = excavation5           YEAR = 1944 }
+}
+
+ar_lane_electronics = {
+	ar_try = { TECH = electronic_mechanical_engineering YEAR = 1936 }
+	ar_try = { TECH = radio                 YEAR = 1936 }
+	ar_try = { TECH = basic_encryption      YEAR = 1936 }
+	ar_try = { TECH = basic_decryption      YEAR = 1937 }
+	ar_try = { TECH = radio_detection       YEAR = 1938 }
+	ar_try = { TECH = computing_machine     YEAR = 1939 }
+	ar_try = { TECH = decimetric_radar      YEAR = 1940 }
+	ar_try = { TECH = improved_decryption   YEAR = 1940 }
+}
+
+# ---------------------------------------------------------------------
+#  OPTIONAL LANES - armour / air / naval
+# ---------------------------------------------------------------------
+#  Left commented out because these ids are the ones DLC reworks touch
+#  most. Check them against your install, uncomment, then add the lane
+#  call into ar_all_lanes in auto_research_core.txt.
+#
+#  ar_lane_air = {
+#  	ar_try = { TECH = early_fighter      YEAR = 1933 }
+#  	ar_try = { TECH = early_bomber       YEAR = 1933 }
+#  	ar_try = { TECH = fighter1           YEAR = 1936 }
+#  	ar_try = { TECH = CAS1               YEAR = 1936 }
+#  	ar_try = { TECH = naval_bomber1      YEAR = 1936 }
+#  	ar_try = { TECH = fighter2           YEAR = 1940 }
+#  	ar_try = { TECH = CAS2               YEAR = 1940 }
+#  }

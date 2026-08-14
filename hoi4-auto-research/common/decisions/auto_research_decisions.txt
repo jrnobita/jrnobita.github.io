@@ -1,0 +1,91 @@
+ar_category = {
+
+	# --- master switch ----------------------------------------------
+	ar_toggle = {
+		icon = generic_research
+		cost = 0
+		fire_only_once = no
+		visible = { always = yes }
+		available = { always = yes }
+		ai_will_do = { factor = 0 }
+
+		complete_effect = {
+			# self-heal if the player switched country mid-campaign
+			if = {
+				limit = { NOT = { has_variable = ar_interval_days } }
+				ar_init = yes
+			}
+			if = {
+				limit = { check_variable = { ar_on > 0 } }
+				set_variable = { ar_on = 0 }
+				else = {
+					set_variable = { ar_on = 1 }
+					set_variable = { ar_cd = 1 }
+				}
+			}
+		}
+	}
+
+	# --- allow reaching past the current era ------------------------
+	ar_toggle_future = {
+		icon = generic_research
+		cost = 0
+		fire_only_once = no
+		visible = { always = yes }
+		available = { always = yes }
+		ai_will_do = { factor = 0 }
+
+		complete_effect = {
+			if = {
+				limit = { check_variable = { ar_future > 0 } }
+				set_variable = { ar_future = 0 }
+				else = { set_variable = { ar_future = 1 } }
+			}
+		}
+	}
+
+	# --- which lane to favour ---------------------------------------
+	ar_cycle_focus = {
+		icon = generic_research
+		cost = 0
+		fire_only_once = no
+		visible = { always = yes }
+		available = { always = yes }
+		ai_will_do = { factor = 0 }
+
+		complete_effect = {
+			add_to_variable = { ar_focus = 1 }
+			if = {
+				limit = { check_variable = { ar_focus > 4 } }
+				set_variable = { ar_focus = 0 }
+			}
+		}
+	}
+
+	# --- pacing ------------------------------------------------------
+	ar_faster = {
+		icon = generic_research
+		cost = 0
+		fire_only_once = no
+		visible = { always = yes }
+		available = { check_variable = { ar_interval_days > 1 } }
+		ai_will_do = { factor = 0 }
+
+		complete_effect = {
+			add_to_variable = { ar_interval_days = -1 }
+		}
+	}
+
+	ar_slower = {
+		icon = generic_research
+		cost = 0
+		fire_only_once = no
+		visible = { always = yes }
+		available = { check_variable = { ar_interval_days < 60 } }
+		ai_will_do = { factor = 0 }
+
+		complete_effect = {
+			add_to_variable = { ar_interval_days = 5 }
+		}
+	}
+}

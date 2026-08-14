@@ -1,0 +1,4 @@
+ar_category = {
+	icon = generic_research
+	visible = { always = yes }
+}

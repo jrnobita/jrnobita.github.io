@@ -1,0 +1,20 @@
+﻿l_english:
+ ar_category:0 "Auto Research"
+ ar_category_desc:0 "Hands you a sensible, era-appropriate technology on a timer."
+
+ ar_toggle:0 "Auto Research: [?ar_on] (1 = on)"
+ ar_toggle_desc:0 "Turn the automatic researcher on or off.\n\nWhile it is on, every §Y[?ar_interval_days]§! days you are granted one technology that you do not have yet and that fits the current year.\n\nTechs granted so far: §Y[?ar_count]§!"
+
+ ar_toggle_future:0 "Reach Into Future Techs: [?ar_future] (1 = on)"
+ ar_toggle_future_desc:0 "§ROff§! - if nothing era-appropriate is left, the timer simply passes and nothing is granted.\n\n§GOn§! - when the current era is genuinely exhausted, the researcher is allowed to pull a technology from a later year rather than idle."
+
+ ar_cycle_focus:0 "Research Focus: [?ar_focus]"
+ ar_cycle_focus_desc:0 "Which branch gets first refusal each tick.\n\n§Y0§! Balanced - walk every lane in order\n§Y1§! Infantry\n§Y2§! Artillery and anti-tank\n§Y3§! Industry\n§Y4§! Electronics\n\nA focus is a preference, not a cage. If the focused lane has nothing in-era, the researcher falls through to the other lanes instead of wasting the tick."
+
+ ar_faster:0 "Research Faster (-1 day)"
+ ar_faster_desc:0 "Shorten the gap between grants. Currently §Y[?ar_interval_days]§! days."
+
+ ar_slower:0 "Research Slower (+5 days)"
+ ar_slower_desc:0 "Lengthen the gap between grants. Currently §Y[?ar_interval_days]§! days."
+
+ auto_research.1.a:0 "OK"

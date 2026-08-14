@@ -1,0 +1,17 @@
+on_actions = {
+
+	# Start the heartbeat for human players only.
+	#
+	# The AI is deliberately left out: handing every nation free techs on
+	# a timer would flatten the whole game. If you want the AI in too,
+	# drop the is_ai = no line - be aware what that does to balance.
+	on_startup = {
+		effect = {
+			every_country = {
+				limit = { is_ai = no }
+				ar_init = yes
+				country_event = { id = auto_research.1 days = 1 }
+			}
+		}
+	}
+}
