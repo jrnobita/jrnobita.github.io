@@ -1,0 +1,733 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Smart Navy AI — jrnobita</title>
+<meta name="description" content="A Hearts of Iron IV mod that stops the AI sailing into water it cannot survive, and makes ship design react to what intelligence actually knows.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --bg:#FBFBF9;
+  --ink:#15171A;
+  --mid:#5A6068;
+  --dim:#9AA1A8;
+  --line:#E4E5E1;
+  --accent:#2C6E5B;
+  --warn:#A8751A;
+  --slab:#12161A; --amber:#FFBD2E; --mbh:44px;
+  --sans:'Inter',system-ui,-apple-system,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
+}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 var(--sans);-webkit-font-smoothing:antialiased}
+.wrap{max-width:980px;margin:0 auto;padding:0 24px}
+a{color:inherit}
+
+/* menu bar --------------------------------------------------------------- */
+.menubar{position:sticky;top:0;z-index:60;background:var(--slab);color:#F0F2F4;
+  font-family:var(--mono);font-size:16.5px;display:flex;align-items:center;gap:20px;padding:11px 22px}
+.mb-dots{display:flex;gap:10px;flex:0 0 auto}
+.mb-dots i{width:12px;height:12px;border-radius:50%;display:block}
+.mb-spacer{flex:1 1 auto}
+.mb-icons{display:flex;align-items:center;gap:21px;flex:0 0 auto}
+.mb-icons svg{display:block;opacity:.94;width:21px;height:21px}
+.mb-clock{flex:0 0 auto;font-variant-numeric:tabular-nums;white-space:nowrap}
+@media (max-width:900px){
+  .menubar{font-size:15px;gap:14px;padding:11px 16px}
+  .mb-icons{gap:16px} .mb-icons svg{width:20px;height:20px}
+  .mb-dots i{width:11px;height:11px}
+}
+@media (max-width:620px){ .mb-icons .opt{display:none} .menubar{font-size:13px} }
+/* below about 360px the decorative clock is what pushes the page sideways */
+@media (max-width:380px){ .mb-clock{display:none} }
+/* the menubar and the site nav are both sticky, so an anchor has to clear
+   both of them or the section title lands underneath the nav */
+section[id]{scroll-margin-top:calc(var(--mbh) + 74px)}
+
+/* nav ------------------------------------------------------------------- */
+nav{border-bottom:1px solid var(--line);position:sticky;top:var(--mbh);
+  background:rgba(251,251,249,.9);backdrop-filter:blur(8px);z-index:10}
+nav .wrap{display:flex;align-items:center;gap:18px;padding-top:12px;padding-bottom:12px}
+.logo{flex:0 0 auto;width:30px;height:30px;display:block;transition:transform .18s ease}
+.logo svg{width:100%;height:100%;display:block;border-radius:7px}
+.logo:hover{transform:translateY(-1px)}
+.name{flex:0 0 auto;font-weight:600;font-size:15px;letter-spacing:-.012em}
+.tagline{flex:1 1 auto;min-width:0;color:var(--dim);font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+nav a:not(.logo){flex:0 0 auto;font-size:14px;color:var(--mid);text-decoration:none;transition:color .15s ease}
+nav a:not(.logo):hover{color:var(--ink)}
+@media (max-width:860px){.tagline{display:none}}
+@media (max-width:560px){.name{display:none}nav .wrap{gap:14px}}
+/* four nav links plus the logo stop fitting on a narrow phone */
+@media (max-width:480px){nav a.opt-nav{display:none}}
+
+/* hero ------------------------------------------------------------------ */
+header.hero{padding:78px 0 62px}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.13em;text-transform:uppercase;color:var(--dim);margin-bottom:22px}
+h1{font-size:clamp(2.3rem,6.4vw,4rem);line-height:1.03;letter-spacing:-.035em;font-weight:700;margin:0 0 22px;max-width:15ch}
+h1 i{font-style:normal;color:var(--sig)}
+.lede{font-size:1.13rem;color:var(--mid);max-width:56ch;margin:0 0 30px}
+.cta{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.btn{display:inline-block;padding:10px 18px;border-radius:7px;font-size:14.5px;font-weight:500;text-decoration:none;border:1px solid var(--line)}
+.btn.solid{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.btn.solid:hover{background:#000}
+.btn:hover{border-color:var(--ink)}
+
+/* sections ---------------------------------------------------------------- */
+section{padding:64px 0;border-top:1px solid var(--line)}
+h2{font-size:1.55rem;letter-spacing:-.022em;margin:0 0 8px;font-weight:600}
+.sub{color:var(--mid);max-width:60ch;margin:0 0 34px}
+h3{font-size:1rem;font-weight:600;margin:0 0 6px;letter-spacing:-.005em}
+p{max-width:64ch}
+/* min() on the track floor matters: a bare minmax(340px,1fr) cannot shrink
+   below 340px, so on a 320px phone the grid itself pushes the page sideways */
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(232px,100%),1fr));gap:18px;margin-top:26px}
+/* four cards in a three-up grid leave one stranded; these sets are pairs */
+.grid2.pairs{grid-template-columns:repeat(auto-fit,minmax(min(340px,100%),1fr))}
+.cardy{border:1px solid var(--line);border-radius:11px;padding:19px 20px;background:#fff}
+.cardy h3{margin:0 0 6px;font-size:16px}
+.cardy p{margin:0;color:var(--mid);font-size:14.5px;line-height:1.6}
+.cardy .k{font:500 11px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--sig);display:block;margin-bottom:9px}
+pre{background:#12161A;color:#E6EAEF;border-radius:9px;padding:15px 17px;font-family:var(--mono);
+  font-size:12.5px;line-height:1.6;overflow-x:auto;margin:16px 0}
+pre .c{color:#7E8A95}
+pre .hl{color:#F5C45E}
+/* long identifiers like axis_stay_away_from_the_royal_navy are single
+   unbreakable tokens and will widen the page on a narrow phone */
+code{font-family:var(--mono);font-size:.88em;background:#EFEFEA;padding:1px 5px;border-radius:4px;
+  overflow-wrap:anywhere}
+.tbl{width:100%;border-collapse:collapse;margin-top:22px;font-size:14.5px}
+.tbl th,.tbl td{text-align:left;padding:9px 14px 9px 0;border-bottom:1px solid var(--line);vertical-align:top}
+.tbl th{font:600 11px/1.4 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--dim)}
+.tbl td.n{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+.scrollx{overflow-x:auto}
+footer{border-top:1px solid var(--line);padding:28px 0 64px;font-size:13px;color:var(--dim);
+  display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+footer a{text-decoration:none}
+footer a:hover{color:var(--ink)}
+
+/* ── Smart Navy ─────────────────────────────────────────────────────────
+   Signature is deep-water blue, set apart from PayGate's ledger green,
+   Sentry's camera teal and Claude Usage's amber. */
+.nv{ --sig:#1B4B6B; --avoid:#8C2F22; --base:#2C6E5B; --raid:#A8751A; }
+.nv .eyebrow{color:var(--sig)}
+
+/* the operations board in the hero — what the AI is actually weighing */
+.board{background:#0E1116;border-radius:12px;overflow:hidden;margin-top:38px;
+  box-shadow:0 24px 48px -34px rgba(21,23,26,.7)}
+.board .bbar{display:flex;align-items:center;gap:10px;padding:10px 14px;background:#151A21;
+  border-bottom:1px solid #212832;font:500 12px/1 var(--mono);color:#8C97A6}
+.board .bbar b{color:#E6EAEF;font-weight:600}
+.board .bbar .yr{margin-left:auto;font-variant-numeric:tabular-nums}
+.board .rows{padding:6px 0}
+.brow{display:grid;grid-template-columns:74px 42px 1fr 62px;gap:12px;align-items:center;
+  padding:9px 16px;font-family:var(--mono);font-size:12.5px}
+.brow .tag{font-size:10px;letter-spacing:.09em;text-transform:uppercase;font-weight:700}
+.brow.a .tag{color:#E06C5C} .brow.b .tag{color:#5FC49E} .brow.r .tag{color:#F5C45E}
+.brow .id{color:#6E7A88;font-variant-numeric:tabular-nums}
+.brow .rg{color:#E6EAEF}
+.brow .w{text-align:right;color:#8C97A6;font-variant-numeric:tabular-nums}
+.brow .w b{color:#E6EAEF;font-weight:600}
+.board .note{border-top:1px solid #212832;padding:11px 16px;font:400 11.5px/1.5 var(--mono);color:#6E7A88}
+@media (max-width:600px){
+  .brow{grid-template-columns:64px 34px 1fr 50px;gap:8px;font-size:11.5px;padding:8px 12px}
+}
+
+/* the damage matrix ------------------------------------------------------ */
+.mx-wrap{margin-top:28px;position:relative}
+.mx{border-collapse:separate;border-spacing:2px;font-family:var(--mono);font-size:12.5px;
+  font-variant-numeric:tabular-nums}
+.mx th{font-weight:500;color:var(--mid);padding:6px 8px;text-align:center;white-space:nowrap;font-size:11px}
+.mx th.rh{text-align:left;color:var(--ink);font-weight:500;font-size:12px;padding-right:14px}
+.mx th.rh span{display:block;color:var(--dim);font-size:10.5px}
+.mx td{width:58px;height:40px;text-align:center;border-radius:4px;cursor:default;
+  transition:outline-color .12s ease;outline:2px solid transparent;outline-offset:-2px}
+.mx td:hover{outline-color:var(--ink)}
+.mx td.t{background:#F2EFE6;color:#6B5A2E;font-style:italic}
+.mx .corner{border-bottom:0}
+.mx-cap{font-size:11px;color:var(--dim);font-family:var(--mono);letter-spacing:.04em;
+  text-transform:uppercase;padding-bottom:8px}
+.legend{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:20px;
+  font-family:var(--mono);font-size:11.5px;color:var(--mid)}
+.legend .sw{display:inline-flex;align-items:center;gap:6px}
+.legend .sw i{width:15px;height:15px;border-radius:3px;display:block}
+.legend .sep{color:var(--dim)}
+.tip{position:absolute;pointer-events:none;opacity:0;transform:translate(-50%,-115%);
+  background:#0E1116;color:#E6EAEF;border-radius:7px;padding:9px 11px;font-family:var(--mono);
+  font-size:11.5px;line-height:1.55;white-space:nowrap;z-index:20;transition:opacity .12s ease;
+  box-shadow:0 10px 24px -12px rgba(0,0,0,.6)}
+.tip.on{opacity:1}
+.tip b{color:#fff;font-weight:600}
+.tip .r{color:#8C97A6}
+.mx-toggle{margin-top:18px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.mx-toggle button{font:500 12.5px/1 var(--sans);padding:8px 14px;border-radius:7px;
+  border:1px solid var(--line);background:#fff;color:var(--mid);cursor:pointer;transition:all .15s ease}
+.mx-toggle button:hover{border-color:var(--ink);color:var(--ink)}
+.mx-toggle button[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+.datatable{margin-top:20px;display:none}
+.datatable.on{display:block}
+
+.pill{display:inline-block;font:500 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;
+  border:1px solid var(--line);border-radius:999px;padding:5px 10px;color:var(--mid);margin:0 6px 6px 0}
+.quiet{color:var(--mid)}
+.steps{display:grid;gap:0;margin-top:10px}
+.step{display:grid;grid-template-columns:150px 1fr;gap:28px;padding:22px 0;border-bottom:1px solid var(--line)}
+.step:last-child{border-bottom:0}
+/* a grid item defaults to min-width:auto, so the <pre> inside refuses to shrink
+   below its longest line and pushes the whole page sideways on a phone. The
+   overflow-x on <pre> only works once the track is allowed to be narrower. */
+.step > *{min-width:0}
+.step .tag{font-family:var(--mono);font-size:11.5px;color:var(--sig);padding-top:3px}
+.step .tag b{display:block;color:var(--dim);font-weight:400;font-size:10.5px;letter-spacing:.1em;
+  text-transform:uppercase;margin-top:3px}
+.step p{font-size:.94rem;color:var(--mid);margin:0 0 9px}
+.step p:last-child{margin-bottom:0}
+@media(max-width:680px){.step{grid-template-columns:1fr;gap:8px}}
+</style>
+</head>
+<body>
+
+<div class="menubar">
+  <div class="mb-dots"><i style="background:#FF5F56"></i><i style="background:#FFBD2E"></i><i style="background:#27C93F"></i></div>
+  <div class="mb-spacer"></div>
+  <div class="mb-icons" aria-hidden="true">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M1.6 5.6a10 10 0 0 1 12.8 0"/><path d="M4 8.3a6.4 6.4 0 0 1 8 0"/><path d="M6.3 11a3 3 0 0 1 3.4 0"/><circle cx="8" cy="13.3" r=".85" fill="currentColor" stroke="none"/></svg>
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><circle cx="7" cy="7" r="4.4"/><path d="M10.3 10.3 14 14"/></svg>
+    <svg class="opt" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"><rect x="1.6" y="2.6" width="12.8" height="9" rx="1.2"/><path d="M5.6 13.8h4.8"/></svg>
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="1.4" y="2.4" width="13.2" height="4.6" rx="2.3"/><circle cx="5" cy="4.7" r="1.15" fill="currentColor" stroke="none"/><rect x="1.4" y="9" width="13.2" height="4.6" rx="2.3"/><circle cx="11" cy="11.3" r="1.15" fill="currentColor" stroke="none"/></svg>
+  </div>
+  <div class="mb-clock" id="mb-clock">Sat Aug 15&ensp;3:40 PM</div>
+</div>
+
+<nav>
+  <div class="wrap">
+    <a class="logo" href="/" aria-label="jrnobita home"><svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><rect width="64" height="64" rx="14" fill="#16191D"/><g fill="none" stroke="#FFFFFF" stroke-width="8.5" stroke-linecap="butt" stroke-linejoin="miter"><path d="M29 12 V32 A10 10 0 0 1 9 32"/><path d="M40 50 V12 L57 50"/></g></svg></a>
+    <span class="name">jrnobita</span>
+    <span class="tagline">I build small tools for my own Mac and open source the ones that work.</span>
+    <a href="/">&larr; Home</a>
+    <a class="opt-nav" href="#matrix">The maths</a>
+    <a href="#devlog">Devlog</a>
+    <a href="https://github.com/jrnobita">GitHub &#8599;</a>
+  </div>
+</nav>
+
+<div class="wrap nv">
+
+<header class="hero">
+  <div class="eyebrow">Smart Navy AI &middot; Hearts of Iron IV &middot; Paradox script</div>
+
+  <h1>It stops sailing into the <i>Channel</i>.</h1>
+
+  <p class="lede">
+    A mod for the Hearts of Iron IV AI. It tells each major power which water it
+    can survive in and which it cannot, and it makes ship design react to what
+    intelligence actually knows about the enemy fleet instead of following a
+    fixed script.
+  </p>
+
+  <div class="cta">
+    <a class="btn solid" href="https://github.com/jrnobita/jrnobita.github.io/tree/main/hoi4-smart-navy-ai">Source &rarr;</a>
+    <a class="btn" href="#matrix">See the maths</a>
+  </div>
+
+  <div class="board" aria-label="The German naval doctrine as the AI weighs it: regions to avoid, base in, and raid">
+    <div class="bbar">
+      <b>GER</b> <span>naval doctrine</span>
+      <span class="yr">1943</span>
+    </div>
+    <div class="rows">
+      <div class="brow a"><span class="tag">Avoid</span><span class="id">18</span><span class="rg">English Channel</span><span class="w"><b>600</b></span></div>
+      <div class="brow a"><span class="tag">Avoid</span><span class="id">43</span><span class="rg">Western Approaches</span><span class="w"><b>500</b></span></div>
+      <div class="brow a"><span class="tag">Avoid</span><span class="id">16</span><span class="rg">North Sea</span><span class="w"><b>300</b></span></div>
+      <div class="brow b"><span class="tag">Base</span><span class="id">9</span><span class="rg">Baltic Sea</span><span class="w"><b>120</b></span></div>
+      <div class="brow r"><span class="tag">Raid</span><span class="id">51</span><span class="rg">Mid Atlantic Gap</span><span class="w"><b>200</b></span></div>
+      <div class="brow r"><span class="tag">Raid</span><span class="id">58</span><span class="rg">Central Atlantic Gap</span><span class="w"><b>180</b></span></div>
+    </div>
+    <div class="note">vanilla stops applying the first three on 1 January 1942</div>
+  </div>
+</header>
+
+<section>
+  <div class="eyebrow">The problem</div>
+  <h2>Two ways the naval AI loses</h2>
+  <p class="sub">Both are fixable from script. Neither needs a stat buff.</p>
+
+  <div class="steps">
+    <div class="step">
+      <div class="tag">One<b>Geography</b></div>
+      <div>
+        <p>Vanilla <em>does</em> know Germany should stay out of the English Channel. <code>GER.txt</code> ships a plan called <code>axis_stay_away_from_the_royal_navy</code> that avoids it at weight 600. The idea is right. The gating is what fails:</p>
+        <pre><span class="c"># vanilla common/ai_strategy/GER.txt</span>
+enable = {
+    <span class="hl">date &lt; 1942.1.1</span>
+    OR = {
+        GER = { naval_strength_ratio = { tag = ENG <span class="hl">ratio &lt; 0.5</span> } }
+        <span class="c">... thirteen divisions_in_state checks ...</span>
+    }
+}
+abort_when_not_enabled = yes</pre>
+        <p>Two switches turn it off exactly when it is still needed. On 1 January 1942 the plan aborts and never returns — every convoy routed after that date is routed with no penalty on the Channel or the Western Approaches, which is where the Royal Navy and its submarines live for the rest of the game. And it only holds while the Kriegsmarine is under <em>half</em> the Royal Navy; a Germany that builds up crosses 0.5, the plan aborts, and the fleet walks into the Home Fleet.</p>
+        <p>Japan is worse. Its entire file contains <strong>one</strong> naval mission strategy, and it makes Japan escort <em>less</em>. That one is correct on its own terms — nobody is raiding Japan in 1940, so escorting is wasted fuel — and the mod leaves it alone. The problem is that it aborts on war with the United States and nothing replaces it. At the moment the largest submarine campaign of the war opens against the one sea lane Japan cannot live without, Japan's scripted naval priorities are empty.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="tag">Two<b>Arithmetic</b></div>
+      <div>
+        <p>Naval gunnery resolves through a piercing-to-armour ratio, and the AI builds to a fixed template that has no idea what it is shooting at. Get the ratio wrong and a battleship does a tenth of its printed damage — the gun fires, the numbers scroll past, and nothing sinks.</p>
+        <p>The mod reads the enemy's numbers through <code>estimated_intel_max_armor</code> and <code>estimated_intel_max_piercing</code>, which report armour and piercing <em>as estimated from intelligence</em>. A country with no intel network sees nothing and keeps building what it was building. A country that has done the work designs against the real fleet. Vanilla already uses this idiom — but only for tanks. Never for ships.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="matrix">
+  <div class="eyebrow">The maths</div>
+  <h2>Which gun hurts which ship</h2>
+  <p class="sub">
+    Damage multiplier by piercing-to-armour ratio, straight out of the game's own
+    <code>NAVY_PIERCING_THRESHOLDS</code> table. Read a row along: this is what
+    your gun does to progressively better-armoured targets. Hover any cell.
+  </p>
+
+  <div class="mx-wrap">
+    <div class="mx-cap">Damage multiplier &middot; darker is more damage getting through</div>
+    <div class="scrollx"><table class="mx" id="mx"></table></div>
+    <div class="tip" id="tip" role="status" aria-live="polite"></div>
+
+    <div class="legend" id="legend"></div>
+
+    <div class="mx-toggle">
+      <button id="tableToggle" aria-pressed="false">Show as a table</button>
+      <span class="quiet" style="font-size:12.5px">Values are vanilla 1.14.1 — see the note below</span>
+    </div>
+
+    <div class="datatable scrollx" id="datatable"></div>
+  </div>
+
+  <div class="grid2 pairs">
+    <div class="cardy">
+      <span class="k">Consequence one</span>
+      <h3>Light attack cannot hurt armour</h3>
+      <p>The best light battery pierces 2.5. Against the thinnest cruiser belt that is a ratio of 0.42 — the 0.30 band. Against a battleship it is 0.08, the 0.10 band. Light attack is for killing unarmoured screens, and it is superb at that, but a light-attack fleet cannot sink a capital ship.</p>
+    </div>
+    <div class="cardy">
+      <span class="k">Consequence two</span>
+      <h3>The gun ladder runs out</h3>
+      <p>The heaviest gun pierces 45. Super-heavy armour is 55. Nothing in the game reaches ratio 1.0 against it — the best case is 0.82. So the answer to a super-heavy enemy is not a bigger gun, because there isn't one. It is torpedoes, which skip the piercing table entirely.</p>
+    </div>
+    <div class="cardy">
+      <span class="k">Consequence three</span>
+      <h3>Armour is bought in bands</h3>
+      <p>To drop an attacker from 1.00 to 0.70 you need armour above their piercing. To reach 0.40, above their piercing divided by 0.75. Tonnage spent between those points buys nothing at all — it is speed and cost for no protection.</p>
+    </div>
+    <div class="cardy">
+      <span class="k">Consequence four</span>
+      <h3>Screens are the real target</h3>
+      <p>A capital ship is only protected while enough screens survive alongside it. Strip the screen and torpedoes start reaching the capitals directly. That is why the mod pushes screen production up and why the light cruiser has a screen-killer trim.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="eyebrow">The doctrine</div>
+  <h2>Where each fleet belongs</h2>
+  <p class="sub">
+    Region ids are the stable part of this API. Every one below is either commented
+    by name in a vanilla file or agreed on by eight independent shipped mods.
+  </p>
+
+  <div class="scrollx">
+  <table class="tbl">
+    <thead><tr><th>Country</th><th>Refuses</th><th>Bases on</th><th>Raids</th><th>Because</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>Germany</td>
+        <td class="n">18, 43, 16, 44</td>
+        <td class="n">9, 174</td>
+        <td class="n">51, 58, 56, 61, 45</td>
+        <td class="quiet">The Baltic is the iron ore lifeline and is never avoided. Raiders go to the mid-ocean gaps, away from the escort concentration.</td>
+      </tr>
+      <tr>
+        <td>Japan</td>
+        <td class="n">105, 95, 111, 176, 114, 88</td>
+        <td class="n">75, 76, 78</td>
+        <td class="quiet">—</td>
+        <td class="quiet">The oil lane is the war. The central Pacific is where the United States wants the battle.</td>
+      </tr>
+      <tr>
+        <td>Britain</td>
+        <td class="quiet">— (vanilla already avoids the Baltic)</td>
+        <td class="n">43</td>
+        <td class="quiet">—</td>
+        <td class="quiet">Britain's navy is rarely the problem. Britain's convoys are.</td>
+      </tr>
+      <tr>
+        <td>United States</td>
+        <td class="n">79, 90 until carriers</td>
+        <td class="quiet">—</td>
+        <td class="n">75, 76, 78, 93</td>
+        <td class="quiet">The submarine campaign against Japanese shipping was the most cost-effective naval effort of the war, and the AI never runs it.</td>
+      </tr>
+      <tr>
+        <td>Italy</td>
+        <td class="n">68, 69</td>
+        <td class="n">29</td>
+        <td class="quiet">—</td>
+        <td class="quiet">A short convoy run entirely under its own air cover, and losses it can never replace.</td>
+      </tr>
+      <tr>
+        <td>Soviet Union</td>
+        <td class="n">16, 45, 44</td>
+        <td class="n">30, 9</td>
+        <td class="quiet">—</td>
+        <td class="quiet">Four small fleets that cannot reinforce each other have no business in open water.</td>
+      </tr>
+      <tr>
+        <td>France</td>
+        <td class="n">16</td>
+        <td class="n">68</td>
+        <td class="quiet">—</td>
+        <td class="quiet">The Atlantic is Britain's problem. A French squadron in the North Sea is one not covering Toulon.</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<section>
+  <div class="eyebrow">Straight answers</div>
+  <h2>What it does not do</h2>
+  <p class="sub">A lot of AI overhaul mods are vague about the ceiling. This one is not.</p>
+
+  <div class="grid2 pairs">
+    <div class="cardy">
+      <h3>It cannot order a specific fleet anywhere</h3>
+      <p>There is no scripted hook for assigning a mission to a task force. What exists shifts how willing the AI is to run a mission <em>type</em>. Anyone claiming finer control than that is describing something the game does not expose.</p>
+    </div>
+    <div class="cardy">
+      <h3>It cannot route convoys</h3>
+      <p>Convoy pathing is engine-side. What it can do is make the AI escort, build escorts, and keep its warships out of the water where its convoys are dying.</p>
+    </div>
+    <div class="cardy">
+      <h3>It does not buff anything</h3>
+      <p>No modified defines, no combat multipliers, no <code>is_ai = yes</code> bonuses. Everything it changes is a priority the AI was already weighing.</p>
+    </div>
+    <div class="cardy">
+      <h3>It was never run in the game</h3>
+      <p>Built in an environment with no HOI4 installation. Every identifier is verified against real game files and the mod cannot fail to load — but every claim about <em>behaviour</em> is a claim about documented semantics, not an observed outcome.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="eyebrow">Verification</div>
+  <h2>HOI4 fails silently, so the mod checks itself</h2>
+  <p>
+    A misspelled strategy type, a region id that does not exist, or a module that
+    was renamed all give you a mod that loads, runs, and does nothing. The only
+    symptom is an ordinary game where the AI still sails into the Channel. So the
+    mod ships with a parser and a validator.
+  </p>
+  <pre><span class="c">$ python3 tools/validate.py --strict</span>
+  ·  parsed 5/5 script files
+  ·  checked 79 ai_strategy entries
+  ·  checked 39 region references across 29 regions
+  ·  checked 5 design groups and 8 designs
+
+13 checks · 0 errors · 0 warnings</pre>
+  <p>
+    It earns its keep. It caught <code>dp_ship_secondaries</code> before the mod was
+    ever loaded — the module is <code>dp_ship_secondaries_1</code>, but the
+    <em>category</em> you reference in a design is <code>ship_dp_secondaries</code>,
+    and the two are transposed. The distinction it cares most about is that
+    <code>naval_avoid_region</code> takes a numeric strategic region while
+    <code>area_priority</code> takes a <em>named</em> area. Mixing them up produces a
+    strategy that is silently dead.
+  </p>
+  <p>
+    The mod was authored against vanilla 1.14.1 files, and 1.19 rebalanced the navy
+    — so <code>refresh_tables.py</code> re-derives every table from your own
+    installation, reading <code>map/definition.csv</code> to work out which regions
+    are sea zones. Anything your version renamed becomes an error instead of a
+    design that silently never matches.
+  </p>
+  <p>
+    <span class="pill">Clausewitz parser</span>
+    <span class="pill">19 parser tests</span>
+    <span class="pill">13 checks</span>
+    <span class="pill">6 tables from the game</span>
+  </p>
+</section>
+
+<section id="devlog">
+  <div class="eyebrow">Devblog &middot; Sat 15 Aug 2026</div>
+  <h2>The bug was in the thing checking for bugs</h2>
+
+  <p>
+    The ask was simple enough to state: make the Hearts of Iron IV AI handle its
+    navy properly, including the common sense that as Germany you do not put your
+    fleet in the English Channel, because the Royal Navy's submarines are there and
+    your convoys are not coming back.
+  </p>
+
+  <h3 style="margin-top:26px">Vanilla already knew, and gave up in 1942</h3>
+  <p>
+    The first useful discovery was that this is not a missing feature. Vanilla ships
+    a plan called <code>axis_stay_away_from_the_royal_navy</code> that avoids the
+    Channel at weight 600. Reading its <code>enable</code> block explains everything:
+    it is capped at <code>date &lt; 1942.1.1</code> and it only holds while Germany's
+    navy is under half of Britain's. Both switches turn it off exactly when it still
+    matters. That reframed the whole job — not "teach the AI a new idea" but "the
+    idea is there and it expires."
+  </p>
+
+  <h3 style="margin-top:26px">Everything I could have guessed, I would have got wrong</h3>
+  <p>
+    The folder for AI ship designs is <code>common/ai_equipment</code>. I built the
+    tree as <code>common/ai_equipment_design</code>, which is a plausible-looking
+    name that exists nowhere. <code>area_priority</code> looks like it takes a
+    strategic region number and takes a named area instead.
+    <code>naval_mission_threshold</code> is inverted — a higher value makes the AI
+    <em>less</em> likely to run the mission, which if you get it backwards silently
+    inverts an entire country file. None of that is guessable. All of it is sitting
+    in the game files with the answers commented next to it:
+  </p>
+  <pre>ai_strategy = {
+    type = naval_avoid_region
+    id = 18 <span class="c">#english channel</span>
+    value = 600 <span class="c"># avoid doing missions as well</span>
+}</pre>
+  <p>
+    Vanilla comments its own region ids. That is ground truth, and it beats any
+    amount of confident forum knowledge.
+  </p>
+
+  <h3 style="margin-top:26px">The validator paid for itself twice</h3>
+  <p>
+    Because the game fails silently, I wrote the parser and validator before writing
+    any mod content. It caught a transposed module name immediately. Then it caught
+    something better.
+  </p>
+  <p>
+    The mod was built against 1.14.1 files, but the live game is 1.19 and 1.19
+    rebalanced the navy. So I wrote a tool to re-derive every lookup table from a
+    real installation, including working out which strategic regions are sea zones by
+    reading the province definitions. Deciding that by "are most of this region's
+    provinces sea" seemed obviously right. It is not:
+  </p>
+  <pre><span class="c"># region 76 (East China Sea): 27 provinces, 13 sea, 14 not-sea</span>
+<span class="c"># region 93 (Banda Sea):     57 provinces, 15 sea, 42 not-sea</span></pre>
+  <p>
+    Archipelago. Both are sea zones with more islands in them than water, and the
+    careful-looking rule classified them as land — which promptly failed the Japan
+    and United States files, because both route the oil lane through exactly those
+    two regions. The right rule is the blunt one: any sea province at all. Across a
+    228-region map that adds seven regions and produces no false positives.
+  </p>
+  <p>
+    The failure I had actually protected against was the mod being wrong. The failure
+    I got was the checker being wrong, and it only surfaced because I tested the
+    checker against real data instead of trusting that it was the sound part.
+  </p>
+
+  <h3 style="margin-top:26px">What I would keep</h3>
+  <p>
+    Building the verification before the content, and writing down which claims are
+    inference rather than fact. Three things in this mod are reasoned rather than
+    verified, and all three are in <code>docs/verification.md</code> with the
+    reasoning and the failure mode. They all fail safe: if the inference is wrong the
+    mod does less than intended, never something wrong. That distinction is worth
+    more than a confident README.
+  </p>
+
+  <p class="quiet" style="margin-top:26px">
+    <a href="https://github.com/jrnobita/jrnobita.github.io/tree/main/hoi4-smart-navy-ai">Source on GitHub &#8599;</a>
+  </p>
+</section>
+
+<footer>
+  <div>jrnobita &middot; Last updated August 2026</div>
+  <div>Built and hosted on GitHub Pages</div>
+  <div><a href="https://github.com/jrnobita">github.com/jrnobita</a></div>
+</footer>
+
+</div>
+
+<script>
+(function(){
+  var el = document.getElementById('mb-clock');
+  if (el) {
+    var d = new Date();
+    var days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+    var mons = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    var h = d.getHours(), ap = h >= 12 ? 'PM' : 'AM';
+    h = h % 12; if (h === 0) h = 12;
+    var m = d.getMinutes(); if (m < 10) m = '0' + m;
+    el.textContent = days[d.getDay()] + ' ' + mons[d.getMonth()] + ' ' + d.getDate() + ' ' + h + ':' + m + ' ' + ap;
+  }
+})();
+
+/* ---------------------------------------------------------------------------
+   The damage matrix.
+   Derived, not typed: the bands come from the game's threshold arrays and the
+   cells are computed, so the graphic cannot drift from the rule it illustrates.
+--------------------------------------------------------------------------- */
+(function(){
+  // NAVY_PIERCING_THRESHOLDS paired with NAVY_PIERCING_THRESHOLD_DAMAGE_VALUES.
+  // Walk top-down, take the first threshold the ratio clears.
+  var BANDS = [
+    { at: 2.00, dmg: 1.00 },
+    { at: 1.00, dmg: 1.00 },
+    { at: 0.75, dmg: 0.70 },
+    { at: 0.50, dmg: 0.40 },
+    { at: 0.10, dmg: 0.30 },
+    { at: 0.00, dmg: 0.10 }
+  ];
+
+  // One hue, light to dark, monotonic in OKLab lightness (0.933 -> 0.396).
+  // Sequential because the encoded quantity is magnitude, not identity.
+  var RAMP = {
+    0.10: { bg: '#E3EAF0', fg: '#15171A' },
+    0.30: { bg: '#B9CBD9', fg: '#15171A' },
+    0.40: { bg: '#8AA9C0', fg: '#15171A' },
+    0.70: { bg: '#4C7A9B', fg: '#FFFFFF' },
+    1.00: { bg: '#1B4B6B', fg: '#FFFFFF' }
+  };
+
+  var GUNS = [
+    { name: 'Light battery',        tier: 'ship_light_battery_4',       pierce: 2.5 },
+    { name: 'Light-medium battery', tier: 'ship_light_medium_battery_4', pierce: 9 },
+    { name: 'Medium battery',       tier: 'ship_medium_battery_1',      pierce: 22 },
+    { name: 'Medium battery',       tier: 'ship_medium_battery_4',      pierce: 34 },
+    { name: 'Heavy battery',        tier: 'ship_heavy_battery_1',       pierce: 31 },
+    { name: 'Heavy battery',        tier: 'ship_heavy_battery_2',       pierce: 36 },
+    { name: 'Heavy battery',        tier: 'ship_heavy_battery_3',       pierce: 40 },
+    { name: 'Heavy battery',        tier: 'ship_heavy_battery_4',       pierce: 45 }
+  ];
+
+  var TARGETS = [
+    { armour: 0,  label: 'Screen',      note: 'destroyer, unarmoured' },
+    { armour: 6,  label: 'Light cr.',   note: 'ship_armor_cruiser_1' },
+    { armour: 12, label: 'Heavy cr.',   note: 'ship_armor_cruiser_4' },
+    { armour: 22, label: 'Battlecr.',   note: 'ship_armor_bc_1' },
+    { armour: 30, label: 'Battleship',  note: 'ship_armor_bb_1' },
+    { armour: 36, label: 'Battleship',  note: 'ship_armor_bb_2' },
+    { armour: 40, label: 'Battleship',  note: 'ship_armor_bb_3' },
+    { armour: 55, label: 'Super-heavy', note: 'ship_armor_shbb' }
+  ];
+
+  function damageFor(pierce, armour){
+    if (armour === 0) return 1.00;          // zero armour always takes full damage
+    var ratio = pierce / armour;
+    for (var i = 0; i < BANDS.length; i++){
+      if (ratio >= BANDS[i].at) return BANDS[i].dmg;
+    }
+    return 0.10;
+  }
+
+  var table = document.getElementById('mx');
+  var tip = document.getElementById('tip');
+  var wrap = document.querySelector('.mx-wrap');
+  if (!table) return;
+
+  var html = '<thead><tr><th class="rh corner"></th>';
+  TARGETS.forEach(function(t){
+    html += '<th>' + t.label + '<br><span style="color:#9AA1A8">' + t.armour + '</span></th>';
+  });
+  html += '</tr></thead><tbody>';
+
+  GUNS.forEach(function(g){
+    html += '<tr><th class="rh">' + g.name + '<span>pierces ' + g.pierce + '</span></th>';
+    TARGETS.forEach(function(t){
+      var d = damageFor(g.pierce, t.armour);
+      var c = RAMP[d];
+      var ratio = t.armour === 0 ? '∞' : (g.pierce / t.armour).toFixed(2);
+      html += '<td style="background:' + c.bg + ';color:' + c.fg + '"'
+           +  ' data-gun="' + g.tier + '" data-pierce="' + g.pierce + '"'
+           +  ' data-armour="' + t.armour + '" data-ratio="' + ratio + '"'
+           +  ' data-dmg="' + d.toFixed(2) + '" tabindex="0">'
+           +  d.toFixed(2) + '</td>';
+    });
+    html += '</tr>';
+  });
+
+  // Torpedoes are a different weapon on the same hulls: they skip the piercing
+  // table entirely, which is the whole argument for the torpedo destroyer.
+  html += '<tr><th class="rh">Torpedo<span>ignores armour</span></th>';
+  TARGETS.forEach(function(){
+    html += '<td class="t" title="Torpedoes skip the piercing table">1.00</td>';
+  });
+  html += '</tr></tbody>';
+  table.innerHTML = html;
+
+  var legend = document.getElementById('legend');
+  var order = [0.10, 0.30, 0.40, 0.70, 1.00];
+  var lg = '<span class="quiet">Damage multiplier</span> ';
+  order.forEach(function(d, i){
+    lg += '<span class="sw"><i style="background:' + RAMP[d].bg + '"></i>' + d.toFixed(2) + '</span>';
+    if (i < order.length - 1) lg += '<span class="sep">&middot;</span>';
+  });
+  lg += '<span class="sep">&middot;</span><span class="sw"><i style="background:#F2EFE6"></i>armour ignored</span>';
+  legend.innerHTML = lg;
+
+  function showTip(cell){
+    if (!cell || !cell.dataset.gun) return;
+    var r = cell.getBoundingClientRect();
+    var w = wrap.getBoundingClientRect();
+    tip.innerHTML = '<b>' + cell.dataset.dmg + '× damage</b><br>'
+      + '<span class="r">' + cell.dataset.gun + '</span><br>'
+      + '<span class="r">piercing ' + cell.dataset.pierce + ' ÷ armour '
+      + cell.dataset.armour + ' = ' + cell.dataset.ratio + '</span>';
+    tip.style.left = (r.left - w.left + r.width / 2) + 'px';
+    tip.style.top = (r.top - w.top) + 'px';
+    tip.classList.add('on');
+  }
+  function hideTip(){ tip.classList.remove('on'); }
+
+  table.addEventListener('mouseover', function(e){
+    if (e.target.tagName === 'TD') showTip(e.target);
+  });
+  table.addEventListener('mouseout', hideTip);
+  table.addEventListener('focusin', function(e){
+    if (e.target.tagName === 'TD') showTip(e.target);
+  });
+  table.addEventListener('focusout', hideTip);
+
+  // A table view, because several cells sit under 3:1 against the page surface.
+  var dt = document.getElementById('datatable');
+  var btn = document.getElementById('tableToggle');
+  var rows = '<table class="tbl"><thead><tr><th>Battery</th><th>Piercing</th>';
+  TARGETS.forEach(function(t){ rows += '<th>vs ' + t.armour + '</th>'; });
+  rows += '</tr></thead><tbody>';
+  GUNS.forEach(function(g){
+    rows += '<tr><td>' + g.tier + '</td><td class="n">' + g.pierce + '</td>';
+    TARGETS.forEach(function(t){
+      rows += '<td class="n">' + damageFor(g.pierce, t.armour).toFixed(2) + '</td>';
+    });
+    rows += '</tr>';
+  });
+  rows += '<tr><td>torpedo</td><td class="n">n/a</td>';
+  TARGETS.forEach(function(){ rows += '<td class="n">1.00</td>'; });
+  rows += '</tr></tbody></table>';
+  dt.innerHTML = rows;
+
+  btn.addEventListener('click', function(){
+    var on = dt.classList.toggle('on');
+    btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+    btn.textContent = on ? 'Hide the table' : 'Show as a table';
+  });
+})();
+</script>
+
+</body>
+</html>
