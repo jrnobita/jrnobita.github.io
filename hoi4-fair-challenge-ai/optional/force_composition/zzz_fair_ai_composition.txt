@@ -1,0 +1,57 @@
+# =====================================================================
+# Fair Challenge AI - OPTIONAL force composition
+# =====================================================================
+# NOT ENABLED BY DEFAULT. Copy this file into common/ai_strategy/ to use it.
+# See README.md in this directory for why it ships disabled.
+#
+# Values are "base 100 plus this value", per Paradox's
+# common/ai_strategy/documentation.info. +15 means 115% of normal want.
+#
+# These change what the AI chooses to build. They do not make anything
+# cheaper, faster or stronger.
+# =====================================================================
+
+fcai_composition_armor = {
+
+	enable = {
+		# Only for nations with the industry to actually equip armour.
+		# Without this gate, minors build tank divisions they cannot fill.
+		num_of_factories > 40
+	}
+
+	abort = {
+		num_of_factories < 30
+	}
+
+	ai_strategy = {
+		type = role_ratio
+		id = armor
+		value = 15
+	}
+
+	ai_strategy = {
+		type = role_ratio
+		id = infantry
+		value = -5
+	}
+}
+
+
+fcai_composition_air = {
+
+	enable = {
+		num_of_factories > 40
+	}
+
+	abort = {
+		num_of_factories < 30
+	}
+
+	# Air superiority multiplies the value of every CAS sortie, and the
+	# stock AI under-invests in fighters relative to bombers.
+	ai_strategy = {
+		type = equipment_production_factor
+		id = fighter
+		value = 20
+	}
+}

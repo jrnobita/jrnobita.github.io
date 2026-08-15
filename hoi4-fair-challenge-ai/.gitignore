@@ -1,0 +1,4 @@
+# Generated per-install by tools/generate_no_cheat_modifiers.py.
+# Version-specific to whoever ran it, so never committed.
+common/modifiers/00_static_modifiers.txt
+common/modifiers/00_static_modifiers.txt.bak

@@ -1,0 +1,154 @@
+# =====================================================================
+# Fair Challenge AI - situational front control
+# =====================================================================
+# Vanilla picks a front stance (careful / balanced / rush) from a single
+# static strength comparison and then largely sticks with it. The
+# front_control strategy exposes that stance to script, including a
+# country_trigger, which lets the stance become a *reaction to the actual
+# situation* instead of a fixed setting.
+#
+# Scope note (from Paradox's own common/ai_strategy/documentation.info):
+#   country_trigger -> THIS = the enemy country, FROM = us (the AI).
+# So `strength_ratio = { tag = FROM ratio > X }` reads as
+# "the enemy is at least X times our strength".
+#
+# priority: higher wins. The ladder below is deliberate -
+#   collapse (100) > outmatched (80) > weak enemy (60)
+# so a defensive read overrides an offensive one, but finishing off a
+# capitulating enemy overrides everything.
+#
+# NOTHING HERE GIVES THE AI A BONUS. These only change stance selection.
+# =====================================================================
+
+
+# --- Outmatched: drop to a careful stance and stop poking -------------
+# When the enemy on this front is meaningfully stronger, the AI stops
+# making unsupported manual attacks and holds its line. This is the
+# engine's nearest equivalent to "pull back and fight on better ground":
+# it stops feeding divisions into losing attacks and lets them entrench
+# and regain org.
+fcai_hold_when_outmatched = {
+
+	enable = {
+		always = yes
+	}
+
+	ai_strategy = {
+		type = front_control
+		country_trigger = {
+			strength_ratio = { tag = FROM ratio > 1.15 }
+		}
+		ratio = 0.15
+		priority = 80
+		ordertype = front
+		execution_type = careful
+		manual_attack = no
+	}
+}
+
+
+# --- Clear advantage: commit and exploit ------------------------------
+# When the enemy on this front is materially weaker, push hard and take
+# the opportunistic pokes. Paired with the raised
+# MAX_MICRO_ATTACKS_PER_ORDER define, this is where breakthroughs and
+# encirclements actually come from.
+fcai_press_the_weak = {
+
+	enable = {
+		always = yes
+	}
+
+	ai_strategy = {
+		type = front_control
+		country_trigger = {
+			NOT = { strength_ratio = { tag = FROM ratio > 0.75 } }
+		}
+		ratio = 0.20
+		priority = 60
+		ordertype = front
+		execution_type = rush
+		execute_order = yes
+		manual_attack = yes
+	}
+}
+
+
+# --- Enemy collapsing: finish it -------------------------------------
+# A capitulating enemy is the one case worth spending organisation on.
+# Highest priority so it overrides the cautious stance above.
+fcai_finish_the_collapsing = {
+
+	enable = {
+		always = yes
+	}
+
+	ai_strategy = {
+		type = front_control
+		country_trigger = {
+			OR = {
+				surrender_progress > 0.35
+				has_war_support < 0.20
+			}
+		}
+		ratio = 0.10
+		priority = 100
+		ordertype = front
+		execution_type = rush
+		execute_order = yes
+		manual_attack = yes
+	}
+}
+
+
+# --- Our own back is broken: stop attacking everywhere ----------------
+# If WE are collapsing, offensives are a luxury. Highest priority of all
+# so it overrides even the finish-them stance.
+fcai_defend_when_collapsing = {
+
+	enable = {
+		has_defensive_war = yes
+		surrender_progress > 0.25
+	}
+
+	abort = {
+		surrender_progress < 0.12
+	}
+
+	ai_strategy = {
+		type = front_control
+		ratio = 0.0
+		priority = 120
+		ordertype = front
+		execution_type = careful
+		manual_attack = no
+	}
+}
+
+
+# --- Logistics buffer -------------------------------------------------
+# Post-NSB the AI habitually runs its truck and train pool at the edge,
+# which is why its offensives stall the moment they outrun a railhead.
+#
+# CAVEAT, stated plainly: Paradox does not document the units for these
+# four tokens (they modify DEFAULT_SUPPLY_TRUCK_BUFFER_RATIO and
+# DEFAULT_SUPPLY_TRAIN_NEED_FACTOR, both already raised in the defines
+# file). The values below are deliberately conservative nudges rather
+# than aggressive settings, precisely because the scale is unverified.
+# If you see AI convoy/truck production crowding out combat equipment,
+# these are the first four lines to cut.
+fcai_logistics_buffer = {
+
+	enable = {
+		always = yes
+	}
+
+	ai_strategy = {
+		type = min_wanted_supply_trucks
+		value = 10
+	}
+
+	ai_strategy = {
+		type = min_wanted_supply_trains
+		value = 6
+	}
+}
