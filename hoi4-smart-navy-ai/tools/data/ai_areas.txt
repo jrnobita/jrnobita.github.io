@@ -1,0 +1,29 @@
+# Named ai_area ids accepted by area_priority. These are NOT strategic region
+# numbers — they are defined in common/ai_areas/. Every one below is used by
+# vanilla 1.14.1, so every one is known to exist.
+africa
+albania
+asia
+belgian_congo
+burma
+east_indies
+europe
+home_islands
+horn_of_africa
+italy
+just_denmark_excluding_greenland
+just_finland
+just_iceland
+just_norway
+just_philippines
+middle_east
+normandy_landing_zone
+north_africa
+north_america
+oceania
+pacific
+sardinia
+scandinavia
+south_america
+suez
+winter_war_front

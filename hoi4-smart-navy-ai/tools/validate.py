@@ -32,17 +32,26 @@ from pdxscript import Block, Node, ParseError, parse_file, walk  # noqa: E402
 MOD_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA_DIR = os.path.join(MOD_ROOT, "tools", "data")
 
-# Strategy types whose `id` names a strategic region rather than a state,
-# a country or an equipment archetype.
+# Strategy types whose `id` is a numeric strategic region. This is the CWT
+# schema's `strat_region_strats` enum — note that area_priority is NOT in it.
+# area_priority takes a *named* ai_area, and the two are easy to confuse: an
+# area_priority pointing at "18" is silently dead, and so is a
+# naval_avoid_region pointing at "scandinavia".
 REGION_ID_STRATEGIES = {
-    "area_priority",
     "naval_avoid_region",
     "naval_convoy_raid_region",
-    "naval_convoy_escort_region",
-    "naval_mission_threshold",
-    "invasion_unit_request",
     "strategic_air_importance",
+    "strike_force_home_base",
 }
+
+# `ai_area_id_strats` — the id is a name defined in common/ai_areas/.
+AREA_ID_STRATEGIES = {"area_priority"}
+
+# `naval_mission_strats` — the id is a MISSION_* token.
+MISSION_ID_STRATEGIES = {"naval_mission_threshold"}
+
+# The id is a unit role / unit ratio token.
+ROLE_ID_STRATEGIES = {"role_ratio", "unit_ratio", "build_ship"}
 
 # Strategy types whose `id` names a country tag.
 TAG_ID_STRATEGIES = {
@@ -110,7 +119,10 @@ def load_regions() -> Optional[Dict[int, Tuple[str, str]]]:
         return None
     regions: Dict[int, Tuple[str, str]] = {}
     with open(path, "r", encoding="utf-8", newline="") as handle:
-        for row in csv.DictReader(handle):
+        # The table carries a comment header explaining the confidence levels;
+        # csv would otherwise read the first comment line as the field names.
+        rows = (line for line in handle if not line.lstrip().startswith("#"))
+        for row in csv.DictReader(rows):
             if not row.get("id", "").strip().isdigit():
                 continue
             regions[int(row["id"])] = (
@@ -317,6 +329,133 @@ def check_tag_ids(report: Report, trees: Dict[str, Block]) -> None:
             )
 
 
+def check_named_ids(report: Report, trees: Dict[str, Block]) -> None:
+    """area_priority, naval_mission_threshold and role_ratio take name tokens."""
+    report.checks_run += 1
+    tables = [
+        (AREA_ID_STRATEGIES, load_lines("ai_areas.txt"), "ai_areas.txt", "ai_area"),
+        (MISSION_ID_STRATEGIES, load_lines("naval_missions.txt"), "naval_missions.txt", "mission"),
+        (ROLE_ID_STRATEGIES, load_lines("ship_roles.txt"), "ship_roles.txt", "role"),
+    ]
+    for types, known, filename, label in tables:
+        if known is None:
+            report.warn(f"tools/data/{filename} missing — {label} ids unchecked")
+    for path, node in iter_ai_strategies(trees):
+        block = node.block
+        assert block is not None
+        type_value = block.scalar("type")
+        for types, known, filename, label in tables:
+            if type_value not in types or known is None:
+                continue
+            raw_id = block.scalar("id")
+            if raw_id is None:
+                report.error(f"{rel(path)}:{node.line}: `{type_value}` has no `id`")
+            elif INT_RE.match(raw_id):
+                report.error(
+                    f"{rel(path)}:{node.line}: `{type_value}` id is the number "
+                    f"`{raw_id}`, but this strategy takes a {label} name — a numeric "
+                    f"id here is silently ignored by the game"
+                )
+            elif raw_id not in known:
+                report.error(
+                    f"{rel(path)}:{node.line}: `{type_value}` {label} `{raw_id}` is "
+                    f"not in tools/data/{filename}"
+                )
+
+
+def check_ship_designs(report: Report, trees: Dict[str, Block]) -> None:
+    """Validate common/ai_equipment design groups against real hulls and slots."""
+    report.checks_run += 1
+    modules = load_lines("ship_modules.txt")
+    hulls = load_lines("ship_hulls.txt")
+    slots = load_lines("ship_slots.txt")
+    roles = load_lines("ship_roles.txt")
+    if not all((modules, hulls, slots, roles)):
+        report.warn("a tools/data table is missing — ship designs unchecked")
+        return
+    assert modules and hulls and slots and roles
+
+    groups = designs = 0
+    for path, tree in trees.items():
+        if os.sep + "ai_equipment" + os.sep not in path:
+            continue
+        for group in tree.children:
+            block = group.block
+            if block is None:
+                continue
+            groups += 1
+            if block.scalar("category") != "naval":
+                report.warn(
+                    f"{rel(path)}:{group.line}: design group `{group.key}` is not "
+                    f"category = naval"
+                )
+            group_roles = block.get("roles")
+            if group_roles is None or group_roles.block is None:
+                report.error(f"{rel(path)}:{group.line}: `{group.key}` has no `roles`")
+            else:
+                for role in group_roles.block.children:
+                    name = role.value if isinstance(role.value, str) else None
+                    if name and name not in roles:
+                        report.error(
+                            f"{rel(path)}:{role.line}: role `{name}` is not in "
+                            f"tools/data/ship_roles.txt"
+                        )
+            if block.get("priority") is None:
+                report.error(f"{rel(path)}:{group.line}: `{group.key}` has no `priority`")
+
+            for design in block.children:
+                inner = design.block
+                if inner is None or design.key in (
+                    "priority", "roles", "blocked_for", "available_for",
+                ):
+                    continue
+                designs += 1
+                variant = inner.get("target_variant")
+                if variant is None or variant.block is None:
+                    report.error(
+                        f"{rel(path)}:{design.line}: design `{design.key}` has no "
+                        f"`target_variant`"
+                    )
+                    continue
+                hull = variant.block.scalar("type")
+                if hull and hull not in hulls:
+                    report.error(
+                        f"{rel(path)}:{design.line}: design `{design.key}` uses hull "
+                        f"`{hull}`, which is not in tools/data/ship_hulls.txt"
+                    )
+                mod_block = variant.block.get("modules")
+                if mod_block is None or mod_block.block is None:
+                    report.warn(f"{rel(path)}:{design.line}: `{design.key}` sets no modules")
+                    continue
+                for entry in mod_block.block.children:
+                    if not entry.key:
+                        continue
+                    if entry.key not in slots:
+                        report.error(
+                            f"{rel(path)}:{entry.line}: `{entry.key}` is not a ship "
+                            f"module slot — a slot the hull does not have never matches"
+                        )
+                    if isinstance(entry.value, Block):
+                        continue
+                    if entry.value in ("empty", "current"):
+                        continue
+                    if entry.value not in modules:
+                        report.error(
+                            f"{rel(path)}:{entry.line}: module `{entry.value}` in slot "
+                            f"`{entry.key}` is not in tools/data/ship_modules.txt"
+                        )
+                allowed = inner.get("allowed_modules")
+                if allowed is not None and allowed.block is not None:
+                    for entry in allowed.block.children:
+                        name = entry.value if isinstance(entry.value, str) else None
+                        if name and name not in modules:
+                            report.error(
+                                f"{rel(path)}:{entry.line}: allowed module `{name}` is "
+                                f"not in tools/data/ship_modules.txt"
+                            )
+    report.note(f"checked {groups} design groups and {designs} designs")
+
+
 def collect_definitions(trees: Dict[str, Block], folder: str) -> Dict[str, str]:
     """Top-level keys defined in common/<folder>/ — the trigger or effect names."""
     defined: Dict[str, str] = {}
@@ -425,6 +564,9 @@ def check_on_actions(report: Report, trees: Dict[str, Block]) -> Set[str]:
     report.checks_run += 1
     known = load_lines("on_actions.txt")
     referenced_events: Set[str] = set()
+    files = [p for p in trees if os.sep + "on_actions" + os.sep in p]
+    if not files:
+        return referenced_events
     for path, tree in trees.items():
         if os.sep + "on_actions" + os.sep not in path:
             continue
@@ -547,49 +689,6 @@ def check_localisation(report: Report, needed: Set[str]) -> None:
     report.note(f"{len(defined)} localisation keys defined")
 
 
-def check_equipment_modules(report: Report, trees: Dict[str, Block]) -> None:
-    """Ship designs reference module and hull keys that must exist in the base game."""
-    report.checks_run += 1
-    known_modules = load_lines("ship_modules.txt")
-    known_hulls = load_lines("ship_hulls.txt")
-    if known_modules is None or known_hulls is None:
-        report.warn(
-            "tools/data/ship_modules.txt or ship_hulls.txt missing — ship designs unchecked"
-        )
-        return
-
-    designs = 0
-    for path, tree in trees.items():
-        if os.sep + "ai_equipment_design" + os.sep not in path:
-            continue
-        for node in tree.children:
-            block = node.block
-            if block is None:
-                continue
-            designs += 1
-            hull = block.scalar("type")
-            if hull and hull not in known_hulls:
-                report.error(
-                    f"{rel(path)}:{node.line}: design `{node.key}` uses hull `{hull}` "
-                    f"which is not in tools/data/ship_hulls.txt"
-                )
-            modules = block.get("modules")
-            if modules is None or modules.block is None:
-                report.warn(f"{rel(path)}:{node.line}: design `{node.key}` has no `modules`")
-                continue
-            for slot in modules.block.children:
-                if not slot.key or isinstance(slot.value, Block):
-                    continue
-                if slot.value in ("empty", "0"):
-                    continue
-                if slot.value not in known_modules:
-                    report.error(
-                        f"{rel(path)}:{slot.line}: module `{slot.value}` in slot "
-                        f"`{slot.key}` is not in tools/data/ship_modules.txt"
-                    )
-    report.note(f"checked {designs} AI ship designs")
-
-
 def check_duplicate_names(report: Report, trees: Dict[str, Block]) -> None:
     """Two strategy plans sharing a name is legal but always a copy-paste slip."""
     report.checks_run += 1
@@ -624,12 +723,13 @@ def main(argv: Optional[List[str]] = None) -> int:
     check_ai_strategy_types(report, trees)
     check_region_ids(report, trees)
     check_tag_ids(report, trees)
+    check_named_ids(report, trees)
     check_scripted_references(report, trees)
     loc_keys, _namespaces = check_events(report, trees)
     hooked = check_on_actions(report, trees)
     check_event_wiring(report, trees, hooked)
     check_localisation(report, loc_keys)
-    check_equipment_modules(report, trees)
+    check_ship_designs(report, trees)
     check_duplicate_names(report, trees)
 
     if not args.quiet:

@@ -1,0 +1,221 @@
+# Smart Navy AI — universal naval doctrine
+#
+# These plans apply to every country. Values STACK with vanilla's, which is
+# stated in vanilla default.txt: "bear in mind that they STACK unless excluding
+# countries in the enable". So everything here is written as a DELTA on top of
+# vanilla's numbers, not as a replacement, and the deltas are sized against
+# vanilla's own scale (role_ratio runs about -80 to +100).
+#
+# naval_mission_threshold is inverted: a HIGHER value makes the AI LESS likely
+# to run that mission. Vanilla JAP.txt says so out loud — "value = 150 #puts our
+# threshold at 250" — so the base threshold is 100 and the value is added to it.
+
+
+# ---------------------------------------------------------------------------
+# Screens before capitals.
+#
+# A capital ship is only protected while it has enough screens in the same
+# battle. Below full screening the enemy's torpedoes and light guns start
+# reaching the capitals directly, and a battleship dies to destroyers it could
+# never hit back. The engine caps auto task forces at MAX_CAPITALS_PER_AUTO_TASK_FORCE
+# = 5 capitals, and screening wants roughly four screens per capital, so a fleet
+# that is capital-heavy in production is a fleet that loses its capitals.
+#
+# Vanilla's generic default is naval_screen 65 / naval_escort 35 against
+# naval_capital_bb -80. That is already screen-leaning for minors, but the
+# majors have their own country files that push capitals hard. This nudges any
+# country that has actually accumulated capitals back toward screens.
+# ---------------------------------------------------------------------------
+snai_screens_before_capitals = {
+	enable = {
+		has_dlc = "Man the Guns"
+		has_navy_size = {
+			type = capital_ship
+			size > 3
+		}
+	}
+	abort_when_not_enabled = yes
+
+	ai_strategy = {
+		type = role_ratio
+		id = naval_screen
+		value = 30
+	}
+
+	ai_strategy = {
+		type = role_ratio
+		id = naval_cruiser_light
+		value = 15
+	}
+
+	ai_strategy = {
+		type = role_ratio
+		id = naval_capital_bb
+		value = -15
+	}
+}
+
+
+# ---------------------------------------------------------------------------
+# Somebody is eating our convoys.
+#
+# Triggered on the enemy's actual submarine count, not on a date and not on a
+# country tag. A submarine fleet past ~25 boats is a fleet that is raiding, and
+# the counter is escorts plus the willingness to run the escort mission at all.
+#
+# Escorts are the cheapest useful hull in the game: a destroyer hull is 400 IC
+# before modules, against 2800+ for a battleship hull, and depth charges are 90.
+# Losing convoys is what actually loses the war for a naval power, so this is
+# deliberately a strong response.
+# ---------------------------------------------------------------------------
+snai_answer_the_submarine_campaign = {
+	enable = {
+		has_dlc = "Man the Guns"
+		any_enemy_country = {
+			has_navy_size = {
+				type = submarine
+				size > 25
+			}
+		}
+	}
+	abort_when_not_enabled = yes
+
+	ai_strategy = {
+		type = role_ratio
+		id = naval_escort
+		value = 45
+	}
+
+	ai_strategy = {
+		type = unit_ratio
+		id = convoy
+		value = 20
+	}
+
+	# Lower threshold = more likely to actually sail the escort mission.
+	ai_strategy = {
+		type = naval_mission_threshold
+		id = "MISSION_CONVOY_ESCORT"
+		value = -60
+	}
+}
+
+
+# ---------------------------------------------------------------------------
+# Do not offer battle you cannot win.
+#
+# enemies_naval_strength_ratio compares this country's estimated naval strength
+# against all of its enemies combined. Below 0.4 a fleet action is a donation:
+# the loser of a naval battle loses ships, the winner loses strength. A weaker
+# navy is worth far more as a threat in being and as a raider than as a wreck.
+#
+# So: stop hunting, keep raiding. Raiding is the one mission where being weaker
+# does not matter, because a submarine that meets an escort simply leaves.
+# ---------------------------------------------------------------------------
+snai_weaker_fleet_does_not_seek_battle = {
+	enable = {
+		has_dlc = "Man the Guns"
+		has_war = yes
+		enemies_naval_strength_ratio < 0.4
+	}
+	abort_when_not_enabled = yes
+
+	ai_strategy = {
+		type = naval_mission_threshold
+		id = "MISSION_STRIKE_FORCE"
+		value = 200
+	}
+
+	ai_strategy = {
+		type = naval_mission_threshold
+		id = "MISSION_PATROL"
+		value = 100
+	}
+
+	ai_strategy = {
+		type = naval_mission_threshold
+		id = "MISSION_CONVOY_RAIDING"
+		value = -80
+	}
+
+	ai_strategy = {
+		type = role_ratio
+		id = naval_submarine
+		value = 40
+	}
+
+	ai_strategy = {
+		type = role_ratio
+		id = naval_capital_bb
+		value = -40
+	}
+}
+
+
+# ---------------------------------------------------------------------------
+# The mirror image: when you own the sea, use it.
+#
+# A fleet that is more than twice its enemies' strength should be forcing
+# engagements and covering invasions, not sitting in port. Vanilla AI is
+# noticeably passive with a winning navy.
+# ---------------------------------------------------------------------------
+snai_stronger_fleet_presses = {
+	enable = {
+		has_dlc = "Man the Guns"
+		has_war = yes
+		enemies_naval_strength_ratio > 2
+	}
+	abort_when_not_enabled = yes
+
+	ai_strategy = {
+		type = naval_mission_threshold
+		id = "MISSION_STRIKE_FORCE"
+		value = -60
+	}
+
+	ai_strategy = {
+		type = naval_mission_threshold
+		id = "MISSION_NAVAL_INVASION_SUPPORT"
+		value = -50
+	}
+
+	ai_strategy = {
+		type = naval_invasion_focus
+		value = 30
+	}
+}
+
+
+# ---------------------------------------------------------------------------
+# Carriers change what a screen has to be.
+#
+# Against a carrier fleet the threat is not gunfire, it is the air wing, and the
+# only answer a surface ship has is anti-air. This raises light cruiser
+# production (the hull that carries useful AA in numbers) when the enemy has a
+# real carrier force. The matching design change is in
+# common/ai_equipment/snai_counter_designs.txt.
+# ---------------------------------------------------------------------------
+snai_answer_the_carriers = {
+	enable = {
+		has_dlc = "Man the Guns"
+		any_enemy_country = {
+			has_navy_size = {
+				type = carrier
+				size > 2
+			}
+		}
+	}
+	abort_when_not_enabled = yes
+
+	ai_strategy = {
+		type = role_ratio
+		id = naval_cruiser_light
+		value = 25
+	}
+
+	ai_strategy = {
+		type = role_ratio
+		id = naval_carrier
+		value = 20
+	}
+}

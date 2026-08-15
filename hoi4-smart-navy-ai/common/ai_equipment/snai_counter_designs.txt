@@ -1,0 +1,590 @@
+# Smart Navy AI — counter designs
+#
+# THE MATHEMATICS THIS FILE IS BUILT ON
+#
+# Naval gunnery resolves through a piercing/armour ratio, not a flat modifier.
+# From common/defines/00_defines.lua (NAVY_PIERCING_THRESHOLDS and
+# NAVY_PIERCING_THRESHOLD_DAMAGE_VALUES), the engine walks the thresholds
+# top-down and takes the first index where ratio >= threshold:
+#
+#     piercing / armour     damage multiplier     crit multiplier
+#     >= 2.00               1.00                  2.00
+#     1.00 - 1.99           1.00                  1.00
+#     0.75 - 0.99           0.70                  0.75
+#     0.50 - 0.74           0.40                  0.50
+#     0.10 - 0.49           0.30                  0.10
+#     < 0.10                0.10                  0.00
+#
+# Armour of 0 always takes full damage. So the whole of naval gun design is one
+# question: is my piercing at least equal to their armour, and is my armour more
+# than their piercing?
+#
+# The numbers that answer it, read out of common/units/equipment/modules/:
+#
+#     BATTERY                       piercing      ARMOUR MODULE      armour
+#     ship_light_battery_1..4       1.0 - 2.5     ship_armor_cruiser_1..4   6 - 12
+#     ship_light_medium_battery_1..4  5.5 - 9.0   ship_armor_bc_1..3       22 - 34
+#     ship_medium_battery_1..4      22 - 34       ship_armor_bb_1..3       30 - 40
+#     ship_heavy_battery_1..4       31 - 45       ship_armor_shbb          55
+#     ship_super_heavy_battery_1    45
+#
+# Three consequences drive every design below.
+#
+# 1. LIGHT ATTACK CANNOT HURT ARMOUR AT ALL. The best light battery pierces 2.5.
+#    Against the thinnest cruiser belt (6) that is a ratio of 0.42 — the 0.30
+#    damage band. Against a battleship (30+) it is 0.08 — the 0.10 band, a
+#    tenth of nominal. Light attack is a weapon for killing *unarmoured screens*,
+#    and it is superb at that, but a light-attack fleet cannot sink a capital.
+#
+# 2. THE GUN LADDER TOPS OUT AT 45 PIERCING. Super-heavy armour is 55. Nothing
+#    in the game reaches ratio 1.0 against it — the best case is 45/55 = 0.82,
+#    the 0.70 band. So against a super-heavy enemy the correct answer is not a
+#    bigger gun, because there is no bigger gun. It is torpedoes, which skip the
+#    piercing table entirely.
+#
+# 3. ARMOUR IS BOUGHT IN BANDS, NOT INCHES. To push an enemy from 1.00 down to
+#    0.70 you need armour > their piercing. To push them to 0.40 you need
+#    armour > piercing / 0.75. To reach 0.30, armour > piercing / 0.5. Anything
+#    between those points is wasted tonnage.
+#
+#
+# HOW THE MOD KNOWS WHAT THE ENEMY HAS
+#
+# estimated_intel_max_armor and estimated_intel_max_piercing report the enemy's
+# armour and piercing *as estimated from intelligence* — so a country with no
+# intel network sees nothing and keeps building what it was building, and a
+# country that has done the intelligence work designs against the real fleet.
+# That is the honest version of "counter the enemy navy": the counter is gated
+# on knowledge, not on the script peeking at the save file.
+#
+# Vanilla already uses this idiom, but only for tanks — GER.txt's GER_anti_armor
+# plan reacts to estimated enemy armour by building more motorised. The exact
+# nesting below is copied from it.
+#
+#
+# HOW THESE GROUPS INTERACT WITH VANILLA'S
+#
+# Vanilla's country design files run at priority factors from 1 to 800. Each
+# group here sits at 1200 with a modifier that zeroes it when its condition is
+# false. So a group is either the best answer available or it is not in the
+# running at all — it never half-competes with vanilla's designs.
+
+
+# ===========================================================================
+# CAPITALS — answer their armour, and answer their guns
+# ===========================================================================
+snai_counter_capital = {
+	category = naval
+
+	available_for = {
+	}
+
+	roles = {
+		naval_capital_bb
+	}
+
+	priority = {
+		factor = 1200
+		# Off unless intelligence says the enemy is either well armoured or
+		# carrying guns that can hurt us.
+		modifier = {
+			factor = 0
+			NOT = {
+				any_enemy_country = {
+					ROOT = {
+						OR = {
+							estimated_intel_max_armor = {
+								tag = PREV
+								value > 30
+							}
+							estimated_intel_max_piercing = {
+								tag = PREV
+								value > 25
+							}
+						}
+					}
+				}
+			}
+		}
+		# A capital ship is a multi-year commitment. Do not start one without
+		# the yards to finish it — vanilla uses the same guard at 35.
+		modifier = {
+			factor = 0
+			num_of_naval_factories < 30
+		}
+	}
+
+	# Their armour is past what a mid battery can pierce AND their guns can
+	# hurt us. Both problems at once, so solve both: heaviest battery, heaviest
+	# belt. This is the design that should exist in a peer battleship war.
+	snai_capital_gun_and_belt = {
+		priority = {
+			factor = 300
+		}
+
+		role_icon_index = 1
+
+		enable = {
+			any_enemy_country = {
+				ROOT = {
+					estimated_intel_max_armor = {
+						tag = PREV
+						value > 36
+					}
+				}
+			}
+			any_enemy_country = {
+				ROOT = {
+					estimated_intel_max_piercing = {
+						tag = PREV
+						value > 30
+					}
+				}
+			}
+		}
+
+		target_variant = {
+			match_value = 3000.0
+
+			type = ship_hull_heavy
+			modules = {
+				# "> ship_heavy_battery_2" forces better than 36 piercing, and
+				# the documentation states the latest available is favoured for
+				# a greater-than restriction. That is heavy battery 3 (40) or 4
+				# (45) — the two guns that reach ratio 1.0 against a 40 belt.
+				fixed_ship_battery_slot > ship_heavy_battery_2
+				# Better than 36 armour, i.e. ship_armor_bb_3 at 40. A 34
+				# piercing medium battery then sits at 0.85 — the 0.70 band.
+				fixed_ship_armor_slot > ship_armor_bb_2
+				fixed_ship_fire_control_system_slot = ship_fire_control_system
+				fixed_ship_radar_slot = ship_radar
+				fixed_ship_engine_slot = heavy_ship_engine
+				fixed_ship_secondaries_slot = ship_dp_secondaries
+				rear_1_custom_slot > ship_heavy_battery_2
+			}
+		}
+
+		allowed_modules = {
+			ship_heavy_battery
+			ship_anti_air
+			ship_dp_secondaries
+			ship_fire_control_system
+			ship_radar
+			ship_secondaries
+		}
+	}
+
+	# Their armour is heavy but their guns are not. Buy the gun, skip the belt —
+	# armour we do not need is speed and cost we could have spent on guns.
+	snai_capital_gun_answer = {
+		priority = {
+			factor = 200
+		}
+
+		role_icon_index = 1
+
+		enable = {
+			any_enemy_country = {
+				ROOT = {
+					estimated_intel_max_armor = {
+						tag = PREV
+						value > 36
+					}
+				}
+			}
+		}
+
+		target_variant = {
+			match_value = 2400.0
+
+			type = ship_hull_heavy
+			modules = {
+				fixed_ship_battery_slot > ship_heavy_battery_2
+				fixed_ship_armor_slot = ship_heavy_armor
+				fixed_ship_fire_control_system_slot = ship_fire_control_system
+				fixed_ship_radar_slot = ship_radar
+				fixed_ship_engine_slot = heavy_ship_engine
+				rear_1_custom_slot > ship_heavy_battery_2
+			}
+		}
+
+		allowed_modules = {
+			ship_heavy_battery
+			ship_anti_air
+			ship_fire_control_system
+			ship_radar
+			ship_dp_secondaries
+		}
+	}
+
+	# Their guns hurt, their armour does not. Buy the belt. Against a 34
+	# piercing medium battery a 40 belt is the 0.70 band; against light
+	# batteries it is the 0.10 band, which is functional immunity.
+	snai_capital_belt_answer = {
+		priority = {
+			factor = 200
+		}
+
+		role_icon_index = 1
+
+		enable = {
+			any_enemy_country = {
+				ROOT = {
+					estimated_intel_max_piercing = {
+						tag = PREV
+						value > 25
+					}
+				}
+			}
+		}
+
+		target_variant = {
+			match_value = 2400.0
+
+			type = ship_hull_heavy
+			modules = {
+				fixed_ship_battery_slot = ship_heavy_battery
+				fixed_ship_armor_slot > ship_armor_bb_2
+				fixed_ship_fire_control_system_slot = ship_fire_control_system
+				fixed_ship_radar_slot = ship_radar
+				fixed_ship_engine_slot = heavy_ship_engine
+				fixed_ship_secondaries_slot = ship_dp_secondaries
+			}
+		}
+
+		allowed_modules = {
+			ship_heavy_battery
+			ship_anti_air
+			ship_dp_secondaries
+			ship_fire_control_system
+			ship_radar
+		}
+	}
+}
+
+
+# ===========================================================================
+# SCREENS — the torpedo answer to armour no gun can reach
+# ===========================================================================
+#
+# Torpedoes ignore the piercing table completely. They are also inaccurate
+# against fast, low-visibility targets (hit profile 100, the worst in the game)
+# and they fire on a four-hour cooldown against one hour for guns — so they are
+# a bad general-purpose weapon and an excellent specific one. The specific case
+# is an enemy whose armour is past 45, where guns are capped at the 0.70 band
+# and torpedoes are not capped at all.
+snai_counter_screen_torpedo = {
+	category = naval
+
+	available_for = {
+	}
+
+	roles = {
+		naval_screen
+	}
+
+	priority = {
+		factor = 1200
+		modifier = {
+			factor = 0
+			NOT = {
+				any_enemy_country = {
+					ROOT = {
+						estimated_intel_max_armor = {
+							tag = PREV
+							value > 45
+						}
+					}
+				}
+			}
+		}
+	}
+
+	snai_torpedo_destroyer = {
+		priority = {
+			factor = 100
+		}
+
+		role_icon_index = 2
+
+		target_variant = {
+			match_value = 2200.0
+
+			type = ship_hull_light
+			modules = {
+				fixed_ship_torpedo_slot = ship_torpedo
+				fixed_ship_battery_slot = ship_light_battery
+				fixed_ship_fire_control_system_slot = ship_fire_control_system
+				fixed_ship_radar_slot = ship_sonar
+				fixed_ship_engine_slot = light_ship_engine
+				mid_1_custom_slot = ship_torpedo
+				rear_1_custom_slot = ship_torpedo
+			}
+		}
+
+		allowed_modules = {
+			ship_torpedo
+			ship_light_battery
+			ship_anti_air
+			ship_fire_control_system
+		}
+	}
+}
+
+
+# ===========================================================================
+# ESCORTS — the answer to a submarine campaign
+# ===========================================================================
+#
+# Depth charges and sonar, on the cheapest hull in the game. A destroyer hull is
+# 400 IC bare against 2800 for a heavy hull, and depth charges are 90 — losing
+# convoys costs far more than this does.
+snai_counter_escort_asw = {
+	category = naval
+
+	available_for = {
+	}
+
+	roles = {
+		naval_escort
+	}
+
+	priority = {
+		factor = 1200
+		modifier = {
+			factor = 0
+			NOT = {
+				any_enemy_country = {
+					has_navy_size = {
+						type = submarine
+						size > 25
+					}
+				}
+			}
+		}
+	}
+
+	snai_asw_escort = {
+		priority = {
+			factor = 100
+		}
+
+		role_icon_index = 5
+
+		target_variant = {
+			match_value = 2000.0
+
+			type = ship_hull_light
+			modules = {
+				# Sonar occupies the radar slot on a light hull — this is
+				# vanilla's own layout for its escort designs.
+				fixed_ship_radar_slot = ship_sonar
+				fixed_ship_engine_slot = light_ship_engine
+				fixed_ship_battery_slot = ship_light_battery
+				fixed_ship_fire_control_system_slot = ship_fire_control_system
+				fixed_ship_torpedo_slot = empty
+				mid_1_custom_slot = ship_depth_charge
+				rear_1_custom_slot = ship_depth_charge
+			}
+		}
+
+		allowed_modules = {
+			ship_depth_charge
+			ship_sonar
+			ship_light_battery
+			ship_anti_air
+		}
+	}
+}
+
+
+# ===========================================================================
+# LIGHT CRUISERS — kill the screens, or survive the aircraft
+# ===========================================================================
+#
+# Two different jobs that land on the same hull, chosen by what the enemy is.
+#
+# Against a surface fleet, light attack is how you strip the screen — and once
+# the screening ratio breaks, the enemy's capitals start taking torpedo and
+# light gun fire directly. A light cruiser carrying nothing but light batteries
+# is the most efficient screen-killer in the game, and note from the piercing
+# table that it does not need to pierce anything to do that job, because screens
+# are unarmoured.
+#
+# Against carriers there is no gun answer at all, only anti-air.
+snai_counter_light_cruiser = {
+	category = naval
+
+	available_for = {
+	}
+
+	roles = {
+		naval_cruiser_light
+	}
+
+	priority = {
+		factor = 1200
+		modifier = {
+			factor = 0
+			NOT = {
+				any_enemy_country = {
+					OR = {
+						has_navy_size = {
+							type = carrier
+							size > 2
+						}
+						has_navy_size = {
+							type = screen_ship
+							size > 40
+						}
+					}
+				}
+			}
+		}
+	}
+
+	# Carrier answer: dual-purpose batteries and anti-air everywhere. A DP light
+	# battery keeps most of the light attack while adding AA, so this is still a
+	# usable surface ship rather than a pure escort.
+	snai_light_cruiser_anti_air = {
+		priority = {
+			factor = 200
+		}
+
+		role_icon_index = 3
+
+		enable = {
+			any_enemy_country = {
+				has_navy_size = {
+					type = carrier
+					size > 2
+				}
+			}
+		}
+
+		target_variant = {
+			match_value = 2600.0
+
+			type = ship_hull_cruiser
+			modules = {
+				fixed_ship_battery_slot = dp_light_battery
+				fixed_ship_anti_air_slot = ship_anti_air
+				fixed_ship_fire_control_system_slot = ship_fire_control_system
+				fixed_ship_radar_slot = ship_radar
+				fixed_ship_engine_slot = cruiser_ship_engine
+				fixed_ship_armor_slot = ship_cruiser_armor
+				fixed_ship_secondaries_slot = ship_dp_secondaries
+				mid_1_custom_slot = ship_anti_air
+				mid_2_custom_slot = dp_light_battery
+				rear_1_custom_slot = ship_anti_air
+			}
+		}
+
+		allowed_modules = {
+			ship_anti_air
+			dp_light_battery
+			ship_dp_secondaries
+			ship_radar
+			ship_fire_control_system
+		}
+	}
+
+	# Screen-killer: light batteries in every slot that will take one.
+	snai_light_cruiser_screen_killer = {
+		priority = {
+			factor = 150
+		}
+
+		role_icon_index = 3
+
+		enable = {
+			any_enemy_country = {
+				has_navy_size = {
+					type = screen_ship
+					size > 40
+				}
+			}
+		}
+
+		target_variant = {
+			match_value = 2400.0
+
+			type = ship_hull_cruiser
+			modules = {
+				fixed_ship_battery_slot = ship_light_battery
+				fixed_ship_anti_air_slot = ship_anti_air
+				fixed_ship_fire_control_system_slot = ship_fire_control_system
+				fixed_ship_radar_slot = ship_radar
+				fixed_ship_engine_slot = cruiser_ship_engine
+				fixed_ship_armor_slot = ship_cruiser_armor
+				mid_1_custom_slot = ship_light_battery
+				mid_2_custom_slot = ship_light_battery
+				rear_1_custom_slot = ship_light_battery
+			}
+		}
+
+		allowed_modules = {
+			ship_light_battery
+			ship_anti_air
+			ship_fire_control_system
+			ship_radar
+		}
+	}
+}
+
+
+# ===========================================================================
+# SUBMARINES — the raider
+# ===========================================================================
+#
+# A raider's job is to not be found. Torpedoes for the kill, snorkel for the
+# visibility, and nothing else worth the cost. Enabled when the enemy is
+# convoy-dependent enough to be worth raiding at all.
+snai_counter_submarine_raider = {
+	category = naval
+
+	available_for = {
+	}
+
+	roles = {
+		naval_submarine
+	}
+
+	priority = {
+		factor = 1200
+		modifier = {
+			factor = 0
+			NOT = {
+				any_enemy_country = {
+					has_navy_size = {
+						type = convoy
+						size > 100
+					}
+				}
+			}
+		}
+	}
+
+	snai_raider_submarine = {
+		priority = {
+			factor = 100
+		}
+
+		role_icon_index = 6
+
+		target_variant = {
+			match_value = 2200.0
+
+			type = ship_hull_submarine
+			modules = {
+				fixed_ship_torpedo_slot = ship_torpedo_sub
+				fixed_ship_engine_slot = sub_ship_engine
+			}
+		}
+
+		allowed_modules = {
+			ship_torpedo_sub
+			ship_sub_snorkel
+		}
+	}
+}

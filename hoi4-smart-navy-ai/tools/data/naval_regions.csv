@@ -1,0 +1,103 @@
+# Naval strategic region ids used by naval_avoid_region, strike_force_home_base
+# and naval_convoy_raid_region.
+#
+# confidence:
+#   VANILLA  the id appears in a vanilla 1.14.1 common/ai_strategy file with a
+#            comment naming the region — this is ground truth
+#   HIGH     eight independent shipped mods name this id identically
+#   MEDIUM   six or seven of eight agree (the rest use an internal codename for
+#            the same water, e.g. "Mid Atlantic 2" for the Mid Atlantic Gap)
+#
+# Ids above 207 are omitted unless vanilla itself references them: total-conversion
+# mods append their own regions from there and the numbering stops being portable.
+id,name,confidence,theatre,note
+9,Baltic Sea,VANILLA,europe,"vanilla ENG.txt calls it #northern baltic; German iron ore water"
+16,North Sea,VANILLA,europe,"vanilla GER.txt #around UK; vanilla ENG strike_force_home_base"
+18,English Channel,VANILLA,europe,"vanilla GER.txt #english channel"
+29,Central Mediterranean Sea,MEDIUM,mediterranean,"Malta convoy route"
+30,Black Sea,HIGH,mediterranean,
+32,South-Eastern Pacific,MEDIUM,pacific,
+42,Bay of Biscay,HIGH,europe,"U-boat transit from Brest/Lorient after the fall of France"
+43,Western Approaches,VANILLA,europe,"vanilla GER.txt #around UK; RN escort concentration"
+44,Denmark Strait,HIGH,europe,"breakout route to the Atlantic"
+45,Norwegian Sea,VANILLA,europe,"vanilla ENG naval_convoy_raid_region # norwegian sea"
+46,Barents Sea,HIGH,europe,"Arctic convoys to Murmansk"
+47,Iberian Coast,MEDIUM,atlantic,
+48,African Coast,HIGH,atlantic,
+49,North Atlantic Ridge,MEDIUM,atlantic,
+50,Labrador Sea,HIGH,atlantic,
+51,Mid Atlantic Gap,MEDIUM,atlantic,"the air gap — historically where wolfpacks were safe"
+52,Gulf of Mexico,HIGH,atlantic,
+53,Caribbean Sea,MEDIUM,atlantic,"tanker traffic"
+54,Eastern Seaboard,HIGH,atlantic,
+55,Newfoundland Sea,HIGH,atlantic,"convoy assembly out of Halifax"
+56,Mid Atlantic,MEDIUM,atlantic,
+57,Sargasso Sea,MEDIUM,atlantic,
+58,Central Atlantic Gap,MEDIUM,atlantic,"second air gap"
+60,West Indian Ocean,HIGH,indian,
+61,Cape Verde Plain,VANILLA,atlantic,"vanilla ENG naval_convoy_raid_region # cape verde plain"
+62,Gulf of Guinea,MEDIUM,atlantic,
+65,Cape of Africa,HIGH,atlantic,"the long way round to Suez"
+66,South Central Atlantic,HIGH,atlantic,
+68,Western Mediterranean Sea,MEDIUM,mediterranean,
+69,Eastern Mediterranean Sea,VANILLA,mediterranean,"vanilla ENG strike_force_home_base # eastern med"
+70,Caspian Sea,HIGH,other,
+71,East Indian Ocean,MEDIUM,indian,
+72,Straits of Malacca,MEDIUM,pacific,"Japanese oil route; Expert AI avoids it"
+73,Gulf of Thailand,MEDIUM,pacific,
+74,South East Indian Ocean,MEDIUM,indian,
+75,South China Sea,HIGH,pacific,"the Japanese oil lane; Expert AI references it"
+76,East China Sea,HIGH,pacific,"oil lane approach to the Home Islands"
+77,Yellow Sea,HIGH,pacific,"Korea and north China traffic"
+78,Philippine Sea,MEDIUM,pacific,"Expert AI references it"
+79,Sea of Japan,VANILLA,pacific,"vanilla SOV.txt #sea of japan"
+80,Celebes Sea,MEDIUM,pacific,"Expert AI references it"
+81,Coral Sea,HIGH,pacific,
+82,Gulf of Carpentaria,HIGH,pacific,
+83,Solomon Sea,MEDIUM,pacific,
+84,Bismarck Sea,HIGH,pacific,
+85,South West Indian Ocean,HIGH,indian,
+86,Tasman Sea,HIGH,pacific,
+87,Sea of Okhotsk,HIGH,pacific,
+88,Bering Sea,HIGH,pacific,
+89,Western Seaboard,HIGH,pacific,"US west coast"
+90,Coast of Japan,HIGH,pacific,"Home Islands home water"
+91,Arafura Sea,MEDIUM,pacific,"Expert AI references it"
+92,Timor Sea,HIGH,pacific,
+93,Java Sea,MEDIUM,pacific,"Dutch East Indies oil; Expert AI references it"
+94,Mariana Region,MEDIUM,pacific,
+95,West Emperor Chain,MEDIUM,pacific,"Midway; Expert AI avoids it"
+96,North Emperor Chain,MEDIUM,pacific,
+97,Eastern Micronesia,MEDIUM,pacific,
+99,Far Eastern Indian Ocean,MEDIUM,indian,
+100,Red Sea,HIGH,indian,
+101,Bay of Bengal,HIGH,indian,
+102,East African Coast,HIGH,indian,
+103,Mozambique Channel,HIGH,indian,
+104,Arabian Sea,HIGH,indian,
+105,Hawaii Ridge,MEDIUM,pacific,"Pearl Harbor; Expert AI avoids it"
+106,Mexican Coast,HIGH,pacific,
+110,East Pacific Rise,MEDIUM,pacific,
+111,North Central Pacific,MEDIUM,pacific,
+112,Far South Pacific,HIGH,pacific,
+113,South Central Pacific,MEDIUM,pacific,
+114,North Pacific,MEDIUM,pacific,
+115,North East Pacific,MEDIUM,pacific,
+166,Hudson Bay,HIGH,atlantic,
+168,Adriatic Sea,VANILLA,mediterranean,"vanilla ENG.txt #adriatic"
+169,Tyrrhenian Sea,HIGH,mediterranean,
+170,Florida Coast,HIGH,atlantic,
+172,Pacific Line Ridge,MEDIUM,pacific,
+173,Eastern North Sea,VANILLA,europe,"vanilla ENG.txt #eastern north sea; German Bight"
+174,Norwegian Coast,MEDIUM,europe,"Narvik iron ore route"
+175,Central Pacific,MEDIUM,pacific,
+176,Central North Pacific,MEDIUM,pacific,
+177,Western North Pacific,MEDIUM,pacific,
+178,West Polynesia,HIGH,pacific,
+179,French Polynesia,MEDIUM,pacific,
+180,Micronesian Gap,HIGH,pacific,
+202,Aegean Sea,MEDIUM,mediterranean,
+203,Persian Gulf,MEDIUM,indian,
+206,Lower Baltic Sea,VANILLA,europe,"vanilla ENG.txt #central baltic"
+207,Danish Belts,VANILLA,europe,"vanilla ENG.txt #danish belts; the Baltic exit"
+279,Gulf of Bothnia,VANILLA,europe,"vanilla ENG.txt #Bothnia (commented out there); Swedish ore ports"
