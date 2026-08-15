@@ -157,6 +157,17 @@ section[id],.install{scroll-margin-top:calc(var(--mbh) + 74px)}
 .shot.console .shot-panel{background:#0E1216;border-color:#1E252C;color:#E6EAEF;padding:0;
   display:grid;grid-template-columns:94px 1fr;font-size:10px}
 .shot.console .pb-chip{color:#3DDC97}
+
+/* Smart Navy AI card — the doctrine board, cut down to card size */
+.shot.navy .shot-panel{background:#0E1216;border-color:#1E252C;color:#E6EAEF;padding:9px 0}
+.shot.navy .pb-chip{color:#7FB2D4}
+.sn-row{display:grid;grid-template-columns:50px 24px 1fr auto;gap:9px;align-items:center;
+  padding:6px 14px;font-family:var(--mono);font-size:11px}
+.sn-row .t{font-size:9px;letter-spacing:.08em;text-transform:uppercase;font-weight:700}
+.sn-row.a .t{color:#E06C5C} .sn-row.b .t{color:#5FC49E} .sn-row.r .t{color:#F5C45E}
+.sn-row .i{color:#6E7A88;font-variant-numeric:tabular-nums}
+.sn-row .n{color:#E6EAEF;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sn-row .v{color:#E6EAEF;font-weight:600;font-variant-numeric:tabular-nums}
 .pg-rail{border-right:1px solid #1E252C;padding:12px 10px 11px;display:flex;flex-direction:column;gap:7px}
 .pg-brand{font-family:var(--sans);font-weight:600;font-size:11px;color:#E6EAEF;
   display:flex;align-items:center;gap:6px;margin-bottom:2px}
@@ -469,6 +480,30 @@ footer{padding:28px 0 64px;border-top:1px solid var(--line)}
         </div>
       </a>
 
+      <a class="proj feat-row" href="smartnavy.html">
+        <div class="col-text">
+          <div class="meta">Smart Navy AI &middot; Hearts of Iron IV &middot; Paradox script</div>
+          <h3>Smart Navy AI</h3>
+          <p>A mod that stops the Hearts of Iron IV AI sailing into water it cannot survive, and makes ship design react to what intelligence actually knows about the enemy fleet.</p>
+          <span class="go-inline">Open the project &#8594;</span>
+        </div>
+
+        <div class="shot navy">
+          <div class="shot-bar">
+            <span class="pb-dots"><i style="background:#FF5F56"></i><i style="background:#FFBD2E"></i><i style="background:#27C93F"></i></span>
+            <span class="pb-chip">GER &middot; naval doctrine</span>
+            <span class="pb-time">1943</span>
+          </div>
+          <div class="shot-panel">
+            <div class="sn-row a"><span class="t">Avoid</span><span class="i">18</span><span class="n">English Channel</span><span class="v">600</span></div>
+            <div class="sn-row a"><span class="t">Avoid</span><span class="i">43</span><span class="n">Western Approaches</span><span class="v">500</span></div>
+            <div class="sn-row a"><span class="t">Avoid</span><span class="i">16</span><span class="n">North Sea</span><span class="v">300</span></div>
+            <div class="sn-row b"><span class="t">Base</span><span class="i">9</span><span class="n">Baltic Sea</span><span class="v">120</span></div>
+            <div class="sn-row r"><span class="t">Raid</span><span class="i">51</span><span class="n">Mid Atlantic Gap</span><span class="v">200</span></div>
+          </div>
+        </div>
+      </a>
+
       <div class="proj soon">
         <div class="meta">In progress</div>
         <div><h3>Next thing</h3><p>Not finished yet.</p></div>
@@ -483,6 +518,15 @@ footer{padding:28px 0 64px;border-top:1px solid var(--line)}
     <div class="sec-head"><span class="eyebrow">Devblog</span></div>
     <div class="projects">
 
+
+      <a class="proj post-row" href="smartnavy.html#devlog">
+        <div class="meta">Sat 15 Aug 2026</div>
+        <div>
+          <h3>The bug was in the thing checking for bugs</h3>
+          <p>Vanilla already knew Germany should stay out of the English Channel &mdash; it just stops caring on 1 January 1942. Then the validator I wrote to catch my mistakes made one of its own, about which regions are sea.</p>
+        </div>
+        <div class="go">&#8594;</div>
+      </a>
 
       <a class="proj post-row" href="sentry.html#devlog">
         <div class="meta">Thu 13 Aug 2026</div>

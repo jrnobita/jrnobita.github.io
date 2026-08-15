@@ -1,0 +1,19 @@
+# Module slot names present on vanilla 1.14.1 ship hulls. A target_variant that
+# names a slot the hull does not have simply never matches, silently.
+fixed_ship_anti_air_slot
+fixed_ship_armor_slot
+fixed_ship_battery_slot
+fixed_ship_deck_slot_1
+fixed_ship_deck_slot_2
+fixed_ship_engine_slot
+fixed_ship_fire_control_system_slot
+fixed_ship_radar_slot
+fixed_ship_secondaries_slot
+fixed_ship_torpedo_slot
+front_1_custom_slot
+front_2_custom_slot
+mid_1_custom_slot
+mid_2_custom_slot
+mid_3_custom_slot
+rear_1_custom_slot
+rear_2_custom_slot
