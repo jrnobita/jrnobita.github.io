@@ -18,3 +18,5 @@
  GER_neutrality:0 "Kekistan"
  GER_neutrality_DEF:0 "The Kingdom of Kekistan"
  GER_neutrality_ADJ:0 "Kekistani"
+
+ POLITICS_KEKISTAN_LEADER_DESC:0 "Leader of Kekistan."
