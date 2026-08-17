@@ -40,6 +40,46 @@ vanilla value, so there's no need to copy the whole vanilla file.
 
 ---
 
+## Get it onto your PC
+
+Everything here lives in this repo on the branch
+`claude/hoi4-zoomed-out-icons-fs7qbp`, so it survives independently of any chat
+session. Three ways to pull it down, easiest first.
+
+**1. Direct zip download** — already laid out in the folder structure HOI4
+expects, so it's just "unzip into the mod folder":
+
+```
+https://github.com/jrnobita/jrnobita.github.io/raw/refs/heads/claude/hoi4-zoomed-out-icons-fs7qbp/hoi4-ungrouped-counters/ungrouped_counters.zip
+```
+
+**2. Clone the branch** in a fresh terminal or Claude Code session:
+
+```bash
+git clone https://github.com/jrnobita/jrnobita.github.io.git
+cd jrnobita.github.io
+git checkout claude/hoi4-zoomed-out-icons-fs7qbp
+cd hoi4-ungrouped-counters
+```
+
+If you already have the repo cloned, just fetch the branch:
+
+```bash
+git fetch origin claude/hoi4-zoomed-out-icons-fs7qbp
+git checkout claude/hoi4-zoomed-out-icons-fs7qbp
+```
+
+**3. Copy straight into the game folder** (Windows, from Git Bash or WSL) once
+you have the repo cloned:
+
+```bash
+cp -r hoi4-ungrouped-counters/ungrouped_counters.mod \
+      hoi4-ungrouped-counters/ungrouped_counters \
+      "$USERPROFILE/Documents/Paradox Interactive/Hearts of Iron IV/mod/"
+```
+
+---
+
 ## Install
 
 The mod folder lives in your HOI4 **user data** directory, not the Steam install
