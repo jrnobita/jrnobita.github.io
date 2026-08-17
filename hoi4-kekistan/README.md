@@ -40,7 +40,7 @@ Launch HOI4, enable **Kekistan** in the launcher's playset, and start a game.
   a three-line file — merge by hand if you need to.
 * The flags are plain uncompressed 32-bit TGAs at HOI4's three sizes
   (82×52, 41×26, 10×7), one per ideology, downscaled from the artwork in
-  `tools/kekistan_flag.png`.
+  `tools/kekistan_flag.png` (cropped to the flag aspect, then downscaled).
 * `supported_version` is set to `1.16.*`. Nothing here touches gameplay
   scripting, so bumping it for a newer patch is safe.
 
@@ -55,5 +55,7 @@ python3 tools/generate_flags.py
 ```
 
 That rewrites all fifteen TGAs. The source is 1599x960 (5:3) and HOI4 flags are
-roughly 1.58:1, so the resize squeezes it horizontally by about 5% — the same
-thing vanilla does to its own flags.
+roughly 1.58:1, so the script crops to the target aspect before scaling rather
+than squeezing the art: 85px comes off the fly, which is empty green, leaving
+the cross the same distance from the hoist as in the original. Art of any size
+works — the crop is computed, not hardcoded.

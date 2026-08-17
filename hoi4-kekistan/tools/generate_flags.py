@@ -7,9 +7,10 @@ Hearts of Iron IV wants three sizes of every flag:
     gfx/flags/medium/<TAG>.tga  41x26
     gfx/flags/small/<TAG>.tga   10x7
 
-The source art is 1599x960 (5:3); HOI4 flags are ~1.58:1, so the resize
-squeezes it horizontally by about 5%. That is what the game does to every
-flag it ships, so it matches vanilla rather than letterboxing.
+The source art is 1599x960 (5:3) and HOI4 flags are ~1.58:1, so it is cropped
+to the right aspect before scaling — otherwise the resize would squeeze it
+horizontally by about 5%. The 85px comes off the fly (right edge), which is
+empty green, so the cross keeps its original distance from the hoist.
 
 Requires Pillow.  Run from anywhere:  python3 tools/generate_flags.py
 """
@@ -54,8 +55,17 @@ def write_tga(img, path):
         f.write(body)
 
 
+def crop_to_aspect(img, aspect):
+    """Trim the fly (right edge) until the image matches the target aspect."""
+    w, h = img.size
+    if w / h > aspect:
+        return img.crop((0, 0, round(h * aspect), h))
+    return img.crop((0, 0, w, round(w / aspect)))     # trim the bottom instead
+
+
 def main():
-    master = Image.open(SOURCE).convert("RGB")
+    master = crop_to_aspect(Image.open(SOURCE).convert("RGB"), 82 / 52)
+    print("source cropped to", master.size)
 
     for subdir, size in SIZES.items():
         out_dir = os.path.join(FLAGS, subdir)
