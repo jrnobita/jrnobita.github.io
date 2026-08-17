@@ -19,4 +19,6 @@
  GER_neutrality_DEF:0 "Kekistan"
  GER_neutrality_ADJ:0 "Kekistani"
 
- POLITICS_KEKISTAN_LEADER_DESC:0 "Leader of Kekistan."
+ # Party name shown in the politics screen. Cosmetic only - the ruling party
+ # is still fascism internally, so the focus tree and AI behave as vanilla.
+ GER_fascism_party:0 "Kekistani Front"
