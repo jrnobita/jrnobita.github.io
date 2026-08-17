@@ -13,7 +13,7 @@ the game plays exactly like vanilla Germany.
 | Flag (all sizes + every ideology variant) | `Kekistan/gfx/flags/**/GER*.tga` |
 | Map / UI colour → dark green `40 90 40` | `Kekistan/common/countries/Germany.txt` |
 | Country name → Kekistan | `Kekistan/localisation/english/kekistan_l_english.yml` |
-| Ruling party name → *Kekistani Front* | `Kekistan/localisation/english/kekistan_l_english.yml` |
+| Ruling party name → *Conservative Right* | `Kekistan/localisation/english/kekistan_l_english.yml` |
 
 The country is called **Kekistan** — flat, with no formal variant. HOI4 keeps a
 short name and a formal name (`_DEF`) per ideology, so it would normally read
@@ -30,7 +30,7 @@ focus tree and AI, because switching the ruling party away from fascism locks
 off most of the German focus tree and stops the AI opening the war — it breaks
 the game rather than reskinning it.
 
-What *is* changed is the label: the ruling party reads **Kekistani Front**
+What *is* changed is the label: the ruling party reads **Conservative Right**
 instead of the vanilla party name. That is a localisation override, so it has
 no effect on gameplay whatsoever.
 
