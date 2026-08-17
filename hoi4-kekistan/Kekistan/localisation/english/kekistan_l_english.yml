@@ -19,6 +19,10 @@
  GER_neutrality_DEF:0 "Kekistan"
  GER_neutrality_ADJ:0 "Kekistani"
 
- # Party name shown in the politics screen. Cosmetic only - the ruling party
- # is still fascism internally, so the focus tree and AI behave as vanilla.
- GER_fascism_party:0 "Conservative Right"
+ # Party name shown in the politics screen. Kekistan's ruling party is
+ # democratic, so that is the key that shows; the others are set to match in
+ # case the country changes alignment mid-game.
+ GER_democratic_party:0 "Conservative Right"
+ GER_neutrality_party:0 "Conservative Right"
+
+ POLITICS_KEKISTAN_LEADER_DESC:0 "Leader of Kekistan."

@@ -1,8 +1,7 @@
 # Kekistan — a Hearts of Iron IV mod
 
-Renames Germany to Kekistan and gives it the Kekistan flag and a dark green
-map colour. Purely cosmetic — politics, focus tree and AI are untouched, so
-the game plays exactly like vanilla Germany.
+Turns Germany into Kekistan: new flag, new name, dark green on the map, and a
+non-fascist state under its own leader instead of the vanilla Reich.
 
 ![flag](tools/kekistan_flag.png)
 
@@ -13,7 +12,9 @@ the game plays exactly like vanilla Germany.
 | Flag (all sizes + every ideology variant) | `Kekistan/gfx/flags/**/GER*.tga` |
 | Map / UI colour → dark green `40 90 40` | `Kekistan/common/countries/Germany.txt` |
 | Country name → Kekistan | `Kekistan/localisation/english/kekistan_l_english.yml` |
-| Ruling party name → *Conservative Right* | `Kekistan/localisation/english/kekistan_l_english.yml` |
+| Ruling party → democratic, named *Conservative Right* | `Kekistan/common/on_actions/kekistan_on_actions.txt` |
+| Country leader → Ben Shapiro | `Kekistan/common/on_actions/kekistan_on_actions.txt` |
+| Leader portrait | `Kekistan/gfx/leaders/GER/Portrait_Kekistan_Ben_Shapiro.dds` |
 
 The country is called **Kekistan** — flat, with no formal variant. HOI4 keeps a
 short name and a formal name (`_DEF`) per ideology, so it would normally read
@@ -25,17 +26,28 @@ like "Kekistani infantry" rather than a name in its own right.
 
 ## Politics
 
-Nothing mechanical is changed. GER keeps its vanilla ruling party, leader,
-focus tree and AI, because switching the ruling party away from fascism locks
-off most of the German focus tree and stops the AI opening the war — it breaks
-the game rather than reskinning it.
+Vanilla GER opens 1936 as a fascist state led by Hitler. Kekistan is not that,
+so on startup the country is switched to:
 
-What *is* changed is the label: the ruling party reads **Conservative Right**
-instead of the vanilla party name. That is a localisation override, so it has
-no effect on gameplay whatsoever.
+* ruling party **democratic**, elections allowed, displayed as *Conservative Right*
+* popularity 70 democratic / 15 non-aligned / 10 communist / 5 fascist
+* country leader **Ben Shapiro**, replacing the vanilla leader outright
 
-`gfx/leaders/GER/Portrait_Kekistan_Ben_Shapiro.dds` is in the mod but nothing
-references it yet — see the note below.
+This runs from `common/on_actions/` rather than overriding
+`history/countries/GER - Germany.txt`, because that history file also carries
+the army, navy, air force, national ideas and every general and admiral —
+replacing it wholesale to change three lines of politics is how mods
+accidentally delete the Wehrmacht.
+
+To change alignment, edit `ruling_party` and the leader's `ideology` in
+`kekistan_on_actions.txt`. The pairs that go together:
+
+| `ruling_party` | leader `ideology` |
+| --- | --- |
+| `democratic` | `conservatism`, `liberalism`, `socialism` |
+| `neutrality` | `despotism`, `oligarchism` |
+| `communism` | `marxism`, `leninism`, `stalinism` |
+| `fascism` | `fascism`, `nazism` |
 
 ## Install
 
@@ -50,14 +62,18 @@ Launch HOI4, enable **Kekistan** in the launcher's playset, and start a game.
 
 ## Notes
 
-* The party-name override assumes the loc key `GER_fascism_party`. If your
+* **A non-fascist Germany plays differently.** Large parts of the German focus
+  tree are gated behind being fascist, so those branches are unavailable and
+  the AI will not open the war the way it normally does. That is the cost of
+  the alignment change, not a bug.
+* The party-name override assumes the loc key `GER_democratic_party`. If your
   build names it differently the label just stays vanilla — nothing breaks.
   Search the game's own localisation for the current party name to find the
   right key.
-* The leader portrait is unused right now. Wiring it to the country leader
-  means replacing the fascist leader, which is the Hitler slot; putting it on
-  an advisor or a general instead leaves the leader alone and changes no
-  mechanics.
+* `create_country_leader` is given the bare portrait filename, which the game
+  resolves under `gfx/leaders/<TAG>/`. If your build wants a full path instead,
+  the portrait comes up blank — change `picture` to
+  `"gfx/leaders/GER/Portrait_Kekistan_Ben_Shapiro.dds"`.
 * `common/countries/Germany.txt` is a whole-file override, so this conflicts
   with any other mod that changes Germany's colour or graphical culture. It is
   a three-line file — merge by hand if you need to.
@@ -65,8 +81,7 @@ Launch HOI4, enable **Kekistan** in the launcher's playset, and start a game.
   (82×52, 41×26, 10×7), one per ideology, cut from the artwork in
   `tools/kekistan_flag.png`.
 * The portrait is an uncompressed 32-bit `.dds` at 156×210, the size and format
-  vanilla character portraits use, so it is ready to drop into whichever slot
-  it ends up in.
+  vanilla character portraits use.
 * `supported_version` is set to `1.16.*`.
 
 ## Regenerating the art
@@ -77,7 +92,7 @@ and re-running:
 ```sh
 pip install pillow
 python3 tools/generate_flags.py      # tools/kekistan_flag.png  -> 15 flag TGAs
-python3 tools/generate_portrait.py   # tools/leader_portrait.png -> portrait DDS (unused)
+python3 tools/generate_portrait.py   # tools/leader_portrait.png -> portrait DDS
 ```
 
 Each crops to the target aspect before scaling rather than squeezing the art —
