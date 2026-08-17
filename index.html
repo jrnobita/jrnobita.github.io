@@ -142,8 +142,38 @@ section[id],.install{scroll-margin-top:calc(var(--mbh) + 74px)}
 .go-inline{display:inline-block;margin-top:14px;font-size:.9rem;color:var(--mid);
   border-bottom:1px solid var(--line);padding-bottom:2px;font-family:var(--sans);letter-spacing:0;text-transform:none}
 .feat-row:hover .go-inline{color:var(--ink);border-color:var(--ink)}
-.shot{border-radius:10px;overflow:hidden;box-shadow:0 14px 30px -24px rgba(21,23,26,.5);transition:transform .2s ease}
+.shot{position:relative;border-radius:10px;overflow:hidden;box-shadow:0 14px 30px -24px rgba(21,23,26,.5);transition:transform .2s ease}
 .feat-row:hover .shot{transform:translateY(-3px)}
+
+/* border beam — a comet that runs the perimeter of each mockup.
+   The path is inset a few px because .shot clips its overflow: riding the
+   box edge exactly would cut the streak in half lengthwise.
+   Hidden unless offset-path can actually move it, so there is no
+   stranded blob in the corner on older engines. */
+.shot .beam{display:none}
+@supports (offset-path: inset(5px round 6px)){
+  .shot .beam{
+    display:block;position:absolute;z-index:3;pointer-events:none;
+    width:120px;height:4px;border-radius:4px;
+    background:linear-gradient(to left,
+      #47B894 0%, var(--accent) 22%, rgba(44,110,91,.5) 58%, rgba(44,110,91,0) 100%);
+    box-shadow:0 0 12px 2px rgba(44,110,91,.5);
+    offset-path:inset(5px round 6px);
+    animation:beam-run 5s linear infinite;
+  }
+  .shot .beam.b2{
+    background:linear-gradient(to left,
+      #7FE3C0 0%, #3DDC97 25%, rgba(61,220,151,.45) 60%, rgba(61,220,151,0) 100%);
+    box-shadow:0 0 12px 2px rgba(61,220,151,.45);
+    animation-delay:-2.5s;opacity:.85;
+  }
+  .feat-row:nth-of-type(2) .shot .beam{animation-delay:-1.7s}
+  .feat-row:nth-of-type(2) .shot .beam.b2{animation-delay:-4.2s}
+  .feat-row:nth-of-type(3) .shot .beam{animation-delay:-3.4s}
+  .feat-row:nth-of-type(3) .shot .beam.b2{animation-delay:-.9s}
+}
+@keyframes beam-run{to{offset-distance:100%}}
+@media (prefers-reduced-motion:reduce){.shot .beam{display:none}}
 .shot-bar{background:var(--slab);display:flex;align-items:center;gap:12px;padding:8px 12px;
   font-family:var(--mono);font-size:11px;color:#E6EAEF}
 .pb-dots{display:flex;gap:6px}
@@ -372,7 +402,7 @@ footer{padding:28px 0 64px;border-top:1px solid var(--line)}
     </div>
   </header>
 
-  <section style="padding-top:30px">
+  <section id="projects" style="padding-top:30px">
     <div class="sec-head"><span class="eyebrow">Projects</span></div>
     <div class="projects">
 
@@ -385,6 +415,7 @@ footer{padding:28px 0 64px;border-top:1px solid var(--line)}
         </div>
 
         <div class="shot sy-shot">
+          <i class="beam" aria-hidden="true"></i><i class="beam b2" aria-hidden="true"></i>
           <div class="shot-bar">
             <span class="pb-dots"><i style="background:#FF5F56"></i><i style="background:#FFBD2E"></i><i style="background:#27C93F"></i></span>
             <span class="pb-chip">3 tracked &middot; 1 alert</span>
@@ -410,6 +441,7 @@ footer{padding:28px 0 64px;border-top:1px solid var(--line)}
         </div>
 
         <div class="shot">
+          <i class="beam" aria-hidden="true"></i><i class="beam b2" aria-hidden="true"></i>
           <div class="shot-bar">
             <span class="pb-dots"><i style="background:#FF5F56"></i><i style="background:#FFBD2E"></i><i style="background:#27C93F"></i></span>
             <span class="pb-chip">Max 65% &middot; 42%</span>
@@ -440,6 +472,7 @@ footer{padding:28px 0 64px;border-top:1px solid var(--line)}
         </div>
 
         <div class="shot console">
+          <i class="beam" aria-hidden="true"></i><i class="beam b2" aria-hidden="true"></i>
           <div class="shot-bar">
             <span class="pb-dots"><i style="background:#FF5F56"></i><i style="background:#FFBD2E"></i><i style="background:#27C93F"></i></span>
             <span class="pb-chip">Ledger balanced</span>
@@ -1081,6 +1114,30 @@ where: 'PL/pgSQL function assert_entry_balanced() line 13 at RAISE'</code></pre>
 
   for(var k in hashes){ if(location.hash===hashes[k] && k!=='home') show(k); }
 })();
+
+/* confetti on the project rows and on the download / repo buttons.
+   Capture phase so it beats the data-go handler's preventDefault. */
+(function(){
+  document.addEventListener('click',function(e){
+    if(!window.fx) return;
+    if(e.button>0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+
+    var t=e.target.closest('#projects .proj, .cta-row .btn, .install .btn');
+    if(!t) return;
+
+    window.fx.confetti(e.clientX, e.clientY);
+
+    /* Leaving the page would cut the burst off, so hold the navigation
+       briefly. Hash routes and file downloads keep us here — let them run. */
+    var href=t.getAttribute('href');
+    if(!href || href.charAt(0)==='#' || t.target==='_blank') return;
+    if(/\.zip$|\/archive\//.test(href)) return;
+
+    e.preventDefault();
+    setTimeout(function(){ location.href=href; },380);
+  },true);
+})();
 </script>
+<script src="fx.js" defer></script>
 </body>
 </html>
