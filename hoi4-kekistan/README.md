@@ -16,15 +16,13 @@ Germany under Hitler.
 | Ruling party → democratic, and the country leader | `Kekistan/common/on_actions/kekistan_on_actions.txt` |
 | Leader portrait | `Kekistan/gfx/leaders/GER/Portrait_Kekistan_Ben_Shapiro.dds` |
 
-The name change covers the base tag and all four ideologies, so it stays
-Kekistan whichever way the politics go:
+The country is called **Kekistan** — flat, with no formal variant. HOI4 keeps a
+short name and a formal name (`_DEF`) per ideology, so it would normally read
+"The Republic of …" or similar depending on the ruling party; every one of
+those keys is set to plain Kekistan instead, so the name never changes shape.
 
-* Democratic — *The Republic of Kekistan*
-* Non-aligned — *The Kingdom of Kekistan*
-* Communist — *The Kekistani Soviet Republic*
-* Fascist — *The Kekistani Reich*
-
-Adjective is *Kekistani* throughout.
+The adjective (`_ADJ`) stays *Kekistani*, since that is what fills in phrases
+like "Kekistani infantry" rather than a name in its own right.
 
 ## Politics
 

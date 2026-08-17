@@ -4,19 +4,19 @@
  GER_ADJ:0 "Kekistani"
 
  GER_fascism:0 "Kekistan"
- GER_fascism_DEF:0 "The Kekistani Reich"
+ GER_fascism_DEF:0 "Kekistan"
  GER_fascism_ADJ:0 "Kekistani"
 
  GER_democratic:0 "Kekistan"
- GER_democratic_DEF:0 "The Republic of Kekistan"
+ GER_democratic_DEF:0 "Kekistan"
  GER_democratic_ADJ:0 "Kekistani"
 
  GER_communism:0 "Kekistan"
- GER_communism_DEF:0 "The Kekistani Soviet Republic"
+ GER_communism_DEF:0 "Kekistan"
  GER_communism_ADJ:0 "Kekistani"
 
  GER_neutrality:0 "Kekistan"
- GER_neutrality_DEF:0 "The Kingdom of Kekistan"
+ GER_neutrality_DEF:0 "Kekistan"
  GER_neutrality_ADJ:0 "Kekistani"
 
  POLITICS_KEKISTAN_LEADER_DESC:0 "Leader of Kekistan."
