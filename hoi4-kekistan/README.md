@@ -2,7 +2,7 @@
 
 Turns Germany into Kekistan: new flag, new name, dark green on the map.
 
-![flag preview](tools/preview.png)
+![flag](tools/kekistan_flag.png)
 
 ## What it changes
 
@@ -39,19 +39,21 @@ Launch HOI4, enable **Kekistan** in the launcher's playset, and start a game.
   with any other mod that changes Germany's colour or graphical culture. It is
   a three-line file — merge by hand if you need to.
 * The flags are plain uncompressed 32-bit TGAs at HOI4's three sizes
-  (82×52, 41×26, 10×7), one per ideology.
+  (82×52, 41×26, 10×7), one per ideology, downscaled from the artwork in
+  `tools/kekistan_flag.png`.
 * `supported_version` is set to `1.16.*`. Nothing here touches gameplay
   scripting, so bumping it for a newer patch is safe.
 
-## Regenerating the flag
+## Regenerating the flags
 
-The TGAs are generated, not hand-drawn — no external art assets involved:
+The TGAs are cut from `tools/kekistan_flag.png` by a script, so swapping the
+art is a matter of replacing that one file:
 
 ```sh
 pip install pillow
 python3 tools/generate_flags.py
 ```
 
-Edit the constants at the top of `tools/generate_flags.py` to change the green,
-the cross proportions, or the emblem, then re-run. It rewrites every TGA and
-the preview above.
+That rewrites all fifteen TGAs. The source is 1599x960 (5:3) and HOI4 flags are
+roughly 1.58:1, so the resize squeezes it horizontally by about 5% — the same
+thing vanilla does to its own flags.
