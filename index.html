@@ -145,25 +145,38 @@ section[id],.install{scroll-margin-top:calc(var(--mbh) + 74px)}
 .shot{position:relative;border-radius:10px;overflow:hidden;box-shadow:0 14px 30px -24px rgba(21,23,26,.5);transition:transform .2s ease}
 .feat-row:hover .shot{transform:translateY(-3px)}
 
-/* border beam — a comet that runs the perimeter of each mockup.
-   The path is inset a few px because .shot clips its overflow: riding the
-   box edge exactly would cut the streak in half lengthwise.
-   Hidden unless offset-path can actually move it, so there is no
-   stranded blob in the corner on older engines. */
+/* border beam — an RGB comet sweeping the border of each mockup.
+   The comet is a conic gradient masked down to a ring, not an element being
+   dragged along a path: nothing rotates, so corners cannot whip or clip.
+   A rigid bar on an offset-path had to swing 90deg across a 6px corner arc,
+   which read as a windscreen wiper. This turns instead of pivots. */
+@property --beam-a{syntax:'<angle>';inherits:false;initial-value:0deg}
+
 .shot .beam{display:none}
-@supports (offset-path: inset(5px round 6px)){
+@supports ((mask-composite: exclude) or (-webkit-mask-composite: xor)){
   .shot .beam{
-    display:block;position:absolute;z-index:3;pointer-events:none;
-    width:130px;height:4px;border-radius:4px;
-    /* laid out warm so hue-rotate sweeps it through the whole wheel; the
-       spread between stops keeps a prismatic edge instead of one flat colour */
-    background:linear-gradient(to left,
-      hsl(48 100% 74%) 0%, hsl(22 100% 58%) 18%, hsl(352 96% 53%) 46%,
-      hsl(336 96% 52% / .35) 72%, hsl(326 96% 52% / 0) 100%);
-    box-shadow:0 0 14px 3px hsl(0 96% 56% / .5);
-    offset-path:inset(5px round 6px);
-    /* two clocks: one runs the perimeter, one cycles the hue */
-    animation:beam-run 5s linear infinite, beam-rgb 3.2s linear infinite;
+    display:block;position:absolute;inset:0;z-index:3;pointer-events:none;
+    border-radius:10px;padding:5px;
+    --beam-a:0deg;                 /* literal fallback if @property is absent */
+    /* warm along its length so hue-rotate carries the prismatic spread with
+       it; the head is the high-angle end, which is the direction of travel.
+       Most of the arc is held near full strength — a long faint ramp reads
+       as a smudge rather than a comet. */
+    background:conic-gradient(from var(--beam-a) at 50% 50%,
+      hsl(326 96% 52% / 0)    0deg,
+      hsl(336 96% 52% / .45) 12deg,
+      hsl(352 96% 53% / .9)  22deg,
+      hsl(8 100% 56%)        28deg,
+      hsl(28 100% 60%)       32deg,
+      hsl(48 100% 80%)       34deg,
+      hsl(48 100% 82% / 0)   35deg,
+      hsl(326 96% 52% / 0)  360deg);
+    -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+            mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+    -webkit-mask-composite:xor;
+            mask-composite:exclude;
+    /* two clocks: one sweeps the border, one cycles the hue */
+    animation:beam-spin 5s linear infinite, beam-rgb 3.2s linear infinite;
   }
   /* the trailing comet sits a third of the way round the colour wheel */
   .shot .beam.b2{animation-delay:-2.5s,-1.07s;opacity:.9}
@@ -173,8 +186,12 @@ section[id],.install{scroll-margin-top:calc(var(--mbh) + 74px)}
   .feat-row:nth-of-type(3) .shot .beam{animation-delay:-3.4s,-2.1s}
   .feat-row:nth-of-type(3) .shot .beam.b2{animation-delay:-.9s,-2.7s}
 }
-@keyframes beam-run{to{offset-distance:100%}}
-@keyframes beam-rgb{from{filter:hue-rotate(0deg)}to{filter:hue-rotate(360deg)}}
+@keyframes beam-spin{to{--beam-a:360deg}}
+/* drop-shadow before hue-rotate so the glow cycles with the comet */
+@keyframes beam-rgb{
+  from{filter:drop-shadow(0 0 7px hsl(0 96% 56% / .6)) hue-rotate(0deg)}
+  to  {filter:drop-shadow(0 0 7px hsl(0 96% 56% / .6)) hue-rotate(360deg)}
+}
 @media (prefers-reduced-motion:reduce){.shot .beam{display:none}}
 .shot-bar{background:var(--slab);display:flex;align-items:center;gap:12px;padding:8px 12px;
   font-family:var(--mono);font-size:11px;color:#E6EAEF}
