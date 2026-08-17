@@ -154,25 +154,27 @@ section[id],.install{scroll-margin-top:calc(var(--mbh) + 74px)}
 @supports (offset-path: inset(5px round 6px)){
   .shot .beam{
     display:block;position:absolute;z-index:3;pointer-events:none;
-    width:120px;height:4px;border-radius:4px;
+    width:130px;height:4px;border-radius:4px;
+    /* laid out warm so hue-rotate sweeps it through the whole wheel; the
+       spread between stops keeps a prismatic edge instead of one flat colour */
     background:linear-gradient(to left,
-      #47B894 0%, var(--accent) 22%, rgba(44,110,91,.5) 58%, rgba(44,110,91,0) 100%);
-    box-shadow:0 0 12px 2px rgba(44,110,91,.5);
+      hsl(48 100% 74%) 0%, hsl(22 100% 58%) 18%, hsl(352 96% 53%) 46%,
+      hsl(336 96% 52% / .35) 72%, hsl(326 96% 52% / 0) 100%);
+    box-shadow:0 0 14px 3px hsl(0 96% 56% / .5);
     offset-path:inset(5px round 6px);
-    animation:beam-run 5s linear infinite;
+    /* two clocks: one runs the perimeter, one cycles the hue */
+    animation:beam-run 5s linear infinite, beam-rgb 3.2s linear infinite;
   }
-  .shot .beam.b2{
-    background:linear-gradient(to left,
-      #7FE3C0 0%, #3DDC97 25%, rgba(61,220,151,.45) 60%, rgba(61,220,151,0) 100%);
-    box-shadow:0 0 12px 2px rgba(61,220,151,.45);
-    animation-delay:-2.5s;opacity:.85;
-  }
-  .feat-row:nth-of-type(2) .shot .beam{animation-delay:-1.7s}
-  .feat-row:nth-of-type(2) .shot .beam.b2{animation-delay:-4.2s}
-  .feat-row:nth-of-type(3) .shot .beam{animation-delay:-3.4s}
-  .feat-row:nth-of-type(3) .shot .beam.b2{animation-delay:-.9s}
+  /* the trailing comet sits a third of the way round the colour wheel */
+  .shot .beam.b2{animation-delay:-2.5s,-1.07s;opacity:.9}
+
+  .feat-row:nth-of-type(2) .shot .beam{animation-delay:-1.7s,-.5s}
+  .feat-row:nth-of-type(2) .shot .beam.b2{animation-delay:-4.2s,-1.6s}
+  .feat-row:nth-of-type(3) .shot .beam{animation-delay:-3.4s,-2.1s}
+  .feat-row:nth-of-type(3) .shot .beam.b2{animation-delay:-.9s,-2.7s}
 }
 @keyframes beam-run{to{offset-distance:100%}}
+@keyframes beam-rgb{from{filter:hue-rotate(0deg)}to{filter:hue-rotate(360deg)}}
 @media (prefers-reduced-motion:reduce){.shot .beam{display:none}}
 .shot-bar{background:var(--slab);display:flex;align-items:center;gap:12px;padding:8px 12px;
   font-family:var(--mono);font-size:11px;color:#E6EAEF}
