@@ -39,8 +39,8 @@ Launch HOI4, enable **Kekistan** in the launcher's playset, and start a game.
   with any other mod that changes Germany's colour or graphical culture. It is
   a three-line file — merge by hand if you need to.
 * The flags are plain uncompressed 32-bit TGAs at HOI4's three sizes
-  (82×52, 41×26, 10×7), one per ideology, downscaled from the artwork in
-  `tools/kekistan_flag.png` (cropped to the flag aspect, then downscaled).
+  (82×52, 41×26, 10×7), one per ideology, cut from the artwork in
+  `tools/kekistan_flag.png`.
 * `supported_version` is set to `1.16.*`. Nothing here touches gameplay
   scripting, so bumping it for a newer patch is safe.
 
