@@ -1,0 +1,21 @@
+{
+  "_comment": "Word timings read frame-by-frame off the 3.9s reference clip (1080x1920, 30fps). The clip starts mid-sentence, so 'no' and 'evidence' are clipped at t=0.",
+  "words": [
+    {"word": "no",       "start": 0.000, "end": 0.000},
+    {"word": "evidence", "start": 0.000, "end": 0.100},
+    {"word": "the",      "start": 0.100, "end": 0.133},
+    {"word": "CIA",      "start": 0.200, "end": 0.733},
+    {"word": "caused",   "start": 0.733, "end": 1.060},
+    {"word": "his",      "start": 1.060, "end": 1.160},
+    {"word": "illness",  "start": 1.200, "end": 1.600},
+    {"word": "or",       "start": 1.600, "end": 1.733},
+    {"word": "targeted", "start": 1.733, "end": 2.200},
+    {"word": "him.",     "start": 2.200, "end": 2.600},
+    {"word": "then",     "start": 2.600, "end": 2.800, "emphasis": true},
+    {"word": "why",      "start": 2.800, "end": 2.967, "emphasis": true},
+    {"word": "do",       "start": 2.967, "end": 3.133, "emphasis": true},
+    {"word": "internet", "start": 3.200, "end": 3.560},
+    {"word": "people",   "start": 3.560, "end": 3.860},
+    {"word": "call",     "start": 3.860, "end": 3.933}
+  ]
+}
