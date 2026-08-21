@@ -1,8 +1,44 @@
 # The prompt
 
-Copy the block below into any new clip's task. It is self-contained: it
-describes the style tightly enough to rebuild from scratch, and it names the
-tooling in this directory for when that is available.
+Two versions. Use the **short form** when the generator in this directory is
+available; use the **full form** when whatever is doing the work has to rebuild
+the style from scratch.
+
+---
+
+## Short form
+
+```
+Caption this clip in our house style. The spec is subtitles/STYLE.md in this
+repo and subtitles/brainrot_captions.py already encodes every number in it.
+
+1. Transcribe with word-level timestamps (WhisperX or whisper-timestamped),
+   output JSON.
+2. sh subtitles/fetch_font.sh                    # Bebas Neue -> subtitles/fonts
+3. python3 subtitles/brainrot_captions.py words.json \
+       --video IN.mp4 -o OUT.mp4 \
+       --fontsdir subtitles/fonts \
+       --emphasis-words "<the one rhetorical line that should go green>"
+
+Do not change any style flag unless I ask. Two judgement calls are yours:
+- which single group gets the green emphasis (the question / reveal /
+  punchline -- roughly one group in six, never two in a row);
+- whether the caption block collides with the character. It sits just above
+  centre because these clips put the character in the lower third. If this one
+  frames the subject higher, move the whole block with --cap-top and keep
+  everything else.
+
+If the clip is not 1080x1920, scale --font-size, --cap-top, --line-pitch,
+--max-line-w, --outline and --shadow by the frame-height ratio and pass
+--play-w/--play-h.
+```
+
+---
+
+## Full form
+
+Self-contained: describes the style tightly enough to rebuild from scratch,
+and names the tooling here for when it is available.
 
 ---
 
